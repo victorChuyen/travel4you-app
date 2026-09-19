@@ -10,7 +10,7 @@ const articles = JSON.parse(fs.readFileSync(ARTICLES_PATH, 'utf8'));
 const destinations = JSON.parse(fs.readFileSync(DESTINATIONS_PATH, 'utf8'));
 
 const SITE_URL = 'https://travel4you.app';
-const LOCALES = ['en', 'de', 'fr', 'es', 'it', 'ja', 'ko', 'zh-tw', 'zh-cn', 'pt', 'ru'];
+const LOCALES = ['en', 'vi', 'de', 'fr', 'es', 'it', 'ja', 'ko', 'zh-tw', 'zh-cn', 'pt', 'ru'];
 
 let urlsXml = '';
 

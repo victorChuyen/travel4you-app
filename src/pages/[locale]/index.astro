@@ -7,7 +7,7 @@ import destinationsData from '../../data/destinations.json';
 import i18n from '../../data/i18n.json';
 
 export async function getStaticPaths() {
-  const nonEnLocales = ['de', 'fr', 'es', 'it', 'ja', 'ko', 'zh-tw', 'zh-cn', 'pt', 'ru'];
+  const nonEnLocales = ['vi', 'de', 'fr', 'es', 'it', 'ja', 'ko', 'zh-tw', 'zh-cn', 'pt', 'ru'];
   return nonEnLocales.map(locale => ({
     params: { locale },
     props: { locale }
@@ -46,7 +46,7 @@ const dict = (i18n as any)[locale] || (i18n as any).en;
             👑 {dict.nav_curators}
           </span>
           <span class="bg-slate-900/80 border border-slate-700 text-slate-300 text-xs font-medium px-4 py-1.5 rounded-full backdrop-blur-md">
-            ⚡ {dict.official_gyg_partner} #4G5BPIE
+            ⚡ {dict.official_gyg_partner}
           </span>
           <span class="bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 text-xs font-semibold px-4 py-1.5 rounded-full backdrop-blur-md">
             {dict.free_cancellation_badge}

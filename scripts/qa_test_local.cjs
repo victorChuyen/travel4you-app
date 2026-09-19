@@ -33,20 +33,20 @@ if (homeExists) {
   });
 }
 
-// 2. Check 10 Multilingual Homepages
-const locales = ['de', 'fr', 'es', 'it', 'ja', 'ko', 'zh-tw', 'zh-cn', 'pt', 'ru'];
+// 2. Check 11 Multilingual Homepages (Total 12 Homepages)
+const locales = ['vi', 'de', 'fr', 'es', 'it', 'ja', 'ko', 'zh-tw', 'zh-cn', 'pt', 'ru'];
 let allLocalesPass = true;
 locales.forEach(loc => {
   const locPath = path.join(DIST, loc, 'index.html');
   if (!fs.existsSync(locPath)) allLocalesPass = false;
 });
 checks.push({
-  name: '10 Localized Multilingual Homepages (/de/, /fr/, /ja/.../index.html)',
+  name: '11 Localized Multilingual Homepages (/vi/, /de/, /fr/.../index.html)',
   pass: allLocalesPass,
-  details: allLocalesPass ? 'All 10 locales verified' : 'Some locales missing'
+  details: allLocalesPass ? 'All 11 non-EN locales verified (Total 12 Homepages)' : 'Some locales missing'
 });
 
-// 3. Check Experience Guides (110 Articles)
+// 3. Check Experience Guides (120 Articles: 10 Hubs x 12 Locales)
 const articles = JSON.parse(fs.readFileSync(path.join(ROOT_APP, 'src/data/articles.json')));
 let articlesExistCount = 0;
 articles.forEach(art => {
@@ -56,8 +56,8 @@ articles.forEach(art => {
   if (fs.existsSync(artPath)) articlesExistCount++;
 });
 checks.push({
-  name: '110 Multilingual Experience Detail Pages',
-  pass: articlesExistCount === articles.length,
+  name: '120 Multilingual Experience Detail Pages (10 Hubs x 12 Locales)',
+  pass: articlesExistCount === articles.length && articles.length === 120,
   details: `${articlesExistCount}/${articles.length} pages generated`
 });
 
