@@ -1849,6 +1849,25 @@ Still not configured in Cloudflare production:
 
 Important deployment note: local project changes remain uncommitted in the working tree. Cloudflare Git deployments only receive changes pushed to the connected repository. The production domain was serving the public static site, but API probes returned HTTP 405; Pages Functions deployment still needs confirmation after the SaaS code is pushed/deployed.
 
+## 26.17 Cloudflare Functions deployment verified — 2026-09-19 17:54 ICT
+
+Production secrets now include the SePay HMAC secret, saved encrypted through the
+Cloudflare Pages dashboard. The public Supabase runtime values were added to
+`wrangler.toml`, and commit `7b01983` was pushed to `main`.
+
+Cloudflare automatic deployment completed and the production handlers are now
+active:
+
+- `POST /api/webhooks/sepay` with no signature → HTTP `401`
+  (`Invalid webhook signature.`)
+- `POST /api/webhooks/paypal` with an empty invalid event → HTTP `400`
+  (`Invalid PayPal webhook.`), proving the handler is active.
+- `POST /api/billing/checkout` without bearer auth → HTTP `401`
+  (`Authentication required.`)
+
+The previous static-route `405` condition is resolved. The next gate is a
+controlled SePay test webhook and PayPal sandbox checkout, not another deploy.
+
 ---
 
 **END OF MASTER EXECUTION FILE**
