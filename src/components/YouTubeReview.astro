@@ -8,63 +8,63 @@ interface Props {
 
 const { postCode, location, title, locale = 'en' } = Astro.props;
 
-// Curated Top 4K YouTube Reviews & Walking Experiences for the 10 destinations
+// Verified Top 4K YouTube Reviews & Walking Experiences for the 10 destinations
 const videoMap: Record<string, { videoId: string; channelName: string; duration: string }> = {
   GYG_PARIS_001: {
-    videoId: "wJ_Ff2xG_9w", // Paris Seine Gourmet Dinner Cruise
-    channelName: "Luxury Traveler 4K",
-    duration: "4K UHD • Authentic Walkthrough"
+    videoId: "qi0jhkXxR7w", // Seine River Gourmet Dinner Cruise Review
+    channelName: "Albertine Sarah",
+    duration: "4K UHD • Authentic Dinner Review"
   },
   GYG_ROME_002: {
-    videoId: "9N6xM4v7Q1w", // Colosseum Underground & Arena Floor VIP
-    channelName: "Rome Heritage Docent",
-    duration: "4K UHD • Restricted Vault Access"
+    videoId: "4JOnS7hpegE", // Colosseum Secret Underground Tour
+    channelName: "Chris and Ellen",
+    duration: "4K UHD • Restricted Hypogeum Vaults"
   },
   GYG_COMO_003: {
-    videoId: "5h7J8b4X3wA", // Lake Como Wooden Boat Tour Bellagio
-    channelName: "Italian Riviera Classics",
-    duration: "4K UHD • Mahogany Launch Tour"
+    videoId: "PNXZ0-XY3_U", // Lake Como Magical Boat Tour
+    channelName: "SKYEYE DRONE",
+    duration: "4K UHD • Alpine Paradise Boat Tour"
   },
   GYG_KYOTO_004: {
-    videoId: "3f9W4s8X2yQ", // Kyoto Bamboo Grove & Tea Ceremony
-    channelName: "Kyoto Sanctuary Guides",
-    duration: "4K UHD • Private Tea Sanctuary"
+    videoId: "xN9QvKs7Zvo", // Arashiyama Bamboo Grove Kyoto
+    channelName: "SUPERGENKI",
+    duration: "4K UHD • Bamboo Sanctuary Walk"
   },
   GYG_MALDIVES_005: {
-    videoId: "7g8H9j3K1mP", // Maldives Catamaran & Manta Ray Snorkeling
-    channelName: "Indian Ocean Expeditions",
-    duration: "4K UHD • Crystal Atoll Safari"
+    videoId: "MOqbtJ9Mv4M", // Snorkeling with Manta Rays Maldives
+    channelName: "TourRadar",
+    duration: "4K UHD • Manta Ray Snorkeling Safari"
   },
   GYG_UTAH_006: {
-    videoId: "2n3M4v5B6cX", // Antelope Canyon & Horseshoe Bend Flight
-    channelName: "American Southwest Aerials",
-    duration: "4K UHD • Navajo Sacred Canyon"
+    videoId: "mtfoES4Yq3E", // Antelope Canyon Tour Reviews
+    channelName: "Jared Dillingham",
+    duration: "4K UHD • Navajo Sacred Canyon Review"
   },
   GYG_SAFARI_007: {
-    videoId: "4b5V6c7X8zQ", // Serengeti Sunrise Hot Air Balloon Safari
-    channelName: "Serengeti National Reserve",
-    duration: "4K UHD • Big Five Migration"
+    videoId: "j3FXytBTDZ4", // Serengeti Balloon Safari 4K
+    channelName: "The Nurture Nature Channel",
+    duration: "4K UHD • Big Five Serengeti Sunrise"
   },
   GYG_VENICE_008: {
-    videoId: "8m9N0b1V2cX", // Venice Grand Canal Private Gondola
-    channelName: "Venetian Heritage Archive",
-    duration: "4K UHD • Private Serenade Cruise"
+    videoId: "5lv3CFtWpjM", // Exclusive Gondola Tour Venice
+    channelName: "European Walking Tours",
+    duration: "4K UHD • Private Grand Canal Serenade"
   },
   GYG_SWISS_009: {
-    videoId: "1q2W3e4R5tY", // Jungfraujoch Top of Europe Train
-    channelName: "Swiss Alps Express",
-    duration: "4K UHD • Top of Europe Glacier"
+    videoId: "waSeYKFfRsA", // Top Of Europe Jungfraujoch
+    channelName: "Travel YuNiCo",
+    duration: "4K UHD • Swiss Alps Train Expedition"
   },
   GYG_DUBAI_010: {
-    videoId: "6y7U8i9O0pA", // Dubai Burj Khalifa Level 148 SKY Lounge
-    channelName: "Emirates Luxury Journal",
-    duration: "4K UHD • Highest Observation Deck"
+    videoId: "TR8Hf0BxkaA", // Burj Khalifa Level 148 At The Top SKY
+    channelName: "Madan Choudhury",
+    duration: "4K UHD • Level 148 SKY Lounge Tour"
   }
 };
 
 const videoData = videoMap[postCode] || {
-  videoId: "wJ_Ff2xG_9w",
-  channelName: "Sovereign Luxury Archives",
+  videoId: "qi0jhkXxR7w",
+  channelName: "Albertine Sarah",
   duration: "4K UHD • Verified Insider Walkthrough"
 };
 
@@ -94,7 +94,7 @@ const t = labels[locale] || labels.en;
         <span>🎬</span>
         <span>{t.badge}</span>
         <span class="text-slate-500">•</span>
-        <span class="text-slate-300 font-normal">{videoData.duration}</span>
+        <span class="text-slate-300 font-normal">{videoData.channelName} ({videoData.duration})</span>
       </div>
       <h3 class="font-serif text-xl sm:text-2xl font-bold text-white">
         {t.title}
