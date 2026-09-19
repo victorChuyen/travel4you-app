@@ -1991,6 +1991,9 @@ Production release status remains:
   Astro document head in `src/layouts/Layout.astro`.
 - The script is loaded once globally from
   `https://emrldtp.com/NTc1Njk4.js?t=575698`.
+- The loader was changed to a static `<script src="...">` tag so external
+  Drive verification can detect the source directly without depending on
+  client-side script execution.
 - This is a Drive verification/attribution script; it does not replace the
   GetYourGuide Partner ID `D5OEC57`.
 - Travelpayouts Marker `770720` remains a separate legacy attribution value
