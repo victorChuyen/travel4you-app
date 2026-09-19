@@ -2085,6 +2085,49 @@ commission reporting from being mixed.
 4. Report only dashboard-confirmed clicks, leads, payments, and commissions;
    catalog size is not revenue.
 
+## 26.25 Session handover for next day — 2026-09-19 23:31 ICT
+
+### Message for VIP LAN
+
+Travel4You is live at `https://travel4you.app/`. The current app contains
+**120 article/experience records** and a searchable catalog of **1,000+
+destinations and experiences**. The public site includes search, filters,
+localized pages, experience details, booking CTAs, SEO/hreflang, and the
+initial SaaS account/content/payment foundation.
+
+The selected affiliate platforms are:
+
+- **GetYourGuide — Partner ID `D5OEC57`:** the primary identity for VIP tours,
+  activities, and experiences.
+- **Travelpayouts Drive — Source `575698`:** website ownership confirmed and
+  Drive active for widgets and multi-program travel monetization.
+- **Travelpayouts legacy — Marker `770720` / Source `567182`:** retained
+  separately for historical attribution and account continuity; it is not the
+  GetYourGuide ID.
+
+### Continue tomorrow
+
+1. Verify one live GetYourGuide redirect and record attribution evidence.
+2. Add and validate the first Travelpayouts widget placement.
+3. Prepare the next demand-validated VIP article batch.
+4. Run controlled SePay payment, entitlement, Telegram, and replay tests.
+5. Run PayPal sandbox capture/webhook and idempotency tests.
+6. Complete Supabase Auth/RLS two-user isolation checks.
+7. Review rate limiting, error logging, and the production AI endpoint.
+8. Confirm drip-feed publication and affiliate disclosure QA.
+9. Prepare the VIP LAN demo and package comparison.
+10. Update live KPI results and propose the final service package for handover.
+
+### Handover guardrails
+
+- Do not merge `D5OEC57` with `770720`; they belong to different affiliate
+  systems.
+- Do not report catalog records as long-form articles or report clicks as
+  commissions.
+- Do not mark paid production release complete until payment and replay tests
+  pass.
+- Record only verified dashboard, deployment, payment, and attribution data.
+
 ---
 
 **END OF MASTER EXECUTION FILE**
