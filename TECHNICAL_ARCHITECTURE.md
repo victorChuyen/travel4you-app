@@ -1,9 +1,9 @@
-# 🏛️ TRAVEL4YOU.APP — TECHNICAL ARCHITECTURE BLUEPRINT & SYSTEM MANUAL
-> **Version:** 2.0-Sovereign-Luxury  
+# 🏛️ TRAVEL4YOU.APP & TRAVEL4U.US — DUAL-ENGINE TECHNICAL ARCHITECTURE BLUEPRINT
+> **Version:** 3.0-Dual-Engine-Luxury-OS (GetYourGuide VIP Experiences + Expedia Luxury Stays)  
 > **Executive Leadership:** Chairman Victor Chuyen (`Coach.Chuyen@gmail.com`) & AI CEO Lucky  
-> **Repository:** [https://github.com/victorChuyen/travel4you-app](https://github.com/victorChuyen/travel4you-app)  
-> **Live Production:** [https://travel4you.app](https://travel4you.app) / [https://travel4you-app.pages.dev](https://travel4you-app.pages.dev)  
-> **Master Google Sheet:** [Sheet 15G6SYG8KmtYF9DYg4g1UyOchJ3p8bjBAIEahC47z1nU](https://docs.google.com/spreadsheets/d/15G6SYG8KmtYF9DYg4g1UyOchJ3p8bjBAIEahC47z1nU/edit#gid=0) (Tab `travel4you.app`)  
+> **Repositories:** [https://github.com/victorChuyen/travel4you-app](https://github.com/victorChuyen/travel4you-app) & `travel4u-portal`  
+> **Production Edge:** [https://travel4you.app](https://travel4you.app) (GYG Experiences) • [https://travel4u.us](https://travel4u.us) (Expedia Luxury Hotels) • [https://blog.travel4u.us](https://blog.travel4u.us) (WordPress Editorial Magazine)  
+> **Master Google Sheet:** [Sheet 15G6SYG8KmtYF9DYg4g1UyOchJ3p8bjBAIEahC47z1nU](https://docs.google.com/spreadsheets/d/15G6SYG8KmtYF9DYg4g1UyOchJ3p8bjBAIEahC47z1nU/edit#gid=0)  
 > **Cập nhật lần cuối:** 2026-09-19
 
 ---
@@ -221,3 +221,113 @@ git add .
 git commit -m "feat: update technical architecture blueprint"
 git push origin main
 ```
+
+---
+
+## 👥 8. CƠ CHẾ ĐIỀU HÀNH 3 TEAM DEV SONG SONG (3-TEAM PARALLEL DEV CHARTER)
+
+Để dự án SaaS vận hành trơn tru với tốc độ cao mà không gây xung đột mã nguồn (git merge conflicts) hay giẫm chân lên nhau, hệ thống phân định rõ ranh giới trách nhiệm cho 3 Team Dev:
+
+```
+                               ┌─────────────────────────────────────────┐
+                               │       CHAIRMAN VICTOR & AI CEO LUCKY    │
+                               │      (Strategic Vision & Governance)    │
+                               └────────────────────┬────────────────────┘
+                                                    │
+                   ┌────────────────────────────────┼────────────────────────────────┐
+                   ▼                                ▼                                ▼
+┌─────────────────────────────────────┐ ┌─────────────────────────────────────┐ ┌─────────────────────────────────────┐
+│    TEAM 1: SAAS CORE & BACKEND      │ │    TEAM 2: EDGE & ATTRIBUTION       │ │    TEAM 3: CONTENT & PRODUCTS       │
+│ - Scope: /app, functions/api/,      │ │ - Scope: travel4u.us & travel4you   │ │ - Scope: D:\blog-travel (3 Tiers),  │
+│   src/lib/, supabase/               │ │   functions/go/, functions/m/,      │ │   src/data/articles, i18n, media,   │
+│ - Stack: Supabase RLS, Postgres,    │ │   public/scripts/team_attribution   │ │   Google Sheets Command Center      │
+│   SePay / PayPal SDK, 9Router AI    │ │ - Stack: Astro 5 SSG, Cloudflare    │ │ - Stack: Gemini 2.5 Pro, 9Router    │
+│ - Mission: Auth, Billing, Workspaces│ │   Edge Functions, Multi-Tenant Attrib│ │ - Mission: Top 1000 Hotels & Tours, │
+│   Projects, Entitlements, AI Jobs   │ │ - Mission: Dual-Engine Portals,     │ │   3 Digital Product Tiers, 12-Lang  │
+│                                     │ │   Link Cloaker, Self-Serve Tools    │ │   Transcreation, Sheet Sync & Tele  │
+└─────────────────────────────────────┘ └─────────────────────────────────────┘ └─────────────────────────────────────┘
+```
+
+### 8.1. Ranh giới tệp & Mã nguồn (File Boundary Isolation):
+* **Team 1 sở hữu độc quyền:** `src/pages/app/**`, `functions/api/**`, `src/lib/**`, `supabase/**`.
+* **Team 2 sở hữu độc quyền:** `functions/go/**`, `functions/m/**`, `public/scripts/**`, `src/components/**`, `src/layouts/**`, `src/data/team_members.json`.
+* **Team 3 sở hữu độc quyền:** `D:\blog-travel\**`, `src/data/articles.json`, `src/data/destinations.json`, `src/data/i18n.json`, `public/media/**`, `scripts/sync_*.cjs`.
+
+### 8.2. Quy tắc commit & kiểm thử bắt buộc:
+1. Mọi commit phải vượt qua: `npm run build` (0 lỗi), `npx tsc --noEmit` (0 lỗi type), `npm run validate:env`.
+2. Không bao giờ commit bí mật API (Supabase Service Key, PayPal Secret, SePay Token) lên git.
+
+---
+
+## 💎 9. KIẾN TRÚC DUAL-ENGINE SAAS: GETYOURGUIDE & EXPEDIA GROUP
+
+Nâng cấp định vị hệ sinh thái từ một trang tour đơn lẻ thành **Hệ Điều Hành Kinh Doanh Du Lịch Đa Nền Tảng (Dual-Engine AI Travel Business OS)**:
+
+```
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                        DUAL-ENGINE MONETIZATION ARCHITECTURE                           │
+├───────────────────────────────────────────┬────────────────────────────────────────────┤
+│     ENGINE 1: GETYOURGUIDE (EXPERIENCES)  │       ENGINE 2: EXPEDIA GROUP (STAYS)      │
+├───────────────────────────────────────────┼────────────────────────────────────────────┤
+│ • Domain Cốt Lõi: travel4you.app          │ • Domain Cốt Lõi: travel4u.us (Apex Edge)  │
+│ • Đối Tác: Direct Partner 4G5BPIE (8%)    │ • Đối Tác: Expedia via Travelpayouts 770720│
+│ • Sản Phẩm: VIP Tours, Skip-the-line,     │ • Sản Phẩm: Khách sạn 5 sao, Luxury Resort,│
+│   Du thuyền riêng, Trực thăng, Bảo tàng   │   Vé máy bay First/Business, Thuê xe tự lái│
+│ • Giá Trị Đơn (AOV): $100 – $400 / booking│ • Giá Trị Đơn (AOV): $2,000 – $10,000 / đơn│
+│ • Hoa Hồng Trung Bình: $8 – $32 / đơn     │ • Hoa Hồng Trung Bình: $100 – $450 / đơn   │
+│ • Giá Trị Với Khách: Không xếp hàng,      │ • Giá Trị Với Khách: Phòng Suite VIP,      │
+│   Hướng dẫn viên chuẩn, Hủy miễn phí 24h  │   Bữa sáng miễn phí, Hoàn điểm thưởng OTA  │
+└───────────────────────────────────────────┴────────────────────────────────────────────┘
+```
+
+### 9.1. Lợi thế kinh tế tuyệt đối của việc tích hợp Expedia:
+* **Gia tăng AOV gấp 10 lần:** Một booking khách sạn 5 sao tại Paris, Como hay Kyoto trên Expedia dễ dàng đạt \$3,000 – \$8,000, mang lại hoa hồng \$150 – \$400/đơn (thay vì chỉ \$15 – \$25 từ tour đơn lẻ).
+* **Bao trọn 100% chi tiêu du khách (Total Wallet Share):** Du khách luôn cần **Nơi ở (Expedia) + Trải nghiệm (GYG) + Di chuyển (Discover Cars / Welcome Pickups)**. Hệ thống giải quyết trọn vẹn cả 3 trong một hành trình duy nhất.
+* **Đòn bẩy bán gói SaaS cho Travel Advisors & Creators:** Bán gói SaaS Creator (\$29/tháng) hoặc Pro (\$99/tháng) cho Travel Advisors cực kỳ dễ dàng vì họ có thể tạo lịch trình gắn đồng thời link Expedia và GetYourGuide của chính họ, hoàn vốn SaaS chỉ sau 1 booking khách sạn!
+
+---
+
+## 🔄 10. BẢN ĐỒ TÊN MIỀN & CHIẾN LƯỢC ĐIỀU PHỐI TRAFFIC (DOMAIN ARCHITECTURE)
+
+```
+travel4u.us (Apex Domain)
+├── Nền tảng: Cloudflare Pages Edge (Astro 5 SSG)
+├── Định vị: Siêu Cổng Du Lịch Thượng Lưu & Tuyển Tập Khách Sạn Xa Xỉ Expedia (Top 1.000 Stays)
+└── Tốc độ: TTFB < 50ms, Google PageSpeed 100/100, 0 USD chi phí máy chủ
+
+travel4you.app (Global Web App)
+├── Nền tảng: Cloudflare Pages Edge (Astro 5 SSG)
+├── Định vị: Concierge Trải Nghiệm Độc Quyền GetYourGuide (1.000 VIP Activities)
+└── Điểm chạm: Vé VIP Skip-the-line, Du thuyền, Tour riêng 12 ngôn ngữ
+
+blog.travel4u.us (Editorial Hub)
+├── Nền tảng: WordPress VIP (Hostinger/VPS hiện tại, Theme Soledad + Rank Math)
+├── Định vị: Tạp Chí Du Lịch & Kể Chuyện Thượng Lưu (78+ bài viết chuẩn Grade A)
+└── Vai trò: Kéo Organic Search Traffic khổng lồ, đặt banner & deep link phễu dẫn về travel4u.us & travel4you.app
+
+app.travel4you.app (hoặc /app)
+├── Nền tảng: Cloudflare Pages Functions + Supabase PostgreSQL + 9Router AI
+├── Định vị: SaaS Hub cho Creators / Travel Advisors / Paid Members
+└── Tính năng: Tạo Travel Project AI, tự động gắn link Expedia + GYG của thành viên
+```
+
+---
+
+## 🎯 11. HỆ THỐNG GẮN MÃ ĐA THÀNH VIÊN TRẢ PHÍ (MULTI-TENANT ATTRIBUTION ENGINE)
+
+Mọi thành viên trả phí (Team Members / Paid Subscribers) đều được cấp một trang web và đường link tiếp thị riêng biệt:
+
+1. **Edge Entry Route:** `/m/:member` (Ví dụ: `https://travel4you.app/m/rubi` hoặc `https://travel4u.us/m/rubi`).
+   - Edge Function tự động ghi nhận Cookie `t4u_member_ref=rubi` có thời hạn **30 ngày**.
+   - Chuyển hướng người dùng về trang chủ kèm cờ nhận diện `?ref=rubi`.
+2. **Dynamic Client DOM Rewriter (`team_attribution.js`):**
+   - Đọc Cookie hoặc tham số `?ref=...`.
+   - Tra cứu profile trong `src/data/team_members.json`.
+   - Tự động thay thế toàn bộ liên kết GetYourGuide và Expedia trên 1.000 thẻ trải nghiệm bằng:
+     - `partner_id` của thành viên (hoặc Travelpayouts Marker).
+     - SubID chuẩn: `cmp=team_{subId}_{country}_{slug}`.
+   - Hiển thị Banner Uy Tín: *"Được tuyển chọn bởi [Tên Thành Viên] • Chuyên Gia Du Lịch Đối Tác"*.
+3. **Smart Link Cloaker (`/go/[slug]`):**
+   - Chuyển hướng server-side sạch sẽ, che giấu hoàn toàn các tham số kỹ thuật nhạy cảm.
+   - Tự động fallback về Master Partner ID `4G5BPIE` nếu không có ref của thành viên.
+

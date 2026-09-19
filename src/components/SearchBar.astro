@@ -239,9 +239,10 @@ const t = placeholders[currentLocale] || placeholders.en;
     }
 
     function createCardHtml(item, index = 0) {
+      const gygUrl = window.getAttributedGygUrl ? window.getAttributedGygUrl(item.u) : item.u;
       const detailUrl = item.d 
         ? (currentLocale === 'en' ? `/experience/${item.k}/` : `/${currentLocale}/experience/${item.k}/`)
-        : item.u;
+        : gygUrl;
       const ctaText = item.d ? (isVietnamese ? 'Xem Cẩm Nang' : 'Read Guide') : (isVietnamese ? 'Đặt Chỗ VIP' : 'Reserve VIP');
       
       let isSaved = false;

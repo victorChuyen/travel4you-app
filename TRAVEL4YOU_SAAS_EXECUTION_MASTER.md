@@ -1434,6 +1434,255 @@ Any major change to the following should be added to the Decision Log section be
 
 Small UI/implementation details do not require executive approval unless they introduce security, billing, data integrity or brand risk.
 
+# 26. SESSION HANDOVER — 2026-09-19 14:10 ICT
+
+> This section is the continuation checkpoint for the next development session. Read it before making further SaaS changes.
+
+## 26.1 Current implementation status
+
+The public Astro/Cloudflare SEO website remains additive and buildable. The SaaS foundation has been added under `/app/`, `functions/api/`, `src/lib/`, and `supabase/` without refactoring the existing public content routes.
+
+Completed in the repository:
+
+- Supabase browser/server configuration and environment contract.
+- Supabase migration for profiles, workspaces, memberships, projects, versions, AI jobs, plans, entitlements, subscriptions, usage, publications, payments, webhook idempotency, events, and audit logs.
+- RLS policies and workspace membership helpers in the migration.
+- Supabase bearer-token authentication helpers for Pages Functions.
+- Login/sign-up page and initial authenticated app dashboard.
+- Workspace creation and tenant-scoped project CRUD.
+- Local 9router/OpenAI-compatible AI generation boundary.
+- Structured AI output validation and persistence to `ai_jobs` and `project_versions`.
+- Project publication/unpublication APIs and public publication lookup foundation.
+- Entitlement lookup API and plan seed data.
+- SePay/VietQR checkout ledger foundation.
+- PayPal provider abstraction boundary.
+- Environment template and validation script.
+
+Validation already completed:
+
+```text
+npm run build        PASS
+npx tsc --noEmit    PASS
+git diff --check     PASS
+npm run validate:env PASS
+```
+
+## 26.2 Not production-ready yet
+
+The following items are still open and must not be marked complete until verified against real services:
+
+1. Install/login/link the Supabase CLI and push the migration to project `pceoqkinwsmsqmvqteiv`.
+2. Run real Supabase auth and verify profile bootstrap, workspace creation, and RLS tenant isolation.
+3. Resolve the public publication RLS path so anonymous users can read only published public/unlisted content without opening private projects or drafts.
+4. Remove duplicated 9router request logic by using one runtime-compatible client implementation.
+5. Run a local 9router instance and test valid output, malformed output, timeout, HTTP failure, and persistence recovery.
+6. Add publish/unpublish controls and a public share/preview page to the app UI.
+7. Enforce project, generation, member, and publication limits atomically on the server.
+8. Implement `POST /api/webhooks/sepay` with signature/secret validation, amount/order matching, idempotency, payment state updates, subscription updates, entitlements, and audit logs.
+9. Implement PayPal sandbox order/subscription creation and official webhook verification.
+10. Add browser/API acceptance tests for Sprint 001 and run the complete release gate.
+11. Add protected SSR/session handling, rate limiting, operational error reporting, and billing/webhook alerts.
+12. Perform the security review before any real-money production release.
+
+## 26.3 Credentials and environment safety
+
+- Real secrets must remain outside Git and outside Markdown.
+- `.env.example` contains names/placeholders only; local `.env` is ignored.
+- Supabase secret and payment secrets were previously exposed in conversation. Rotation remains strongly recommended before production, even if development continues with the current values.
+- Public browser variables may include only the Supabase URL and publishable key.
+- Server-only variables include Supabase secret, 9router key, PayPal secret, SePay API/webhook secrets, and database credentials.
+
+## 26.4 Next session execution order
+
+Run this sequence without changing public SEO routes:
+
+```powershell
+Set-Location D:\n8n-selfhost\travel4you.app
+supabase login
+supabase link --project-ref pceoqkinwsmsqmvqteiv
+supabase db push
+npm run build
+npx tsc --noEmit
+```
+
+Then verify:
+
+```text
+1. Create a test account at /app/login/.
+2. Create a workspace and project.
+3. Confirm a second user cannot read or mutate the first workspace.
+4. Start local 9router and generate one structured project.
+5. Confirm the generated version is editable and not auto-published.
+6. Publish, read the public share response, then unpublish.
+7. Create a SePay test checkout and verify only a validated webhook can unlock access.
+8. Configure PayPal sandbox only after the SePay and entitlement paths are testable.
+```
+
+## 26.5 Known pre-existing public-site issues
+
+These are outside the SaaS foundation and should not be mixed into Sprint 001 unless explicitly prioritized:
+
+- Affiliate cloaker mappings may drift from canonical destination links.
+- Some legacy Footer routes are hard-coded and invalid.
+- Locale declarations and schema values are inconsistent in older content.
+- Google Sheets synchronization still contains synthetic/default values.
+- Dependency audit reported vulnerabilities; do not run a breaking `npm audit fix --force` without a separate upgrade plan.
+
+## 26.6 Source-of-truth files
+
+- Public architecture: [TECHNICAL_ARCHITECTURE.md](./TECHNICAL_ARCHITECTURE.md)
+- Supabase setup: [supabase/README.md](./supabase/README.md)
+- Environment contract: [.env.example](./.env.example)
+- Database migration: [supabase/migrations/20260919135000_saas_core.sql](./supabase/migrations/20260919135000_saas_core.sql)
+
+## 26.7 Progress added on 2026-09-19 14:20 ICT
+
+Completed without changing public SEO routes:
+
+- Added `get_publication_by_slug(text)` as a `SECURITY DEFINER` Supabase RPC. It returns only a published public/unlisted publication, its project summary, and the selected version; it does not expose private drafts through nested client queries.
+- Updated the public publication API to use the RPC instead of relying on nested-table RLS behavior.
+- Added `plan_code` metadata to SePay checkout payment records.
+- Added `POST /api/webhooks/sepay`.
+- SePay webhook now validates the configured secret, requires event/reference/amount fields, ignores outgoing transfers, matches an existing pending VND payment, records idempotent webhook events, marks the payment paid, creates/updates the active SePay subscription, and writes a system audit log.
+- Added a server-only Supabase service client helper for trusted webhook processing.
+
+Validation after these changes:
+
+```text
+npm run build       PASS
+npx tsc --noEmit   PASS
+node --check Pages Functions PASS
+```
+
+Remaining verification for this slice:
+
+- Verify the RPC grants for `anon` and `authenticated` after the Dashboard migration run.
+- Confirm the exact SePay production webhook payload/signature contract and adapt field mapping or HMAC verification if required by SePay.
+- Replay the same event twice and confirm the second request is idempotent.
+- Test payment amount mismatch, unknown order reference, invalid secret, and outgoing-transfer rejection.
+- Confirm the subscription entitlement API returns the paid plan after a validated webhook.
+
+## 26.8 Supabase Dashboard checkpoint — 2026-09-19 14:26 ICT
+
+The Supabase project `pceoqkinwsmsqmvqteiv` was opened in the authenticated browser session and the SaaS migration was executed from SQL Editor. Table Editor now confirms these SaaS tables exist in the live project:
+
+```text
+billing_webhook_events
+payments
+profiles
+projects
+publications
+workspaces
+```
+
+The migration execution returned success with no SQL error. The remaining live checks are functional checks, not schema installation:
+
+1. Query `public.get_publication_by_slug(text)` with an unpublished slug and confirm no row is returned.
+2. Create a test Auth user and confirm the profile trigger.
+3. Create a workspace/project through the app and verify RLS.
+4. Configure a temporary test SePay secret and replay a controlled webhook.
+
+## 26.9 PayPal sandbox checkpoint — 2026-09-19 14:34 ICT
+
+PayPal Developer sandbox configuration completed in the authenticated browser:
+
+- Created a dedicated merchant REST app named `Travel4You SaaS`.
+- Registered the sandbox webhook URL:
+  `https://travel4you.app/api/webhooks/paypal`
+- Enabled the checkout/order and payment-capture event families used by the
+  implementation.
+- Stored the non-secret PayPal webhook ID in the ignored local `.env` as
+  `PAYPAL_WEBHOOK_ID`.
+
+Required manual secret step:
+
+1. In the PayPal Developer app, copy the **Client ID** into local
+   `PAYPAL_CLIENT_ID`.
+2. Copy **Secret key 1** into local `PAYPAL_CLIENT_SECRET`.
+3. Never paste either value into chat, Markdown, Git, or browser output.
+4. Keep `PAYPAL_ENVIRONMENT=sandbox` until a complete sandbox order/capture/
+   webhook test passes.
+
+The code endpoints are now:
+
+```text
+POST /api/billing/checkout
+POST /api/webhooks/paypal
+```
+
+The production deployment must contain the new Functions code before a real
+PayPal event can be delivered successfully. The webhook is registered in
+PayPal, but live payment testing remains pending credential injection and
+deployment verification.
+
+## 26.10 PayPal credential injection checkpoint — 2026-09-19 14:49 ICT
+
+The PayPal Developer app visibly contains the sandbox `Client ID` and
+`Secret key 1` fields. The secret was intentionally not read from browser
+automation or copied into chat.
+
+Use the local secure prompt from the project root:
+
+```powershell
+Set-Location D:\n8n-selfhost\travel4you.app
+npm run configure:paypal
+```
+
+The script writes `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`,
+`PAYPAL_ENVIRONMENT=sandbox`, and the already registered
+`PAYPAL_WEBHOOK_ID` into the ignored local `.env` without printing the
+secret. After that, deploy the same variables as Cloudflare Pages secrets;
+local `.env` is not available to production Functions.
+
+---
+
+# 27. STRATEGIC PIVOT & MULTI-TEAM DEV WAR CHARTER — 2026-09-19 ICT
+
+> **Executive Order:** Chairman Victor & AI CEO Lucky  
+> **Strategic Evolution:** Dual-Engine SaaS (GetYourGuide VIP Tours + Expedia Group Luxury Stays)  
+> **Multi-Team Dev Setup:** 3 Teams operating simultaneously without boundary collision.
+
+## 27.1 DEC-011 — Dual-Engine Monetization & Strategic Domain Pivot
+
+**Decision:** Evolve Travel4You SaaS from a single-affiliate tour app into a **Dual-Engine Luxury Travel OS**:
+1. **Engine 1 (Experiences):** `travel4you.app` — Powered by GetYourGuide (Partner `4G5BPIE` - 8% Commission). Focuses on VIP Skip-the-line tickets, private yachts, helicopter tours, cultural immersions.
+2. **Engine 2 (Stays & Flights):** `travel4u.us` (Apex Domain) — Migrates to Cloudflare Pages Edge (Astro 5 SSG), powered by **Expedia Group** (via Travelpayouts Marker 770720 / EPS Direct). Focuses on 5-Star Luxury Hotels, Resorts, First/Business Flights, and Packages.
+3. **Editorial Engine:** `blog.travel4u.us` — Inherits the WordPress codebase and 78+ Grade A articles from `travel4u.us`. Acts as the central high-volume content and storytelling engine feeding organic traffic to both Edge engines.
+4. **SaaS Value Multiplier (10x ARPU):** The core SaaS object (`Travel Project`) now generates complete, monetizable itineraries containing **both** Expedia Luxury Hotel recommendations and GetYourGuide VIP Experience recommendations, tagged with the creator's/advisor's affiliate IDs.
+
+**Status:** APPROVED FOR EXECUTION.
+
+## 27.2 The 3-Team Dev Responsibility Matrix
+
+```text
+┌─────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                               3-TEAM PARALLEL DEV WORKSTREAMS                                   │
+├───────────────────────────────┬─────────────────────────────────┬───────────────────────────────┤
+│ TEAM 1: SAAS CORE & PLATFORM  │ TEAM 2: EDGE & ATTRIBUTION      │ TEAM 3: CONTENT & COMMERCE    │
+├───────────────────────────────┼─────────────────────────────────┼───────────────────────────────┤
+│ • Lead: Backend / Fullstack   │ • Lead: Edge Architect / DevOps │ • Lead: CCO / Data Architect  │
+│ • Scope:                      │ • Scope:                        │ • Scope:                      │
+│   - /app authenticated UI     │   - travel4u.us (Expedia Edge)  │   - D:\blog-travel (3 Tiers)  │
+│   - functions/api/**          │   - travel4you.app (GYG Edge)   │   - 1000 Luxury Stays Catalog │
+│   - src/lib/**                │   - functions/go/** & /m/**     │   - 1000 GYG Experiences      │
+│   - supabase/**               │   - public/scripts/team_attrib  │   - src/data/articles.json    │
+│ • Focus:                      │ • Focus:                        │ • Focus:                      │
+│   - Supabase Auth & RLS       │   - Sub-50ms Edge Performance   │   - High-ticket Hotel Curation│
+│   - SePay (VietQR) + PayPal   │   - Multi-Tenant Link Cloaking  │   - 12-Locale Transcreation   │
+│   - 9Router AI Orchestrator   │   - 30-day Member Ref Cookies   │   - Google Sheet Sync (Tab 1k)│
+│   - Entitlement Engine        │   - Self-Serve Team Tools UI    │   - Telegram Shift Reports    │
+└───────────────────────────────┴─────────────────────────────────┴───────────────────────────────┘
+```
+
+## 27.3 Git Branching & Collision Prevention Protocol
+
+1. **Independent File Ownership:** No team edits files outside their designated folder scope.
+2. **Pre-commit Quality Gate:**
+   - `npm run build` must produce clean static outputs (132+ pages).
+   - `npx tsc --noEmit` must return 0 TypeScript errors.
+   - `node scripts/validate-env.cjs` must pass environment integrity checks.
+3. **Zero Secrets in Code:** Credentials for Supabase, SePay, PayPal, and Expedia remain strictly in local `.env` and Cloudflare Pages Environment Variables.
+
 ---
 
 **END OF MASTER EXECUTION FILE**

@@ -46,24 +46,37 @@ const TOURS_DIRECTORY = {
   'gyg_dubai_010': 'dubai-l173/burj-khalifa-level-148-sky-lounge-vip-fast-track-t441920'
 };
 
+import teamMembers from '../../src/data/team_members.json';
+
 export async function onRequest(context) {
   const { params, request } = context;
   const slug = (params.slug || '').toLowerCase();
   const country = request.cf?.country || 'US';
-  const partnerId = '4G5BPIE';
+  const url = new URL(request.url);
+
+  // Extract member ref from query param or cookie
+  let memberId = url.searchParams.get('ref') || url.searchParams.get('m') || '';
+  if (!memberId) {
+    const cookieHeader = request.headers.get('Cookie') || '';
+    const match = cookieHeader.match(/t4u_member_ref=([^;]+)/);
+    if (match) memberId = match[1].trim();
+  }
+
+  const member = memberId ? (teamMembers[memberId.toLowerCase()] || null) : null;
+  const partnerId = member && member.active ? member.gyg_partner_id : '4G5BPIE';
+  const subIdPrefix = member && member.active ? `team_${member.sub_id_prefix}` : 't4u_app';
   
   const targetPath = TOURS_DIRECTORY[slug] || '';
-  
   let targetUrl = '';
   
   if (targetPath) {
-    targetUrl = `https://www.getyourguide.com/${targetPath}/?partner_id=${partnerId}&cmp=t4u_app_${country.toLowerCase()}_${slug}`;
+    targetUrl = `https://www.getyourguide.com/${targetPath}/?partner_id=${partnerId}&cmp=${subIdPrefix}_${country.toLowerCase()}_${slug}`;
   } else if (slug && slug.length > 2) {
     // Intelligent fallback: Convert slug into high-intent luxury search query on GetYourGuide
     const cleanQuery = encodeURIComponent(slug.replace(/[_-]/g, ' ') + ' luxury private tour');
-    targetUrl = `https://www.getyourguide.com/s/?q=${cleanQuery}&partner_id=${partnerId}&cmp=t4u_app_search_${country.toLowerCase()}_${slug}`;
+    targetUrl = `https://www.getyourguide.com/s/?q=${cleanQuery}&partner_id=${partnerId}&cmp=${subIdPrefix}_search_${country.toLowerCase()}_${slug}`;
   } else {
-    targetUrl = `https://www.getyourguide.com/?partner_id=${partnerId}&cmp=t4u_app_home_${country.toLowerCase()}`;
+    targetUrl = `https://www.getyourguide.com/?partner_id=${partnerId}&cmp=${subIdPrefix}_home_${country.toLowerCase()}`;
   }
 
   return Response.redirect(targetUrl, 302);

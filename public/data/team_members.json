@@ -1,0 +1,42 @@
+{
+  "master": {
+    "id": "master",
+    "name": "Travel4U Sovereign Concierge",
+    "gyg_partner_id": "4G5BPIE",
+    "travelpayouts_marker": "770720",
+    "sub_id_prefix": "hq",
+    "badge": "Official Master Curator",
+    "tier": "enterprise",
+    "active": true
+  },
+  "rubi": {
+    "id": "rubi",
+    "name": "Ngọc Rubi",
+    "gyg_partner_id": "4G5BPIE",
+    "travelpayouts_marker": "770720",
+    "sub_id_prefix": "rubi",
+    "badge": "Elite Team Curator",
+    "tier": "pro",
+    "active": true
+  },
+  "team_vip01": {
+    "id": "team_vip01",
+    "name": "VIP Luxury Advisor",
+    "gyg_partner_id": "4G5BPIE",
+    "travelpayouts_marker": "770720",
+    "sub_id_prefix": "vip01",
+    "badge": "Certified Luxury Partner",
+    "tier": "pro",
+    "active": true
+  },
+  "member_demo": {
+    "id": "member_demo",
+    "name": "Team Partner Demo",
+    "gyg_partner_id": "4G5BPIE",
+    "travelpayouts_marker": "770720",
+    "sub_id_prefix": "demo",
+    "badge": "Verified Member Advisor",
+    "tier": "starter",
+    "active": true
+  }
+}
