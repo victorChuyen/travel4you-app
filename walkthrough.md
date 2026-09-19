@@ -35,7 +35,7 @@
 * **Khắc phục:** Nâng cấp thuật toán Cloudflare Edge Function: Khi gặp slug bất kỳ (ví dụ `/go/luxury-yacht-monaco` hay `/go/private-heli-dubai`), Edge Function sẽ tự động:
   1. Nhận diện quốc gia người dùng qua header `request.cf.country`.
   2. Chuyển hóa slug thành từ khóa tìm kiếm thượng lưu chính xác: `luxury yacht monaco luxury private tour`.
-  3. Gắn mã tiếp thị độc quyền `partner_id=4G5BPIE` (8% hoa hồng) + SubID chiến dịch: `cmp=t4u_app_search_{country}_{slug}`.
+  3. Gắn mã tiếp thị độc quyền `partner_id=D5OEC57` (8% hoa hồng) + SubID chiến dịch: `cmp=t4u_app_search_{country}_{slug}`.
   4. Redirect 302 trực tiếp sang kết quả tìm kiếm đã lọc sẵn trên GetYourGuide ➔ **Không mất một khách hàng tiềm năng nào!**
 
 ---

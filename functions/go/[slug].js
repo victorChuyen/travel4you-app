@@ -1,7 +1,7 @@
 /**
  * Cloudflare Pages Edge Function: Smart Affiliate Link Cloaker & Geo-Tracker
  * Route: /go/[slug]
- * Partner: GetYourGuide ID 4G5BPIE (8% Commission)
+ * Partner: GetYourGuide ID D5OEC57 (8% Commission)
  */
 
 const TOURS_DIRECTORY = {
@@ -63,7 +63,7 @@ export async function onRequest(context) {
   }
 
   const member = memberId ? (teamMembers[memberId.toLowerCase()] || null) : null;
-  const partnerId = member && member.active ? member.gyg_partner_id : '4G5BPIE';
+  const partnerId = member && member.active ? member.gyg_partner_id : 'D5OEC57';
   const subIdPrefix = member && member.active ? `team_${member.sub_id_prefix}` : 't4u_app';
   
   const targetPath = TOURS_DIRECTORY[slug] || '';

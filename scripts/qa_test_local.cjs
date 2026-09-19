@@ -22,9 +22,9 @@ checks.push({
 if (homeExists) {
   const homeHtml = fs.readFileSync(homePath, 'utf8');
   checks.push({
-    name: 'GetYourGuide Partner ID 4G5BPIE in Homepage',
-    pass: homeHtml.includes('4G5BPIE'),
-    details: 'Verified 4G5BPIE Partner ID'
+    name: 'GetYourGuide Partner ID D5OEC57 in Homepage',
+    pass: homeHtml.includes('D5OEC57'),
+    details: 'Verified D5OEC57 Partner ID'
   });
   checks.push({
     name: 'Schema.org JSON-LD in Homepage',

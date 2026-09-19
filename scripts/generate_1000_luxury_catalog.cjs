@@ -3,7 +3,7 @@
  * for Travel4You.app.
  * 
  * Aggregates all 1,000 verified luxury topics across 10 satellite niches,
- * pairs them with GetYourGuide Smart Filtered Deep Links (partner_id=4G5BPIE),
+ * pairs them with GetYourGuide Smart Filtered Deep Links (partner_id=D5OEC57),
  * categorizes them into 10 Sovereign Luxury Categories, and outputs
  * `src/data/destinations_1000_master.json`.
  */
@@ -14,7 +14,7 @@ const path = require('path');
 const PROMPTS_FILE = 'd:/n8n-selfhost/credentials/travel4you/data/hero_prompts/all_10_satellites_1000_master_hero_prompts.jsonl';
 const OUTPUT_FILE = path.resolve(__dirname, '../src/data/destinations_1000_master.json');
 
-const PARTNER_ID = '4G5BPIE';
+const PARTNER_ID = 'D5OEC57';
 
 // Category mapping by satellite site
 const CATEGORY_MAP = {

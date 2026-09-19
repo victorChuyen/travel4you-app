@@ -143,7 +143,7 @@ const i18nDictionary = {
     filter_all: 'All Destinations',
     verified_reviews: 'Verified VIP Reviews',
     footer_text: 'Travel4You Sovereign Concierge. Accredited Global Travel Connoisseur Network. All rights reserved.',
-    disclaimer: 'Official GetYourGuide Partner ID: 4G5BPIE. Free cancellation up to 24 hours prior. #GetYourGuidePartner #ad'
+    disclaimer: 'Official GetYourGuide Partner ID: D5OEC57. Free cancellation up to 24 hours prior. #GetYourGuidePartner #ad'
   },
   de: {
     site_title: 'Travel4You Souveräner Concierge',
@@ -161,7 +161,7 @@ const i18nDictionary = {
     filter_all: 'Alle Reiseziele',
     verified_reviews: 'Geprüfte VIP-Bewertungen',
     footer_text: 'Travel4You Souveräner Concierge. Alle Rechte vorbehalten.',
-    disclaimer: 'Offizielle GetYourGuide Partner-ID: 4G5BPIE. Kostenlose Stornierung bis zu 24 Stunden vorher. #GetYourGuidePartner #ad'
+    disclaimer: 'Offizielle GetYourGuide Partner-ID: D5OEC57. Kostenlose Stornierung bis zu 24 Stunden vorher. #GetYourGuidePartner #ad'
   },
   fr: {
     site_title: 'Travel4You Conciergerie Souveraine',
@@ -179,7 +179,7 @@ const i18nDictionary = {
     filter_all: 'Toutes les destinations',
     verified_reviews: 'Avis VIP Vérifiés',
     footer_text: 'Travel4You Conciergerie Souveraine. Tous droits réservés.',
-    disclaimer: 'Partenaire officiel GetYourGuide ID : 4G5BPIE. Annulation gratuite jusqu\'à 24 heures avant le départ. #GetYourGuidePartner #ad'
+    disclaimer: 'Partenaire officiel GetYourGuide ID : D5OEC57. Annulation gratuite jusqu\'à 24 heures avant le départ. #GetYourGuidePartner #ad'
   },
   ja: {
     site_title: 'Travel4You ソブリン・コンシェルジュ',
@@ -197,7 +197,7 @@ const i18nDictionary = {
     filter_all: 'すべての目的地',
     verified_reviews: '認証済みVIPレビュー',
     footer_text: 'Travel4You ソブリン・コンシェルジュ. 無断転載を禁じます。',
-    disclaimer: 'GetYourGuide公式認定パートナーID: 4G5BPIE。ご出発の24時間前まで100%無料キャンセル。#GetYourGuidePartner #ad'
+    disclaimer: 'GetYourGuide公式認定パートナーID: D5OEC57。ご出発の24時間前まで100%無料キャンセル。#GetYourGuidePartner #ad'
   },
   'zh-tw': {
     site_title: 'Travel4You 頂級尊榮禮賓',
@@ -215,7 +215,7 @@ const i18nDictionary = {
     filter_all: '所有目的地',
     verified_reviews: '官方認證真實好評',
     footer_text: 'Travel4You 頂級尊榮禮賓. 版權所有。',
-    disclaimer: 'GetYourGuide官方合作夥伴ID: 4G5BPIE。出發前24小時享全額免費退款保證。#GetYourGuidePartner #ad'
+    disclaimer: 'GetYourGuide官方合作夥伴ID: D5OEC57。出發前24小時享全額免費退款保證。#GetYourGuidePartner #ad'
   }
 };
 

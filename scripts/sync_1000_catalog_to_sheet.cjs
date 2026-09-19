@@ -110,7 +110,7 @@ async function sync1000ToSheet() {
       item.gyg_direct_link,
       item.satellite_site,
       '🟢 Live in 1,000 Catalog Engine',
-      '8% GYG Direct (#4G5BPIE)'
+      '8% GYG Direct (#D5OEC57)'
     ]);
   });
 

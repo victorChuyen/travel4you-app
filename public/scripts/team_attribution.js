@@ -56,7 +56,7 @@
     
     // If we have loaded registry, use exact partner ID
     const member = membersRegistry ? membersRegistry[activeMemberId] : null;
-    const partnerId = (member && member.active) ? member.gyg_partner_id : '4G5BPIE';
+    const partnerId = (member && member.active) ? member.gyg_partner_id : 'D5OEC57';
     const subId = (member && member.active) ? member.sub_id_prefix : activeMemberId;
 
     try {

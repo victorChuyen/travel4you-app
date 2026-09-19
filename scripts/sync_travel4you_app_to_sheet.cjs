@@ -73,7 +73,7 @@ async function syncToSheet() {
       art.affiliate?.gyg_direct_link || '',
       '🟢 Live on Cloudflare Pages',
       0, // Clicks placeholder
-      '8% GYG Direct (#4G5BPIE)'
+      '8% GYG Direct (#D5OEC57)'
     ]);
   });
 

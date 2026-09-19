@@ -50,7 +50,7 @@ Khác với các trang du lịch đại trà tập trung vào "săn mã giảm g
                 ▼                                         ▼
 ┌───────────────────────────────┐     ┌───────────────────────────────────┐
 │     CLIENT BROWSING (SSG)     │     │      AFFILIATE OUTBOUND TRACK     │
-│ - Astro 5.x Static Core       │     │ - Param: partner_id=4G5BPIE       │
+│ - Astro 5.x Static Core       │     │ - Param: partner_id=D5OEC57       │
 │ - TailwindCSS Dark Luxury     │     │ - SubID: cmp=blog_{locale}_{code} │
 │ - Instant Client Search & Tag │     │ - Cookie Attribution: 30 Days     │
 │ - LocalStorage Bookmark & Like│     │ - Direct GYG VIP Experience Page  │
@@ -139,7 +139,7 @@ Quản lý các Hub điểm đến lớn. Mỗi destination hỗ trợ slug riê
   "rating": "4.8 / 5 (12,500+ Reviews)",
   "price_display": "From $42",
   "hero_image": "/media/GYG_EU_PARIS_paris-seine-river-dinner-cruise-bateaux-mouches_paris-eiffel-tower-sunset-cruise-4k.jpg",
-  "gyg_direct_link": "https://www.getyourguide.com/paris-l16/paris-seine-river-dinner-cruise-with-live-music-t402685/?partner_id=4G5BPIE&cmp=blog_en_gyg_paris_001",
+  "gyg_direct_link": "https://www.getyourguide.com/paris-l16/paris-seine-river-dinner-cruise-with-live-music-t402685/?partner_id=D5OEC57&cmp=blog_en_gyg_paris_001",
   "slugs": {
     "en": "paris-seine-river-gourmet-dinner-cruise-eiffel-vip",
     "vi": "du-thuyen-an-toi-song-seine-paris-thap-eiffel-vip",
@@ -165,7 +165,7 @@ Chứa đầy đủ nội dung bài viết định dạng HTML chuẩn Forbes/Co
 
 Hệ thống tuân theo quy trình tự động 4 bước:
 1. **Taxonomy Grid:** Phủ 10 nhóm trải nghiệm thượng lưu × 50 quốc gia du lịch.
-2. **Deep Link Generator:** Ghép mã đối tác `partner_id=4G5BPIE` và SubID theo từng điểm đến.
+2. **Deep Link Generator:** Ghép mã đối tác `partner_id=D5OEC57` và SubID theo từng điểm đến.
 3. **AI Grade A Localization:** Bản địa hóa 12 ngôn ngữ tập trung vào giải quyết 1 nỗi lo lớn nhất của khách VIP.
 4. **Automated Sync & Deploy:** Ghi nhận 17 cột trên Google Sheets và triển khai tự động lên Cloudflare Pages.
 
@@ -189,7 +189,7 @@ Lấy cảm hứng từ thiết kế hiện đại của GetYourGuide nhưng kho
   - Hiển thị đánh giá sao thật và giá khởi điểm minh bạch.
 
 ### 6.2. Loại bỏ 100% Thuật Ngữ Kỹ Thuật (Zero Technical Jargon)
-* Tuyệt đối không để khách nhìn thấy: `4G5BPIE`, `Marker 770720`, `8% Commission`, `Cloudflare Pages Edge`.
+* Tuyệt đối không để khách nhìn thấy: `D5OEC57`, `Marker 770720`, `8% Commission`, `Cloudflare Pages Edge`.
 * Thay thế bằng:
   - *"Được 12.500+ du khách quốc tế đánh giá 4.8/5 sao"*
   - *"Bảo chứng chất lượng bởi Luxury Victor & Luxury Lucky"*
@@ -270,7 +270,7 @@ Nâng cấp định vị hệ sinh thái từ một trang tour đơn lẻ thành
 │     ENGINE 1: GETYOURGUIDE (EXPERIENCES)  │       ENGINE 2: EXPEDIA GROUP (STAYS)      │
 ├───────────────────────────────────────────┼────────────────────────────────────────────┤
 │ • Domain Cốt Lõi: travel4you.app          │ • Domain Cốt Lõi: travel4u.us (Apex Edge)  │
-│ • Đối Tác: Direct Partner 4G5BPIE (8%)    │ • Đối Tác: Expedia via Travelpayouts 770720│
+│ • Đối Tác: Direct Partner D5OEC57 (8%)    │ • Đối Tác: Expedia via Travelpayouts 770720│
 │ • Sản Phẩm: VIP Tours, Skip-the-line,     │ • Sản Phẩm: Khách sạn 5 sao, Luxury Resort,│
 │   Du thuyền riêng, Trực thăng, Bảo tàng   │   Vé máy bay First/Business, Thuê xe tự lái│
 │ • Giá Trị Đơn (AOV): $100 – $400 / booking│ • Giá Trị Đơn (AOV): $2,000 – $10,000 / đơn│
@@ -329,5 +329,5 @@ Mọi thành viên trả phí (Team Members / Paid Subscribers) đều được 
    - Hiển thị Banner Uy Tín: *"Được tuyển chọn bởi [Tên Thành Viên] • Chuyên Gia Du Lịch Đối Tác"*.
 3. **Smart Link Cloaker (`/go/[slug]`):**
    - Chuyển hướng server-side sạch sẽ, che giấu hoàn toàn các tham số kỹ thuật nhạy cảm.
-   - Tự động fallback về Master Partner ID `4G5BPIE` nếu không có ref của thành viên.
+   - Tự động fallback về Master Partner ID `D5OEC57` nếu không có ref của thành viên.
 

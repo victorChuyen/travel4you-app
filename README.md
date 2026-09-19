@@ -2,7 +2,7 @@
 > **Global Luxury Travel & VIP Experience Engine**  
 > **Target Domain:** [travel4you.app](https://travel4you.app)  
 > **Cloudflare Pages Edge Architecture | 100/100 Core Web Vitals | Zero Server Cost**  
-> **Official GetYourGuide Direct Partner:** ID `4G5BPIE` (8% Commission) | Travelpayouts Marker `770720`
+> **Official GetYourGuide Direct Partner:** ID `D5OEC57` (8% Commission) | Travelpayouts Marker `770720`
 
 ---
 
@@ -68,6 +68,6 @@ git push -u origin main
 ---
 
 ## 📊 REVENUE & AFFILIATE COMPLIANCE
-* **Partner ID:** `4G5BPIE` (8% Direct Net Booking Value on GetYourGuide)
+* **Partner ID:** `D5OEC57` (8% Direct Net Booking Value on GetYourGuide)
 * **FTC & ASA Disclosure:** Integrated into every layout `#GetYourGuidePartner #ad` (Clause 3.2.2 compliance)
 * **Price Integrity:** Highlights 100% Free 24h Cancellation and Best Price Guarantee.

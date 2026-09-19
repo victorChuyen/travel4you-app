@@ -79,8 +79,8 @@ articles.forEach(art => {
     changed = true;
   }
   
-  // Remove "Official GetYourGuide Partner ID: 4G5BPIE" type text
-  const partnerIdPattern = /Official GetYourGuide Partner\s*(ID:?\s*)?4G5BPIE\.?/gi;
+  // Remove "Official GetYourGuide Partner ID: D5OEC57" type text
+  const partnerIdPattern = /Official GetYourGuide Partner\s*(ID:?\s*)?D5OEC57\.?/gi;
   if (partnerIdPattern.test(h)) {
     h = h.replace(partnerIdPattern, '');
     changed = true;
@@ -100,9 +100,9 @@ articles.forEach(art => {
     changed = true;
   }
   
-  // Remove "#4G5BPIE" from visible text (keep in URLs)
-  // Only match #4G5BPIE NOT inside href attributes
-  const rawIdPattern = /(?<!partner_id=)#4G5BPIE/g;
+  // Remove "#D5OEC57" from visible text (keep in URLs)
+  // Only match #D5OEC57 NOT inside href attributes
+  const rawIdPattern = /(?<!partner_id=)#D5OEC57/g;
   if (rawIdPattern.test(h)) {
     h = h.replace(rawIdPattern, '');
     changed = true;
@@ -134,7 +134,7 @@ reloaded.forEach(art => {
     /#GetYourGuidePartner/,
     /Deployed on Cloudflare/i,
     /8%\s*commission/i,
-    /#4G5BPIE(?!.*partner_id)/,
+    /#D5OEC57(?!.*partner_id)/,
     /Marker:?\s*770720/i,
   ];
   

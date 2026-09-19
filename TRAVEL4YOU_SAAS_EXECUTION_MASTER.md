@@ -1661,7 +1661,7 @@ or paste the real `.env` into a browser, Markdown file, Git, or chat.
 ## 27.1 DEC-011 — Dual-Engine Monetization & Strategic Domain Pivot
 
 **Decision:** Evolve Travel4You SaaS from a single-affiliate tour app into a **Dual-Engine Luxury Travel OS**:
-1. **Engine 1 (Experiences):** `travel4you.app` — Powered by GetYourGuide (Partner `4G5BPIE` - 8% Commission). Focuses on VIP Skip-the-line tickets, private yachts, helicopter tours, cultural immersions.
+1. **Engine 1 (Experiences):** `travel4you.app` — Powered by GetYourGuide (Partner `D5OEC57` - 8% Commission). Focuses on VIP Skip-the-line tickets, private yachts, helicopter tours, cultural immersions.
 2. **Engine 2 (Stays & Flights):** `travel4u.us` (Apex Domain) — Migrates to Cloudflare Pages Edge (Astro 5 SSG), powered by **Expedia Group** (via Travelpayouts Marker 770720 / EPS Direct). Focuses on 5-Star Luxury Hotels, Resorts, First/Business Flights, and Packages.
 3. **Editorial Engine:** `blog.travel4u.us` — Inherits the WordPress codebase and 78+ Grade A articles from `travel4u.us`. Acts as the central high-volume content and storytelling engine feeding organic traffic to both Edge engines.
 4. **SaaS Value Multiplier (10x ARPU):** The core SaaS object (`Travel Project`) now generates complete, monetizable itineraries containing **both** Expedia Luxury Hotel recommendations and GetYourGuide VIP Experience recommendations, tagged with the creator's/advisor's affiliate IDs.
@@ -1964,6 +1964,23 @@ Production release status remains:
    `-1001828947537`; rotate the BotFather token if it was exposed anywhere.
 6. Complete Auth/RLS isolation, rate limiting, production AI endpoint, and
    security review before enabling real-money production.
+
+## 26.22 GetYourGuide attribution migration — 2026-09-19 21:00 ICT
+
+- Domain and Cloudflare Pages project remain unchanged:
+  `https://travel4you.app/`.
+- Migrated the project-wide GetYourGuide Partner ID from `4G5BPIE` to
+  `D5OEC57`.
+- Updated runtime redirect logic, header/mobile CTAs, destination/catalog
+  links, localized static data, team attribution data, QA/sync scripts, and
+  project documentation.
+- New affiliate account contact supplied by Chairman Victor:
+  `getyourguidemedia@gmail.com`.
+- `wrangler.toml` now exposes `GETYOURGUIDE_PARTNER_ID="D5OEC57"` for the
+  Cloudflare Function fallback.
+- `npm run build` completed successfully after the migration.
+- Before the next release, verify one live GetYourGuide click and confirm the
+  partner dashboard attributes the click to `D5OEC57`.
 
 ---
 
