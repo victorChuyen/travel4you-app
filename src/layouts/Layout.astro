@@ -17,7 +17,7 @@ const {
   canonicalUrl = Astro.url.href
 } = Astro.props;
 
-const locales = ['en', 'de', 'fr', 'es', 'it', 'ja', 'ko', 'zh-tw', 'zh-cn', 'pt', 'ru'];
+const locales = ['en', 'vi', 'de', 'fr', 'es', 'it', 'ja', 'ko', 'zh-tw', 'zh-cn', 'pt', 'ru'];
 ---
 
 <!doctype html>
@@ -61,5 +61,107 @@ const locales = ['en', 'de', 'fr', 'es', 'it', 'ja', 'ko', 'zh-tw', 'zh-cn', 'pt
   </head>
   <body class="bg-[#07111e] text-slate-100 font-sans antialiased selection:bg-[#c9a54e] selection:text-[#07111e] min-h-screen flex flex-col">
     <slot />
+
+    <!-- Toast Notification Container -->
+    <div id="t4u-toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none bg-[#0b1726]/95 border border-[#c9a54e]/60 text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-2xl backdrop-blur-md flex items-center space-x-2">
+      <span id="toast-icon" class="text-base">✨</span>
+      <span id="toast-msg">Notification message</span>
+    </div>
+
+    <script is:inline>
+      // Global Bookmark & Social Share Engine
+      function showToast(msg, icon = '✨') {
+        const toast = document.getElementById('t4u-toast');
+        const toastMsg = document.getElementById('toast-msg');
+        const toastIcon = document.getElementById('toast-icon');
+        if (!toast || !toastMsg) return;
+
+        toastMsg.textContent = msg;
+        if (toastIcon) toastIcon.textContent = icon;
+
+        toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+        toast.classList.add('translate-y-0', 'opacity-100');
+
+        setTimeout(() => {
+          toast.classList.remove('translate-y-0', 'opacity-100');
+          toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+        }, 3000);
+      }
+
+      function initBookmarks() {
+        let bookmarks = [];
+        try {
+          bookmarks = JSON.parse(localStorage.getItem('t4u_bookmarks') || '[]');
+        } catch (e) {
+          bookmarks = [];
+        }
+
+        // Render existing bookmarks state
+        document.querySelectorAll('.bookmark-btn').forEach(btn => {
+          const slug = btn.getAttribute('data-slug');
+          const heartIcon = btn.querySelector('.heart-icon');
+          if (bookmarks.includes(slug)) {
+            btn.classList.add('text-rose-500', 'border-rose-500/60');
+            if (heartIcon) {
+              heartIcon.setAttribute('fill', 'currentColor');
+            }
+          }
+
+          btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const isSaved = bookmarks.includes(slug);
+            if (isSaved) {
+              bookmarks = bookmarks.filter(s => s !== slug);
+              btn.classList.remove('text-rose-500', 'border-rose-500/60');
+              if (heartIcon) heartIcon.setAttribute('fill', 'none');
+              showToast('Removed from your private wishlist', '🤍');
+            } else {
+              bookmarks.push(slug);
+              btn.classList.add('text-rose-500', 'border-rose-500/60');
+              if (heartIcon) heartIcon.setAttribute('fill', 'currentColor');
+              showToast('Saved to your private VIP wishlist!', '❤️');
+            }
+            localStorage.setItem('t4u_bookmarks', JSON.stringify(bookmarks));
+          });
+        });
+
+        // Global Share Handlers
+        document.querySelectorAll('.card-share-btn, .page-share-btn').forEach(btn => {
+          btn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const url = btn.getAttribute('data-url') || window.location.href;
+            const fullUrl = url.startsWith('http') ? url : window.location.origin + url;
+            const title = btn.getAttribute('data-title') || document.title;
+
+            if (navigator.share) {
+              try {
+                await navigator.share({
+                  title: title,
+                  text: 'Explore this curated VIP experience on Travel4You Sovereign Concierge:',
+                  url: fullUrl
+                });
+                return;
+              } catch (err) {
+                // User cancelled or unsupported
+              }
+            }
+
+            // Fallback: Copy to clipboard
+            try {
+              await navigator.clipboard.writeText(fullUrl);
+              showToast('Link copied to clipboard!', '🔗');
+            } catch (err) {
+              showToast('Share link: ' + fullUrl, '📋');
+            }
+          });
+        });
+      }
+
+      document.addEventListener('DOMContentLoaded', initBookmarks);
+    </script>
   </body>
 </html>

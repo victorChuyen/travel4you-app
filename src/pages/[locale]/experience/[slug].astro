@@ -2,6 +2,8 @@
 import Layout from '../../../layouts/Layout.astro';
 import Header from '../../../components/Header.astro';
 import Footer from '../../../components/Footer.astro';
+import ActionBar from '../../../components/ActionBar.astro';
+import YouTubeReview from '../../../components/YouTubeReview.astro';
 import articlesData from '../../../data/articles.json';
 
 export async function getStaticPaths() {
@@ -91,8 +93,16 @@ const schemaData = {
     </header>
 
     <!-- Main Editorial Content -->
-    <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-12">
+    <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
       
+      <!-- Action Bar: Bookmark, Like, Share -->
+      <ActionBar
+        slug={article.slug}
+        title={article.title}
+        gygLink={article.affiliate?.gyg_direct_link}
+        locale={locale}
+      />
+
       {article.hero_image && (
         <div class="mb-12 rounded-2xl overflow-hidden shadow-2xl border border-slate-800">
           <img
@@ -105,6 +115,14 @@ const schemaData = {
 
       <!-- Body Content Rendered from Verified Grade A Multilingual HTML -->
       <div class="prose prose-invert prose-lg max-w-none prose-headings:font-serif prose-headings:text-white prose-p:text-slate-300 prose-p:leading-relaxed prose-a:text-[#c9a54e] prose-a:underline hover:prose-a:text-[#dfba63] prose-strong:text-white prose-table:border-collapse prose-th:bg-[#07111e] prose-th:text-white prose-td:border-slate-800 prose-td:text-slate-300" set:html={article.html} />
+
+      <!-- 🎬 YouTube 4K Video Review & Authentic Walkthrough -->
+      <YouTubeReview
+        postCode={article.post_code}
+        location={article.location}
+        title={article.title}
+        locale={locale}
+      />
 
     </article>
 

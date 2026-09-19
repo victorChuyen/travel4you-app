@@ -1,0 +1,225 @@
+---
+interface Props {
+  currentLocale?: string;
+}
+
+const { currentLocale = 'en' } = Astro.props;
+
+const placeholders: Record<string, { search: string; date: string; guests: string; btn: string; all: string; europe: string; asia: string; islands: string; safari: string; me: string }> = {
+  en: {
+    search: "Search places, tours, luxury experiences...",
+    date: "Anytime",
+    guests: "1 - 2 Guests",
+    btn: "Search",
+    all: "✨ All Experiences",
+    europe: "🇫🇷 Europe",
+    asia: "🇯🇵 Asia",
+    islands: "🇲🇻 Islands",
+    safari: "🦒 Safari",
+    me: "🇦🇪 Middle East"
+  },
+  vi: {
+    search: "Tìm điểm đến, trải nghiệm thượng lưu...",
+    date: "Thời gian: Bất kỳ",
+    guests: "1 - 2 Khách",
+    btn: "Khám Phá",
+    all: "✨ Tất Cả",
+    europe: "🇫🇷 Châu Âu",
+    asia: "🇯🇵 Châu Á",
+    islands: "🇲🇻 Đảo Ngọc",
+    safari: "🦒 Safari Châu Phi",
+    me: "🇦🇪 Trung Đông"
+  }
+};
+
+const t = placeholders[currentLocale] || placeholders.en;
+---
+
+<div class="w-full max-w-4xl mx-auto mb-12">
+  <!-- GYG-Style Floating Search Bar Pill -->
+  <div class="bg-[#0b1726]/95 backdrop-blur-xl border border-slate-700/80 rounded-2xl sm:rounded-full p-2.5 shadow-2xl shadow-black/50 transition-all duration-300 hover:border-[#c9a54e]/60">
+    <div class="flex flex-col sm:flex-row items-center gap-2 sm:gap-0">
+      
+      <!-- Input 1: Destination / Experience Keyword Search -->
+      <div class="flex items-center flex-grow w-full px-4 py-2 sm:py-1">
+        <span class="text-slate-400 text-lg mr-3">🔍</span>
+        <input
+          id="global-destination-search"
+          type="text"
+          placeholder={t.search}
+          class="w-full bg-transparent border-none text-white placeholder-slate-400 text-sm font-medium focus:outline-none focus:ring-0"
+          autocomplete="off"
+        />
+      </div>
+
+      <!-- Divider (Desktop) -->
+      <div class="hidden sm:block w-[1px] h-8 bg-slate-700/80 mx-1"></div>
+
+      <!-- Dropdown 2: Date Selector (Visual Luxury Touch) -->
+      <div class="hidden md:flex items-center px-4 py-1 text-slate-300 text-xs font-medium cursor-pointer hover:text-white transition-colors">
+        <span class="mr-2">📅</span>
+        <span>{t.date}</span>
+        <span class="text-slate-500 ml-2 text-[10px]">▼</span>
+      </div>
+
+      <!-- Divider (Desktop) -->
+      <div class="hidden md:block w-[1px] h-8 bg-slate-700/80 mx-1"></div>
+
+      <!-- Dropdown 3: Guests (Visual Luxury Touch) -->
+      <div class="hidden lg:flex items-center px-4 py-1 text-slate-300 text-xs font-medium cursor-pointer hover:text-white transition-colors">
+        <span class="mr-2">👥</span>
+        <span>{t.guests}</span>
+        <span class="text-slate-500 ml-2 text-[10px]">▼</span>
+      </div>
+
+      <!-- Search Action Button -->
+      <button
+        id="search-trigger-btn"
+        type="button"
+        class="w-full sm:w-auto bg-gradient-to-r from-[#ff7043] to-[#f4511e] hover:from-[#f4511e] hover:to-[#e64a19] text-white font-bold text-xs sm:text-sm uppercase tracking-wider px-7 py-3.5 rounded-xl sm:rounded-full shadow-lg shadow-[#ff7043]/30 transition-all duration-300 transform active:scale-95 flex items-center justify-center space-x-2"
+      >
+        <span>{t.btn}</span>
+        <span>→</span>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- Quick Category Filter Pills -->
+  <div class="flex items-center justify-center flex-wrap gap-2 pt-5" id="category-filter-pills">
+    <button
+      type="button"
+      data-filter="all"
+      class="filter-pill active px-3.5 py-1.5 rounded-full text-xs font-semibold bg-[#c9a54e]/20 border border-[#c9a54e] text-[#c9a54e] transition-all hover:border-[#c9a54e]"
+    >
+      {t.all}
+    </button>
+    <button
+      type="button"
+      data-filter="europe"
+      class="filter-pill px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 transition-all hover:border-slate-500 hover:text-white"
+    >
+      {t.europe}
+    </button>
+    <button
+      type="button"
+      data-filter="asia"
+      class="filter-pill px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 transition-all hover:border-slate-500 hover:text-white"
+    >
+      {t.asia}
+    </button>
+    <button
+      type="button"
+      data-filter="islands"
+      class="filter-pill px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 transition-all hover:border-slate-500 hover:text-white"
+    >
+      {t.islands}
+    </button>
+    <button
+      type="button"
+      data-filter="safari"
+      class="filter-pill px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 transition-all hover:border-slate-500 hover:text-white"
+    >
+      {t.safari}
+    </button>
+    <button
+      type="button"
+      data-filter="me"
+      class="filter-pill px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 transition-all hover:border-slate-500 hover:text-white"
+    >
+      {t.me}
+    </button>
+  </div>
+</div>
+
+<script is:inline>
+  function setupSearchAndFilters() {
+    const searchInput = document.getElementById('global-destination-search');
+    const searchBtn = document.getElementById('search-trigger-btn');
+    const pills = document.querySelectorAll('.filter-pill');
+    const cards = document.querySelectorAll('.destination-card-item');
+
+    let activeFilter = 'all';
+    let searchQuery = '';
+
+    function applyFilters() {
+      let visibleCount = 0;
+      cards.forEach(card => {
+        const title = (card.getAttribute('data-title') || '').toLowerCase();
+        const location = (card.getAttribute('data-location') || '').toLowerCase();
+        const region = (card.getAttribute('data-region') || '').toLowerCase();
+        const category = (card.getAttribute('data-category') || '').toLowerCase();
+
+        // 1. Check search term
+        const matchesSearch = !searchQuery || 
+          title.includes(searchQuery) || 
+          location.includes(searchQuery) || 
+          category.includes(searchQuery);
+
+        // 2. Check category pill
+        let matchesCategory = true;
+        if (activeFilter === 'europe') {
+          matchesCategory = region.includes('europe') || location.includes('france') || location.includes('italy') || location.includes('swiss');
+        } else if (activeFilter === 'asia') {
+          matchesCategory = region.includes('asia') || location.includes('japan') || location.includes('kyoto');
+        } else if (activeFilter === 'islands') {
+          matchesCategory = location.includes('maldives') || category.includes('catamaran');
+        } else if (activeFilter === 'safari') {
+          matchesCategory = location.includes('serengeti') || category.includes('safari');
+        } else if (activeFilter === 'me') {
+          matchesCategory = location.includes('dubai') || region.includes('middle east');
+        }
+
+        if (matchesSearch && matchesCategory) {
+          card.style.display = '';
+          visibleCount++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      // No results message
+      const noResultsEl = document.getElementById('no-search-results-msg');
+      if (noResultsEl) {
+        noResultsEl.style.display = visibleCount === 0 ? 'block' : 'none';
+      }
+    }
+
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        searchQuery = e.target.value.toLowerCase().trim();
+        applyFilters();
+      });
+    }
+
+    if (searchBtn) {
+      searchBtn.addEventListener('click', () => {
+        const target = document.getElementById('experiences');
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    }
+
+    pills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        pills.forEach(p => {
+          p.classList.remove('active', 'bg-[#c9a54e]/20', 'border-[#c9a54e]', 'text-[#c9a54e]');
+          p.classList.add('bg-slate-900/80', 'border-slate-700', 'text-slate-300');
+        });
+        pill.classList.remove('bg-slate-900/80', 'border-slate-700', 'text-slate-300');
+        pill.classList.add('active', 'bg-[#c9a54e]/20', 'border-[#c9a54e]', 'text-[#c9a54e]');
+        
+        activeFilter = pill.getAttribute('data-filter') || 'all';
+        applyFilters();
+      });
+    });
+  }
+
+  // Run on page load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupSearchAndFilters);
+  } else {
+    setupSearchAndFilters();
+  }
+</script>

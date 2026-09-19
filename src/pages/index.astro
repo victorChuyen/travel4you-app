@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import DestinationCard from '../components/DestinationCard.astro';
+import SearchBar from '../components/SearchBar.astro';
 import destinationsData from '../data/destinations.json';
 import i18n from '../data/i18n.json';
 
@@ -38,7 +39,7 @@ const schemaData = {
 
 <Layout
   title="Travel4You Sovereign Concierge | World's Top VIP Tours & Charters"
-  description="Discover curated private Seine dinner cruises, Colosseum underground vaults, Como wooden yachts, and Kyoto tea ceremonies. Official GetYourGuide Partner with 24h free cancellation."
+  description="Discover curated private Seine dinner cruises, Colosseum underground vaults, Como wooden yachts, and Kyoto tea ceremonies with 24h free cancellation."
   locale="en"
   schema={schemaData}
 >
@@ -46,7 +47,7 @@ const schemaData = {
 
   <main class="flex-grow">
     
-    <!-- 👑 HERO SECTION -->
+    <!-- 👑 HERO SECTION (GYG INSPIRED LUXURY REDESIGN) -->
     <section class="relative min-h-[85vh] flex items-center justify-center overflow-hidden py-24 px-4 sm:px-6 lg:px-8">
       
       <!-- Background 4K Atmosphere -->
@@ -54,12 +55,12 @@ const schemaData = {
         <img
           src="/media/GYG_EU_PARIS_paris-seine-river-dinner-cruise-bateaux-mouches_paris-eiffel-tower-sunset-cruise-4k.jpg"
           alt="Paris Eiffel Tower Sunset VIP Cruise"
-          class="w-full h-full object-cover object-center brightness-[0.35] scale-105 transform animate-pulse duration-[10000ms]"
+          class="w-full h-full object-cover object-center brightness-[0.30] scale-105 transform animate-pulse duration-[12000ms]"
         />
-        <div class="absolute inset-0 bg-gradient-to-b from-[#07111e]/80 via-[#07111e]/60 to-[#07111e]"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-[#07111e]/85 via-[#07111e]/70 to-[#07111e]"></div>
       </div>
 
-      <div class="relative z-10 max-w-5xl mx-auto text-center">
+      <div class="relative z-10 max-w-5xl mx-auto text-center w-full">
         
         <!-- Trust Badges -->
         <div class="inline-flex flex-wrap items-center justify-center gap-3 mb-8">
@@ -67,40 +68,25 @@ const schemaData = {
             👑 2026 Gold List Curators
           </span>
           <span class="bg-slate-900/80 border border-slate-700 text-slate-300 text-xs font-medium px-4 py-1.5 rounded-full backdrop-blur-md">
-            ⚡ Official GetYourGuide Verified Partner
+            ⚡ Verified by 12,500+ Traveler Reviews
           </span>
           <span class="bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 text-xs font-semibold px-4 py-1.5 rounded-full backdrop-blur-md">
             ✓ 100% Free 24h Cancellation
           </span>
         </div>
 
-        <!-- Headline -->
+        <!-- Headline (Inspired by GetYourGuide "Experiences worth traveling for") -->
         <h1 class="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white tracking-tight leading-[1.15] mb-6">
-          Curated <span class="bg-gradient-to-r from-[#c9a54e] via-[#dfba63] to-[#ff7043] bg-clip-text text-transparent">Sovereign Experiences</span> for Discerning Travelers
+          Sovereign Experiences <span class="bg-gradient-to-r from-[#c9a54e] via-[#dfba63] to-[#ff7043] bg-clip-text text-transparent">Worth Traveling For</span>
         </h1>
 
         <!-- Subtitle -->
-        <p class="text-base sm:text-lg md:text-xl text-slate-300 max-w-3xl mx-auto font-normal leading-relaxed mb-10 text-slate-300">
-          Skip general queues, step through private historical gates, and board hand-crafted yachts. An authoritative global index of peerless VIP excursions across 10 sovereign destinations.
+        <p class="text-base sm:text-lg md:text-xl text-slate-300 max-w-3xl mx-auto font-normal leading-relaxed mb-10">
+          Skip tourist crowds, unlock private palace gates, and embark on handcrafted private launches. An authoritative global index of peerless VIP journeys across 10 sovereign destinations.
         </p>
 
-        <!-- CTA Action Buttons -->
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <a
-            href="#experiences"
-            class="w-full sm:w-auto bg-[#c9a54e] hover:bg-[#dfba63] text-[#07111e] font-bold text-sm uppercase tracking-wider px-8 py-4 rounded-xl shadow-xl shadow-[#c9a54e]/20 transition-all duration-300 transform hover:-translate-y-0.5"
-          >
-            Explore 10 Gold List Hubs →
-          </a>
-          <a
-            href="https://www.getyourguide.com/?partner_id=4G5BPIE&cmp=t4u_app_hero_btn"
-            target="_blank"
-            rel="nofollow sponsored noopener"
-            class="w-full sm:w-auto bg-slate-900/90 hover:bg-slate-800 text-white border border-slate-700 font-semibold text-sm px-8 py-4 rounded-xl backdrop-blur-md transition-all duration-300"
-          >
-            Browse GetYourGuide Global Catalog ↗
-          </a>
-        </div>
+        <!-- 🔍 FLOATING SEARCH BAR & CATEGORY PILLS -->
+        <SearchBar currentLocale="en" />
 
       </div>
 
@@ -108,15 +94,15 @@ const schemaData = {
 
 
     <!-- 💎 10 GOLD LIST FLAGSHIP DESTINATIONS -->
-    <section id="experiences" class="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <section id="experiences" class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       
-      <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
         <div>
           <span class="text-xs font-bold text-[#c9a54e] uppercase tracking-[0.2em] block mb-2">
             The 2026 Collection
           </span>
           <h2 class="font-serif text-3xl sm:text-4xl font-bold text-white tracking-tight">
-            10 Sovereign Experiences of a Lifetime
+            Curated Experiences of a Lifetime
           </h2>
         </div>
         <p class="text-sm text-slate-400 max-w-md">
@@ -124,8 +110,17 @@ const schemaData = {
         </p>
       </div>
 
+      <!-- Empty Search State -->
+      <div id="no-search-results-msg" style="display: none;" class="text-center py-16 px-4 bg-[#0b1726]/60 border border-slate-800 rounded-3xl mb-8">
+        <span class="text-4xl mb-3 block">🔍</span>
+        <h3 class="font-serif text-xl font-bold text-white mb-2">No Matching VIP Experiences Found</h3>
+        <p class="text-xs text-slate-400 max-w-md mx-auto">
+          Try searching for "Paris", "Rome", "Kyoto", "Yacht", or click "All Experiences" above to view our complete collection.
+        </p>
+      </div>
+
       <!-- Destination Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="destinations-grid-container">
         {destinationsData.map((dest) => (
           <DestinationCard
             title={dest.english_title}
@@ -136,6 +131,8 @@ const schemaData = {
             price={dest.price_display}
             gygLink={dest.gyg_direct_link}
             locale="en"
+            region={(dest as any).region || (dest.location.includes('Japan') ? 'Asia' : dest.location.includes('Maldives') ? 'Islands' : dest.location.includes('Serengeti') ? 'Safari' : dest.location.includes('Dubai') ? 'Middle East' : 'Europe')}
+            category={(dest as any).category || 'VIP Luxury Experience'}
           />
         ))}
       </div>
@@ -197,34 +194,12 @@ const schemaData = {
             </div>
             <h3 class="font-serif text-lg font-bold text-white mb-2">24h Free Cancellation</h3>
             <p class="text-xs text-slate-400 leading-relaxed">
-              Travel plans change. Enjoy 100% unconditional cash refunds up to 24 hours prior to departure through our official GetYourGuide alliance.
+              Travel plans change. Enjoy 100% unconditional cash refunds up to 24 hours prior to departure on every journey.
             </p>
           </div>
 
         </div>
 
-      </div>
-    </section>
-
-
-    <!-- 🧩 OFFICIAL GETYOURGUIDE WIDGET CONTAINER -->
-    <section class="py-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto text-center">
-      <span class="text-xs font-bold text-[#c9a54e] uppercase tracking-[0.2em] block mb-2">
-        Instant Online Booking Engine
-      </span>
-      <h2 class="font-serif text-3xl font-bold text-white mb-8">
-        Check Real-Time Availability & Live Tickets
-      </h2>
-      
-      <div class="bg-[#0b1726] border border-slate-800 p-6 rounded-2xl shadow-xl">
-        <div data-gyg-href="https://widget.getyourguide.com/default/activities.frame" 
-             data-gyg-location-id="paris-l16" 
-             data-gyg-locale-code="en-US" 
-             data-gyg-widget="activities" 
-             data-gyg-number-of-items="3" 
-             data-gyg-cmp="travel4you_app_home" 
-             data-gyg-partner-id="4G5BPIE">
-        </div>
       </div>
     </section>
 

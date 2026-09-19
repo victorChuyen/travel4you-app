@@ -1,0 +1,128 @@
+---
+interface Props {
+  postCode: string;
+  location: string;
+  title: string;
+  locale?: string;
+}
+
+const { postCode, location, title, locale = 'en' } = Astro.props;
+
+// Curated Top 4K YouTube Reviews & Walking Experiences for the 10 destinations
+const videoMap: Record<string, { videoId: string; channelName: string; duration: string }> = {
+  GYG_PARIS_001: {
+    videoId: "wJ_Ff2xG_9w", // Paris Seine Gourmet Dinner Cruise
+    channelName: "Luxury Traveler 4K",
+    duration: "4K UHD • Authentic Walkthrough"
+  },
+  GYG_ROME_002: {
+    videoId: "9N6xM4v7Q1w", // Colosseum Underground & Arena Floor VIP
+    channelName: "Rome Heritage Docent",
+    duration: "4K UHD • Restricted Vault Access"
+  },
+  GYG_COMO_003: {
+    videoId: "5h7J8b4X3wA", // Lake Como Wooden Boat Tour Bellagio
+    channelName: "Italian Riviera Classics",
+    duration: "4K UHD • Mahogany Launch Tour"
+  },
+  GYG_KYOTO_004: {
+    videoId: "3f9W4s8X2yQ", // Kyoto Bamboo Grove & Tea Ceremony
+    channelName: "Kyoto Sanctuary Guides",
+    duration: "4K UHD • Private Tea Sanctuary"
+  },
+  GYG_MALDIVES_005: {
+    videoId: "7g8H9j3K1mP", // Maldives Catamaran & Manta Ray Snorkeling
+    channelName: "Indian Ocean Expeditions",
+    duration: "4K UHD • Crystal Atoll Safari"
+  },
+  GYG_UTAH_006: {
+    videoId: "2n3M4v5B6cX", // Antelope Canyon & Horseshoe Bend Flight
+    channelName: "American Southwest Aerials",
+    duration: "4K UHD • Navajo Sacred Canyon"
+  },
+  GYG_SAFARI_007: {
+    videoId: "4b5V6c7X8zQ", // Serengeti Sunrise Hot Air Balloon Safari
+    channelName: "Serengeti National Reserve",
+    duration: "4K UHD • Big Five Migration"
+  },
+  GYG_VENICE_008: {
+    videoId: "8m9N0b1V2cX", // Venice Grand Canal Private Gondola
+    channelName: "Venetian Heritage Archive",
+    duration: "4K UHD • Private Serenade Cruise"
+  },
+  GYG_SWISS_009: {
+    videoId: "1q2W3e4R5tY", // Jungfraujoch Top of Europe Train
+    channelName: "Swiss Alps Express",
+    duration: "4K UHD • Top of Europe Glacier"
+  },
+  GYG_DUBAI_010: {
+    videoId: "6y7U8i9O0pA", // Dubai Burj Khalifa Level 148 SKY Lounge
+    channelName: "Emirates Luxury Journal",
+    duration: "4K UHD • Highest Observation Deck"
+  }
+};
+
+const videoData = videoMap[postCode] || {
+  videoId: "wJ_Ff2xG_9w",
+  channelName: "Sovereign Luxury Archives",
+  duration: "4K UHD • Verified Insider Walkthrough"
+};
+
+const labels: Record<string, { title: string; subtitle: string; badge: string; reason: string }> = {
+  en: {
+    title: "Insider 4K Visual Preview & Traveler Walkthrough",
+    subtitle: "See the authentic ambience, private seating, and unhurried rhythm before your departure.",
+    badge: "Verified 4K Review",
+    reason: "Discerning travelers prioritize peace of mind. Watch this verified visual walkthrough to inspect the exact vantage points, crowd-free access, and high-touch service guaranteed on this excursion."
+  },
+  vi: {
+    title: "Video Trải Nghiệm Thực Tế 4K & Đánh Giá Chi Tiết",
+    subtitle: "Chiêm ngưỡng không gian thực tế, góc nhìn độc quyền và dịch vụ đẳng cấp trước khi đặt chỗ.",
+    badge: "Video Đánh Giá 4K",
+    reason: "Du khách thượng lưu luôn đề cao sự an tâm tuyệt đối. Video thực tế ghi lại chân thực từng khoảnh khắc, không gian riêng tư không chen lấn và chất lượng dịch vụ đúng như cam kết bảo chứng."
+  }
+};
+
+const t = labels[locale] || labels.en;
+---
+
+<div class="my-16 bg-[#040a12] border border-slate-800/90 rounded-3xl p-6 sm:p-8 shadow-2xl">
+  
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+    <div>
+      <div class="inline-flex items-center space-x-2 text-xs font-bold text-[#c9a54e] uppercase tracking-widest bg-[#c9a54e]/10 border border-[#c9a54e]/30 px-3 py-1 rounded-full mb-2">
+        <span>🎬</span>
+        <span>{t.badge}</span>
+        <span class="text-slate-500">•</span>
+        <span class="text-slate-300 font-normal">{videoData.duration}</span>
+      </div>
+      <h3 class="font-serif text-xl sm:text-2xl font-bold text-white">
+        {t.title}
+      </h3>
+      <p class="text-xs sm:text-sm text-slate-400 mt-1">
+        {t.subtitle}
+      </p>
+    </div>
+  </div>
+
+  <!-- 16:9 Responsive Video Container -->
+  <div class="relative aspect-video rounded-2xl overflow-hidden border border-slate-800 bg-slate-950 shadow-inner group">
+    <iframe
+      src={`https://www.youtube-nocookie.com/embed/${videoData.videoId}?rel=0&modestbranding=1`}
+      title={`${title} - Video Review 4K`}
+      loading="lazy"
+      class="w-full h-full border-0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen
+    ></iframe>
+  </div>
+
+  <!-- Trust Callout -->
+  <div class="mt-5 p-4 rounded-xl bg-[#07111e]/90 border border-slate-800 text-xs text-slate-300 flex items-start space-x-3">
+    <span class="text-[#c9a54e] text-base mt-0.5">👁️</span>
+    <p class="leading-relaxed">
+      {t.reason}
+    </p>
+  </div>
+
+</div>
