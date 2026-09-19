@@ -5,30 +5,34 @@ interface Props {
 
 const { currentLocale = 'en' } = Astro.props;
 
-const placeholders: Record<string, { search: string; date: string; guests: string; btn: string; all: string; europe: string; asia: string; islands: string; safari: string; me: string }> = {
+const placeholders: Record<string, { search: string; date: string; guests: string; btn: string; all: string; europe: string; asia: string; islands: string; safari: string; me: string; wellness: string; hotels: string }> = {
   en: {
-    search: "Search places, tours, luxury experiences...",
+    search: "Search 1,000+ luxury places, tours, private yachts...",
     date: "Anytime",
     guests: "1 - 2 Guests",
     btn: "Search",
-    all: "✨ All Experiences",
+    all: "✨ All (1,000)",
     europe: "🇫🇷 Europe",
     asia: "🇯🇵 Asia",
     islands: "🇲🇻 Islands",
     safari: "🦒 Safari",
-    me: "🇦🇪 Middle East"
+    me: "🇦🇪 Middle East",
+    wellness: "🌿 Wellness Spas",
+    hotels: "👑 5-Star Sanctuaries"
   },
   vi: {
-    search: "Tìm điểm đến, trải nghiệm thượng lưu...",
+    search: "Tìm kiếm 1.000+ điểm đến, du thuyền, trải nghiệm thượng lưu...",
     date: "Thời gian: Bất kỳ",
     guests: "1 - 2 Khách",
     btn: "Khám Phá",
-    all: "✨ Tất Cả",
+    all: "✨ Tất Cả (1.000)",
     europe: "🇫🇷 Châu Âu",
     asia: "🇯🇵 Châu Á",
     islands: "🇲🇻 Đảo Ngọc",
     safari: "🦒 Safari Châu Phi",
-    me: "🇦🇪 Trung Đông"
+    me: "🇦🇪 Trung Đông",
+    wellness: "🌿 Spa & Trị Liệu",
+    hotels: "👑 Khách Sạn 5 Sao"
   }
 };
 
@@ -85,7 +89,7 @@ const t = placeholders[currentLocale] || placeholders.en;
     </div>
   </div>
 
-  <!-- Quick Category Filter Pills -->
+  <!-- Quick Category Filter Pills (10 Sovereign Categories & Regions) -->
   <div class="flex items-center justify-center flex-wrap gap-2 pt-5" id="category-filter-pills">
     <button
       type="button"
@@ -129,79 +133,236 @@ const t = placeholders[currentLocale] || placeholders.en;
     >
       {t.me}
     </button>
+    <button
+      type="button"
+      data-filter="wellness"
+      class="filter-pill px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 transition-all hover:border-slate-500 hover:text-white"
+    >
+      {t.wellness}
+    </button>
+    <button
+      type="button"
+      data-filter="hotels"
+      class="filter-pill px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 transition-all hover:border-slate-500 hover:text-white"
+    >
+      {t.hotels}
+    </button>
+  </div>
+
+  <!-- Search Results Counter Status -->
+  <div id="search-status-counter" class="text-center text-xs text-slate-400 mt-4 hidden">
+    <span class="text-[#c9a54e] font-bold" id="counter-number">0</span>
+    <span id="counter-label"> Sovereign Experiences Found</span>
   </div>
 </div>
 
 <script is:inline>
-  function setupSearchAndFilters() {
+  function setup1000SearchAndFilters() {
     const searchInput = document.getElementById('global-destination-search');
     const searchBtn = document.getElementById('search-trigger-btn');
     const pills = document.querySelectorAll('.filter-pill');
-    const cards = document.querySelectorAll('.destination-card-item');
+    const container = document.getElementById('destinations-grid-container');
+    const counterBox = document.getElementById('search-status-counter');
+    const counterNum = document.getElementById('counter-number');
+    const counterLabel = document.getElementById('counter-label');
+    const noResultsEl = document.getElementById('no-search-results-msg');
 
+    let fullIndex = null;
+    let initialHtml = container ? container.innerHTML : '';
     let activeFilter = 'all';
     let searchQuery = '';
 
-    function applyFilters() {
-      let visibleCount = 0;
-      cards.forEach(card => {
-        const title = (card.getAttribute('data-title') || '').toLowerCase();
-        const location = (card.getAttribute('data-location') || '').toLowerCase();
-        const region = (card.getAttribute('data-region') || '').toLowerCase();
-        const category = (card.getAttribute('data-category') || '').toLowerCase();
-
-        // 1. Check search term
-        const matchesSearch = !searchQuery || 
-          title.includes(searchQuery) || 
-          location.includes(searchQuery) || 
-          category.includes(searchQuery);
-
-        // 2. Check category pill
-        let matchesCategory = true;
-        if (activeFilter === 'europe') {
-          matchesCategory = region.includes('europe') || location.includes('france') || location.includes('italy') || location.includes('swiss');
-        } else if (activeFilter === 'asia') {
-          matchesCategory = region.includes('asia') || location.includes('japan') || location.includes('kyoto');
-        } else if (activeFilter === 'islands') {
-          matchesCategory = location.includes('maldives') || category.includes('catamaran');
-        } else if (activeFilter === 'safari') {
-          matchesCategory = location.includes('serengeti') || category.includes('safari');
-        } else if (activeFilter === 'me') {
-          matchesCategory = location.includes('dubai') || region.includes('middle east');
+    // Lazy load 1000 search index
+    async function loadIndex() {
+      if (fullIndex) return fullIndex;
+      try {
+        const res = await fetch('/data/destinations_search_index.json');
+        if (res.ok) {
+          fullIndex = await res.json();
+          return fullIndex;
         }
-
-        if (matchesSearch && matchesCategory) {
-          card.style.display = '';
-          visibleCount++;
-        } else {
-          card.style.display = 'none';
-        }
-      });
-
-      // No results message
-      const noResultsEl = document.getElementById('no-search-results-msg');
-      if (noResultsEl) {
-        noResultsEl.style.display = visibleCount === 0 ? 'block' : 'none';
+      } catch (e) {
+        console.warn('Could not load 1000 search index:', e);
       }
+      return null;
     }
 
+    function createCardHtml(item) {
+      const isEn = window.location.pathname === '/' || !window.location.pathname.startsWith('/vi');
+      const detailUrl = item.d 
+        ? (isEn ? `/experience/${item.k}/` : `/vi/experience/${item.k}/`)
+        : item.u;
+      const ctaText = item.d ? (isEn ? 'Read Guide' : 'Xem Cẩm Nang') : (isEn ? 'Reserve VIP' : 'Đặt Chỗ VIP');
+      const isSaved = (JSON.parse(localStorage.getItem('t4u_bookmarks') || '[]')).includes(item.k);
+
+      return `
+        <div
+          class="destination-card-item group bg-[#0b1726] border border-slate-800 rounded-2xl overflow-hidden hover:border-[#c9a54e]/60 transition-all duration-300 hover:shadow-2xl hover:shadow-[#c9a54e]/10 flex flex-col h-full relative"
+          data-title="${item.t}"
+          data-location="${item.l}"
+          data-region="${item.r}"
+          data-category="${item.c}"
+        >
+          <div class="relative aspect-[16/10] overflow-hidden bg-slate-900">
+            <img
+              src="${item.m}"
+              alt="${item.t}"
+              loading="lazy"
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-[#0b1726] via-transparent to-black/40"></div>
+            
+            <div class="absolute top-3.5 left-3.5 flex items-center space-x-2">
+              <span class="bg-[#07111e]/90 backdrop-blur-md text-[#c9a54e] text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full border border-[#c9a54e]/30 shadow-md">
+                ${item.l}
+              </span>
+            </div>
+
+            <div class="absolute top-3.5 right-3.5 flex items-center space-x-1.5 z-10">
+              <button
+                type="button"
+                class="bookmark-btn w-8 h-8 rounded-full bg-[#07111e]/90 backdrop-blur-md border border-slate-700 ${isSaved ? 'text-rose-500 border-rose-500/60' : 'text-slate-300'} hover:text-rose-500 hover:border-red-500/50 flex items-center justify-center transition-all shadow-md focus:outline-none"
+                data-slug="${item.k}"
+                title="Bookmark this experience"
+              >
+                <svg class="heart-icon w-4 h-4" fill="${isSaved ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                </svg>
+              </button>
+
+              <button
+                type="button"
+                class="card-share-btn w-8 h-8 rounded-full bg-[#07111e]/90 backdrop-blur-md border border-slate-700 text-slate-300 hover:text-[#c9a54e] hover:border-[#c9a54e]/50 flex items-center justify-center transition-all shadow-md focus:outline-none"
+                data-url="${detailUrl}"
+                data-title="${item.t}"
+                title="Share"
+              >
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>
+                </svg>
+              </button>
+            </div>
+
+            <div class="absolute bottom-3 left-3.5">
+              <span class="text-[10px] text-slate-300 block uppercase tracking-wider font-medium">Starting from</span>
+              <span class="text-base font-bold text-white font-serif">${item.g}</span>
+            </div>
+
+            <div class="absolute bottom-3 right-3.5 flex items-center space-x-2">
+              <span class="bg-[#07111e]/90 backdrop-blur-md text-amber-400 text-xs font-semibold px-2.5 py-1 rounded-full border border-slate-700 shadow-md flex items-center space-x-1">
+                <span>★</span>
+                <span>${item.s}</span>
+              </span>
+            </div>
+          </div>
+
+          <div class="p-5 flex flex-col flex-grow justify-between">
+            <div>
+              <span class="text-[10px] text-[#c9a54e] font-bold uppercase tracking-wider block mb-1">
+                ${item.c}
+              </span>
+              <h3 class="font-serif text-base sm:text-lg font-bold text-white group-hover:text-[#c9a54e] transition-colors leading-snug mb-2 line-clamp-2">
+                <a href="${detailUrl}" ${item.d ? '' : 'target="_blank" rel="nofollow sponsored noopener"'}>
+                  ${item.t}
+                </a>
+              </h3>
+            </div>
+
+            <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between gap-3">
+              ${item.d ? `
+                <a href="${detailUrl}" class="text-xs font-bold text-slate-300 hover:text-white flex items-center space-x-1 transition-colors">
+                  <span>${ctaText}</span>
+                  <span>→</span>
+                </a>
+              ` : `
+                <span class="text-[11px] text-slate-400">GetYourGuide Verified</span>
+              `}
+
+              <a
+                href="${item.u}"
+                target="_blank"
+                rel="nofollow sponsored noopener"
+                class="bg-[#ff7043] hover:bg-[#f4511e] text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-md shadow-[#ff7043]/20 hover:shadow-[#ff7043]/40 transition-all text-center flex items-center space-x-1"
+              >
+                <span>Reserve VIP</span>
+                <span>→</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    async function applyFilters() {
+      // If no query and filter is 'all', restore initial 10 curated cards
+      if (!searchQuery && activeFilter === 'all') {
+        if (container) container.innerHTML = initialHtml;
+        if (noResultsEl) noResultsEl.style.display = 'none';
+        if (counterBox) counterBox.classList.add('hidden');
+        if (window.initBookmarks) window.initBookmarks();
+        return;
+      }
+
+      const index = await loadIndex();
+      if (!index) return;
+
+      const filtered = index.filter(item => {
+        const text = (item.t + ' ' + item.l + ' ' + item.c).toLowerCase();
+        const matchesSearch = !searchQuery || text.includes(searchQuery);
+
+        let matchesFilter = true;
+        if (activeFilter === 'europe') {
+          matchesFilter = item.r.toLowerCase().includes('europe') || item.l.toLowerCase().includes('italy') || item.l.toLowerCase().includes('france') || item.l.toLowerCase().includes('swiss');
+        } else if (activeFilter === 'asia') {
+          matchesFilter = item.r.toLowerCase().includes('asia') || item.l.toLowerCase().includes('japan') || item.l.toLowerCase().includes('bali') || item.l.toLowerCase().includes('thailand');
+        } else if (activeFilter === 'islands') {
+          matchesFilter = item.r.toLowerCase().includes('islands') || item.l.toLowerCase().includes('maldives');
+        } else if (activeFilter === 'safari') {
+          matchesFilter = item.r.toLowerCase().includes('safari') || item.l.toLowerCase().includes('serengeti') || item.l.toLowerCase().includes('africa');
+        } else if (activeFilter === 'me') {
+          matchesFilter = item.r.toLowerCase().includes('middle east') || item.l.toLowerCase().includes('dubai');
+        } else if (activeFilter === 'wellness') {
+          matchesFilter = item.c.toLowerCase().includes('wellness') || item.c.toLowerCase().includes('spa');
+        } else if (activeFilter === 'hotels') {
+          matchesFilter = item.c.toLowerCase().includes('hotel') || item.c.toLowerCase().includes('sanctuaries');
+        }
+
+        return matchesSearch && matchesFilter;
+      });
+
+      // Render top 36 matching items for lightning-fast rendering
+      const toRender = filtered.slice(0, 36);
+
+      if (counterBox && counterNum) {
+        counterNum.textContent = filtered.length;
+        counterBox.classList.remove('hidden');
+      }
+
+      if (toRender.length === 0) {
+        if (container) container.innerHTML = '';
+        if (noResultsEl) noResultsEl.style.display = 'block';
+      } else {
+        if (noResultsEl) noResultsEl.style.display = 'none';
+        if (container) {
+          container.innerHTML = toRender.map(createCardHtml).join('');
+        }
+      }
+
+      // Re-bind bookmark and share events
+      if (window.initBookmarks) window.initBookmarks();
+    }
+
+    // Preload index on focus or hover for 0ms latency
     if (searchInput) {
+      searchInput.addEventListener('focus', loadIndex);
       searchInput.addEventListener('input', (e) => {
         searchQuery = e.target.value.toLowerCase().trim();
         applyFilters();
       });
     }
 
-    if (searchBtn) {
-      searchBtn.addEventListener('click', () => {
-        const target = document.getElementById('experiences');
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth' });
-        }
-      });
-    }
-
     pills.forEach(pill => {
+      pill.addEventListener('mouseenter', loadIndex);
       pill.addEventListener('click', () => {
         pills.forEach(p => {
           p.classList.remove('active', 'bg-[#c9a54e]/20', 'border-[#c9a54e]', 'text-[#c9a54e]');
@@ -214,12 +375,20 @@ const t = placeholders[currentLocale] || placeholders.en;
         applyFilters();
       });
     });
+
+    if (searchBtn) {
+      searchBtn.addEventListener('click', () => {
+        const target = document.getElementById('experiences');
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    }
   }
 
-  // Run on page load
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', setupSearchAndFilters);
+    document.addEventListener('DOMContentLoaded', setup1000SearchAndFilters);
   } else {
-    setupSearchAndFilters();
+    setup1000SearchAndFilters();
   }
 </script>
