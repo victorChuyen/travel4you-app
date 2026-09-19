@@ -1868,6 +1868,29 @@ active:
 The previous static-route `405` condition is resolved. The next gate is a
 controlled SePay test webhook and PayPal sandbox checkout, not another deploy.
 
+## 26.18 SePay send-test result — 2026-09-19 18:02 ICT
+
+The SePay Dashboard **Gửi thử** action was executed twice for webhook `58141`.
+Both attempts reported:
+
+`HTTP 0 - 22: The requested URL returned error: 404 Not Found`
+
+This is not treated as a successful payment test. Direct probes from outside
+SePay continue to reach the deployed Pages Function and return HTTP `401
+Invalid webhook signature` when no signature is supplied, including with and
+without a trailing slash. Therefore the handler is live, but SePay's test
+sender is not reaching the same route successfully or is reporting an
+upstream path/transport failure. No money was transferred and no entitlement
+was unlocked.
+
+Production release status remains:
+
+- Cloudflare deployment: verified.
+- SePay secret: stored locally and encrypted in Cloudflare.
+- SePay send-test: blocked by SePay-reported 404; investigate webhook log/URL
+  delivery details before accepting payment flow.
+- PayPal sandbox checkout: pending.
+
 ---
 
 **END OF MASTER EXECUTION FILE**
