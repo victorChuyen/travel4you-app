@@ -1969,8 +1969,7 @@ Production release status remains:
 
 - Domain and Cloudflare Pages project remain unchanged:
   `https://travel4you.app/`.
-- Migrated the project-wide GetYourGuide Partner ID from `4G5BPIE` to
-  `D5OEC57`.
+- The project-wide GetYourGuide Partner ID is now consistently `D5OEC57`.
 - Updated runtime redirect logic, header/mobile CTAs, destination/catalog
   links, localized static data, team attribution data, QA/sync scripts, and
   project documentation.
@@ -1981,6 +1980,10 @@ Production release status remains:
 - `npm run build` completed successfully after the migration.
 - Before the next release, verify one live GetYourGuide click and confirm the
   partner dashboard attributes the click to `D5OEC57`.
+- Official partner resources supplied for operational reference:
+  - `https://partner.getyourguide.com/en-us/solutions/city`
+  - `https://partner.getyourguide.com/en-us/solutions/availability`
+  - `https://partner.getyourguide.com/en-us/solutions/activities`
 
 ---
 
