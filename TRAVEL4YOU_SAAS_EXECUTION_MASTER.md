@@ -1924,6 +1924,47 @@ Production release status remains:
   group/channel. The token must be entered through Cloudflare Secrets and must
   not be committed or pasted into chat.
 
+## 26.21 Session handover — 2026-09-19 18:55 ICT
+
+### Verified production configuration
+
+- Cloudflare Production now contains `TELEGRAM_BOT_TOKEN` as an encrypted
+  Secret. The token value was never printed or committed.
+- Cloudflare Production contains `TELEGRAM_CHAT_ID` with value
+  `-1001828947537`.
+- Latest active deployment is commit `cdfc8f6`
+  (`feat: notify Telegram on successful payments`).
+- Production deployment status is active on `travel4you.app`.
+- The Telegram notification implementation is deployed for both SePay and
+  PayPal successful-payment handlers.
+
+### SePay account cleanup and limits
+
+- SePay account plan: **Free**, active.
+- Webhook transaction limit shown by SePay: **50**.
+- Usage shown by SePay: **0/50**.
+- Only `Travel4You SaaS Payments` remains enabled.
+- Disabled demo webhooks: `go-breaths-live`, `OPC TRAVEL ALL-IN-ONE`,
+  `tnc.io.vn`, and `eduvictorchuyen`.
+- Telegram alert channel `OPC TRAVEL` remains enabled for webhook failure and
+  recovery alerts; it is separate from the application payment-success
+  notification.
+
+### Next session — do not mark payment release complete yet
+
+1. Create one controlled pending SePay checkout with a known order reference
+   and amount.
+2. Send a matching signed payment event and verify payment status becomes
+   `paid`, subscription/entitlement activation succeeds, and Telegram receives
+   the success message.
+3. Replay the same event and verify idempotency (no duplicate entitlement or
+   duplicate notification).
+4. Run the equivalent PayPal sandbox order/capture/webhook test.
+5. Verify the Telegram bot has permission to post in chat
+   `-1001828947537`; rotate the BotFather token if it was exposed anywhere.
+6. Complete Auth/RLS isolation, rate limiting, production AI endpoint, and
+   security review before enabling real-money production.
+
 ---
 
 **END OF MASTER EXECUTION FILE**
