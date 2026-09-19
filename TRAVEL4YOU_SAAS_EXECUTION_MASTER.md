@@ -1985,6 +1985,19 @@ Production release status remains:
   - `https://partner.getyourguide.com/en-us/solutions/availability`
   - `https://partner.getyourguide.com/en-us/solutions/activities`
 
+## 26.23 Travelpayouts Drive installation — 2026-09-19 22:58 ICT
+
+- Added the official Travelpayouts Drive installation snippet to the shared
+  Astro document head in `src/layouts/Layout.astro`.
+- The script is loaded once globally from
+  `https://emrldtp.com/NTc1Njk4.js?t=575698`.
+- This is a Drive verification/attribution script; it does not replace the
+  GetYourGuide Partner ID `D5OEC57`.
+- Travelpayouts Marker `770720` remains a separate legacy attribution value
+  until the account-owner migration decision is completed.
+- Required validation: build, inspect rendered head output, and use the
+  Travelpayouts dashboard “Check Drive connection” action after deployment.
+
 ---
 
 **END OF MASTER EXECUTION FILE**
