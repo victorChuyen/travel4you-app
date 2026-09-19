@@ -1634,6 +1634,22 @@ The script writes `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`,
 secret. After that, deploy the same variables as Cloudflare Pages secrets;
 local `.env` is not available to production Functions.
 
+## 26.11 Local environment contract checkpoint — 2026-09-19 14:49 ICT
+
+The ignored local `.env` was audited without printing values. All keys from
+`.env.example` now exist in the local file, while existing values were
+preserved. Safe defaults were filled for the Supabase URL, JWKS URL, local
+9router URL, timeout, PayPal sandbox mode, PayPal webhook ID, and BIDV bank
+code.
+
+The following intentionally remain empty until the owner supplies them
+locally: PayPal Client ID/Secret, Supabase publishable key if not already
+present, 9router key/model if required, SePay API/webhook/account values, and
+database URL/password.
+
+The safe template is viewable at [.env.example](./.env.example). Never open
+or paste the real `.env` into a browser, Markdown file, Git, or chat.
+
 ---
 
 # 27. STRATEGIC PIVOT & MULTI-TEAM DEV WAR CHARTER — 2026-09-19 ICT
@@ -1682,6 +1698,156 @@ local `.env` is not available to production Functions.
    - `npx tsc --noEmit` must return 0 TypeScript errors.
    - `node scripts/validate-env.cjs` must pass environment integrity checks.
 3. **Zero Secrets in Code:** Credentials for Supabase, SePay, PayPal, and Expedia remain strictly in local `.env` and Cloudflare Pages Environment Variables.
+
+## 26.12 SePay HMAC webhook checkpoint — 2026-09-19
+
+SePay webhook đã được tạo thành công trong Test mode:
+
+- Tên: `Travel4You SaaS Payments`
+- URL: `https://travel4you.app/api/webhooks/sepay`
+- Sự kiện: tiền vào
+- Định dạng: JSON
+- Tài khoản nguồn: BIDV `6700067179` / `BIDV - Tncshare`
+- Tài khoản VA dùng trong QR checkout: `96247688688`; đây là tài khoản ảo định tuyến về tài khoản nguồn, không phải tài khoản ngân hàng thứ hai.
+- Bảo mật: HMAC-SHA256
+- Header chữ ký theo SePay: `X-SePay-Signature`
+
+Đã cập nhật [functions/api/webhooks/sepay.js](functions/api/webhooks/sepay.js) để:
+
+- đọc raw request body trước khi parse JSON;
+- xác minh HMAC-SHA256 bằng Web Crypto;
+- xác minh chuỗi ký chính thức `{timestamp}.{raw_body}` bằng HMAC-SHA256, kiểm tra `X-SePay-Timestamp` trong cửa sổ 5 phút và chấp nhận chữ ký hex có tiền tố `sha256=`;
+- trả `{"success": true}` cho webhook đã xử lý/đã nhận diện để SePay không retry không cần thiết;
+- từ chối request thiếu chữ ký hoặc sai chữ ký bằng HTTP 401;
+- giữ nguyên kiểm tra idempotency, amount/reference matching và entitlement activation.
+
+Đã thêm script nhập secret local:
+
+```powershell
+Set-Location D:\n8n-selfhost\travel4you.app
+npm run configure:sepay
+```
+
+Secret HMAC chỉ được nhập tại terminal local, không ghi vào Markdown/chat. `SEPAY_API_KEY` chưa cần cho webhook inbound nhưng vẫn cần nếu sau này gọi SePay API chủ động.
+
+Trạng thái còn lại:
+
+- [ ] Nhập secret HMAC từ SePay vào local `.env` bằng `npm run configure:sepay`.
+- [x] Đã xác định chênh lệch là mô hình VA → tài khoản nguồn hợp lệ; QR dùng VA `96247688688`, webhook theo dõi tài khoản BIDV thật `6700067179`.
+- [ ] Deploy Pages Functions mới trước khi replay webhook.
+- [ ] Gửi một giao dịch test và xác minh payment/subscription/entitlement.
+- [ ] Xác nhận payload thực tế của SePay qua test webhook; nếu tên field khác, cập nhật mapping `eventId`, `amount`, `orderReference`, `transferType`.
+
+## 26.13 Tiến độ tổng hợp — 2026-09-19 17:19 ICT
+
+### Đã hoàn thành
+
+- Public Astro/Cloudflare SEO site vẫn được giữ nguyên theo hướng additive.
+- Supabase Auth/Postgres/RLS migration đã chạy trên project `pceoqkinwsmsqmvqteiv`.
+- Đã có workspace, project, version, AI job, publication, entitlement và payment foundation.
+- Đã có local 9router structured generation boundary.
+- PayPal sandbox app `Travel4You SaaS` đã tạo; webhook đã đăng ký và local `.env` đã có Client ID/Secret cùng Webhook ID.
+- SePay webhook Test mode đã tạo, theo dõi tài khoản thật BIDV `6700067179`, trong khi QR checkout dùng VA `96247688688`.
+- SePay handler đã khớp HMAC chính thức: `HMAC-SHA256(secret, timestamp + "." + raw_body)`, kiểm tra timestamp và trả `{"success": true}`.
+- Syntax và TypeScript validation hiện tại đã pass.
+
+### Chưa đủ điều kiện production
+
+1. Nhập `SEPAY_WEBHOOK_SECRET` local; `SEPAY_API_KEY` chỉ cần khi gọi SePay API chủ động.
+2. Deploy Pages Functions và secrets lên Cloudflare; local `.env` không tự đi theo production.
+3. Gửi thử webhook SePay từ Dashboard, sau đó thực hiện giao dịch Test mode và kiểm tra payload thực tế.
+4. Chạy PayPal sandbox order → approval → capture/webhook và kiểm tra payment/subscription/entitlement.
+5. Chạy kiểm thử Auth/RLS với hai user khác nhau.
+6. Bổ sung acceptance tests, rate limiting, SSR/session hardening, alerting và security review.
+7. Xác nhận giới hạn plan/usage được enforce atomic ở server trước khi mở bán.
+8. Rotate các secret từng xuất hiện trong hội thoại trước khi chuyển production.
+
+### Ghi chú validation
+
+`npx tsc --noEmit` và syntax checks pass. `npm run build` đã từng pass trước đó; lần chạy lại lúc 17:14 bị Windows thiếu native memory trong Astro/esbuild, không có lỗi compile được báo từ code SePay. Cần chạy lại trên máy có đủ RAM hoặc CI sạch trước release gate.
+
+## 26.14 Production deployment probe — 2026-09-19 17:23 ICT
+
+`https://travel4you.app` đang phục vụ public Astro site bình thường.
+
+Đã probe các production API bằng POST:
+
+- `/api/webhooks/sepay` → HTTP `405 Method Not Allowed`
+- `/api/webhooks/paypal` → HTTP `405 Method Not Allowed`
+- `/api/billing/checkout` → HTTP `405 Method Not Allowed`
+
+Đây chưa phải kết quả xác nhận Functions đã chạy. Với source hiện tại, webhook thiếu signature phải trả HTTP `401`, còn billing thiếu bearer token phải trả HTTP `401`; HTTP `405` cho thấy cần kiểm tra lại Cloudflare Pages deployment có include thư mục `functions/` hay đang chỉ deploy static `dist/`.
+
+Release gate mới:
+
+1. Xác nhận deployment method là Pages Git deployment hoặc `wrangler pages deploy` có Functions.
+2. Kiểm tra Cloudflare deployment logs/build settings.
+3. Redeploy có `functions/` và production secrets.
+4. Lặp lại POST probe; kết quả mong đợi:
+   - SePay không signature: `401`
+   - PayPal không signature: `401`
+   - Checkout không bearer token: `401`
+5. Chỉ sau khi probe đúng mới gửi test webhook/tiền thật trong Test mode.
+
+## 26.15 UX/UI polish checkpoint — 2026-09-19 17:29 ICT
+
+Đã xử lý phản hồi giao diện trên homepage và toàn bộ locale homepage:
+
+- Giảm chiều cao Hero từ `85vh` xuống `68vh` để loại bỏ khoảng trống quá lớn trước collection.
+- Giảm padding section collection và khoảng cách heading/grid để nhịp nội dung gọn, chuyên nghiệp hơn.
+- Giảm khoảng cách giữa search bar và category pills.
+- Category pills giờ dùng `role="tab"`, `aria-selected`, `aria-pressed`.
+- Filter đang chọn luôn có dấu `✓`, màu gold, border gold và trạng thái accessibility rõ ràng.
+- Khi đổi tab, tab cũ được reset đầy đủ cả visual state và aria state.
+
+Đã áp dụng cho:
+
+- `src/pages/index.astro`
+- `src/pages/[locale]/index.astro`
+- `src/components/SearchBar.astro`
+
+Validation sau thay đổi UI:
+
+- `npx tsc --noEmit` — PASS
+- `npm run build` — PASS
+
+## 26.16 Cloudflare production env audit — 2026-09-19 17:43 ICT
+
+Cloudflare Pages project `travel4you-app` production settings were audited at:
+
+`https://dash.cloudflare.com/f089da986b216692047f5132563c523d/pages/view/travel4you-app/settings/production`
+
+Confirmed production build configuration:
+
+- Build command: `npm run build`
+- Output directory: `dist`
+- Production branch: `main`
+- Automatic deployments: enabled
+- Compatibility date: `2026-09-19`
+
+Saved as encrypted production secrets through the Cloudflare dashboard:
+
+- `SUPABASE_SECRET_KEY`
+- `PAYPAL_CLIENT_ID`
+- `PAYPAL_CLIENT_SECRET`
+- `PAYPAL_WEBHOOK_ID`
+
+The dashboard already contains the non-secret `wrangler.toml` values:
+
+- `SITE_URL`
+- `GETYOURGUIDE_PARTNER_ID`
+- `TRAVELPAYOUTS_MARKER`
+- `TRAVELPAYOUTS_SOURCE`
+
+Still not configured in Cloudflare production:
+
+- `SEPAY_WEBHOOK_SECRET` — missing locally because the HMAC secret was generated in SePay and was never copied into local `.env`.
+- `SEPAY_API_KEY` — optional for inbound-only webhook flow.
+- Supabase browser/runtime variables from `.env.example` are not currently present in the dashboard variable list; they must be added as encrypted variables or committed to `wrangler.toml` and redeployed:
+  `PUBLIC_SUPABASE_URL`, `PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_JWKS_URL`.
+- `AI_ROUTER_BASE_URL` must not remain `http://127.0.0.1:8787` in production; it needs a reachable VPS/Cloudflare endpoint before AI generation can work remotely.
+
+Important deployment note: local project changes remain uncommitted in the working tree. Cloudflare Git deployments only receive changes pushed to the connected repository. The production domain was serving the public static site, but API probes returned HTTP 405; Pages Functions deployment still needs confirmation after the SaaS code is pushed/deployed.
 
 ---
 

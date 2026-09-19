@@ -61,7 +61,7 @@ const placeholders: Record<string, {
 const t = placeholders[currentLocale] || placeholders.en;
 ---
 
-<div class="w-full max-w-4xl mx-auto mb-12">
+<div class="w-full max-w-4xl mx-auto mb-6">
   <!-- GYG-Style Floating Search Bar Pill -->
   <div class="bg-[#0b1726]/95 backdrop-blur-xl border border-slate-700/80 rounded-2xl sm:rounded-full p-2.5 shadow-2xl shadow-black/50 transition-all duration-300 hover:border-[#c9a54e]/60">
     <div class="flex flex-col sm:flex-row items-center gap-2 sm:gap-0">
@@ -123,67 +123,91 @@ const t = placeholders[currentLocale] || placeholders.en;
   </div>
 
   <!-- Quick Category Filter Pills (10 Sovereign Categories & Regions) -->
-  <div class="flex items-center justify-center flex-wrap gap-2 pt-5" id="category-filter-pills">
+  <div class="flex items-center justify-center flex-wrap gap-2 pt-3" id="category-filter-pills" role="tablist" aria-label="Experience categories">
     <button
       type="button"
       data-filter="all"
+      role="tab"
+      aria-selected="true"
+      aria-pressed="true"
       class="filter-pill active px-3.5 py-1.5 rounded-full text-xs font-semibold bg-[#c9a54e]/20 border border-[#c9a54e] text-[#c9a54e] transition-all hover:border-[#c9a54e]"
     >
-      {t.all}
+      <span class="filter-check mr-1" aria-hidden="true">✓</span>{t.all}
     </button>
     <button
       type="button"
       data-filter="europe"
+      role="tab"
+      aria-selected="false"
+      aria-pressed="false"
       class="filter-pill px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 transition-all hover:border-slate-500 hover:text-white"
     >
-      {t.europe}
+      <span class="filter-check hidden mr-1" aria-hidden="true">✓</span>{t.europe}
     </button>
     <button
       type="button"
       data-filter="asia"
+      role="tab"
+      aria-selected="false"
+      aria-pressed="false"
       class="filter-pill px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 transition-all hover:border-slate-500 hover:text-white"
     >
-      {t.asia}
+      <span class="filter-check hidden mr-1" aria-hidden="true">✓</span>{t.asia}
     </button>
     <button
       type="button"
       data-filter="islands"
+      role="tab"
+      aria-selected="false"
+      aria-pressed="false"
       class="filter-pill px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 transition-all hover:border-slate-500 hover:text-white"
     >
-      {t.islands}
+      <span class="filter-check hidden mr-1" aria-hidden="true">✓</span>{t.islands}
     </button>
     <button
       type="button"
       data-filter="safari"
+      role="tab"
+      aria-selected="false"
+      aria-pressed="false"
       class="filter-pill px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 transition-all hover:border-slate-500 hover:text-white"
     >
-      {t.safari}
+      <span class="filter-check hidden mr-1" aria-hidden="true">✓</span>{t.safari}
     </button>
     <button
       type="button"
       data-filter="me"
+      role="tab"
+      aria-selected="false"
+      aria-pressed="false"
       class="filter-pill px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 transition-all hover:border-slate-500 hover:text-white"
     >
-      {t.me}
+      <span class="filter-check hidden mr-1" aria-hidden="true">✓</span>{t.me}
     </button>
     <button
       type="button"
       data-filter="wellness"
+      role="tab"
+      aria-selected="false"
+      aria-pressed="false"
       class="filter-pill px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 transition-all hover:border-slate-500 hover:text-white"
     >
-      {t.wellness}
+      <span class="filter-check hidden mr-1" aria-hidden="true">✓</span>{t.wellness}
     </button>
     <button
       type="button"
       data-filter="hotels"
+      role="tab"
+      aria-selected="false"
+      aria-pressed="false"
       class="filter-pill px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 transition-all hover:border-slate-500 hover:text-white"
     >
-      {t.hotels}
+      <span class="filter-check hidden mr-1" aria-hidden="true">✓</span>{t.hotels}
     </button>
   </div>
 
   <!-- Search Results Counter Status -->
-  <div id="search-status-counter" class="text-center text-xs text-slate-400 mt-4 hidden" role="status" aria-live="polite">
+  <div id="search-status-counter" class="text-center text-xs text-slate-400 mt-2 min-h-4 hidden" role="status" aria-live="polite">
     <span class="text-[#c9a54e] font-bold" id="counter-number">0</span>
     <span id="counter-label"> {t.found}</span>
   </div>
@@ -507,9 +531,17 @@ const t = placeholders[currentLocale] || placeholders.en;
         pills.forEach(p => {
           p.classList.remove('active', 'bg-[#c9a54e]/20', 'border-[#c9a54e]', 'text-[#c9a54e]');
           p.classList.add('bg-slate-900/80', 'border-slate-700', 'text-slate-300');
+          p.setAttribute('aria-selected', 'false');
+          p.setAttribute('aria-pressed', 'false');
+          const check = p.querySelector('.filter-check');
+          if (check) check.classList.add('hidden');
         });
         pill.classList.remove('bg-slate-900/80', 'border-slate-700', 'text-slate-300');
         pill.classList.add('active', 'bg-[#c9a54e]/20', 'border-[#c9a54e]', 'text-[#c9a54e]');
+        pill.setAttribute('aria-selected', 'true');
+        pill.setAttribute('aria-pressed', 'true');
+        const check = pill.querySelector('.filter-check');
+        if (check) check.classList.remove('hidden');
         
         activeFilter = pill.getAttribute('data-filter') || 'all';
         applyFilters();

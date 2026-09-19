@@ -1,0 +1,199 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
+const supabaseKey = import.meta.env.PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+---
+
+<Layout title="Workspace | Travel4You" description="Travel4You SaaS workspace." locale="en">
+  <main class="min-h-screen bg-[#07111e] px-4 py-10 sm:px-8">
+    <div class="mx-auto max-w-6xl">
+      <header class="mb-8 flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-[0.2em] text-[#c9a54e]">Travel4You SaaS</p>
+          <h1 class="font-serif text-4xl font-bold text-white">Workspace</h1>
+          <p id="account" class="mt-2 text-sm text-slate-400"></p>
+        </div>
+        <button id="sign-out" class="rounded-lg border border-slate-700 px-4 py-2 text-sm font-bold text-slate-200">Sign out</button>
+      </header>
+
+      <section class="grid gap-6 lg:grid-cols-[280px_1fr]">
+        <aside class="rounded-2xl border border-slate-800 bg-[#0b1726] p-5">
+          <h2 class="font-serif text-xl font-bold text-white">Create workspace</h2>
+          <form id="workspace-form" class="mt-4 space-y-3">
+            <input name="name" required placeholder="Workspace name" class="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-3 text-white" />
+            <button class="w-full rounded-lg bg-[#c9a54e] px-4 py-3 font-bold text-[#07111e]">Create</button>
+          </form>
+          <div id="workspace-list" class="mt-5 space-y-2 text-sm text-slate-300"></div>
+        </aside>
+
+        <section class="rounded-2xl border border-slate-800 bg-[#0b1726] p-5">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <h2 class="font-serif text-2xl font-bold text-white">Travel Projects</h2>
+            <form id="project-form" class="flex flex-wrap gap-2">
+              <input name="title" required placeholder="New project title" class="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white" />
+              <button class="rounded-lg bg-[#ff7043] px-4 py-2 text-sm font-bold text-white">Create project</button>
+            </form>
+          </div>
+          <p id="app-status" role="status" class="mt-4 text-sm text-slate-400"></p>
+          <div id="generation-form-wrap" class="mt-5 hidden rounded-xl border border-[#c9a54e]/30 bg-[#c9a54e]/5 p-4">
+            <form id="generation-form" class="space-y-3">
+              <input name="project_id" type="hidden" />
+              <p class="text-sm font-bold text-[#c9a54e]">Generate project with local 9router</p>
+              <div class="grid gap-3 sm:grid-cols-2">
+                <input name="destination" required placeholder="Destination" class="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white" />
+                <input name="audience" placeholder="Audience" class="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white" />
+                <input name="duration" placeholder="Duration, e.g. 5 days" class="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white" />
+                <input name="preferences" placeholder="Style and preferences" class="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white" />
+              </div>
+              <button class="rounded-lg bg-[#c9a54e] px-4 py-2 text-sm font-bold text-[#07111e]">Generate</button>
+            </form>
+          </div>
+          <div id="project-list" class="mt-5 grid gap-3"></div>
+        </section>
+      </section>
+    </div>
+  </main>
+</Layout>
+
+<script define:vars={{ supabaseUrl, supabaseKey }}>
+  import { createClient } from '@supabase/supabase-js';
+
+  const client = createClient(supabaseUrl, supabaseKey);
+  const status = document.querySelector('#app-status');
+  const account = document.querySelector('#account');
+  const workspaceList = document.querySelector('#workspace-list');
+  const projectList = document.querySelector('#project-list');
+  let activeWorkspaceId = null;
+
+  async function api(path, options = {}) {
+    const { data: sessionData } = await client.auth.getSession();
+    const token = sessionData.session?.access_token;
+    if (!token) {
+      window.location.href = '/app/login/';
+      throw new Error('Authentication required.');
+    }
+    const response = await fetch(path, {
+      ...options,
+      headers: { 'content-type': 'application/json', ...(options.headers || {}), authorization: `Bearer ${token}` },
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'Request failed.');
+    return data;
+  }
+
+  function renderProjects(projects) {
+    const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (character) => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;',
+    }[character]));
+    projectList.innerHTML = projects.length
+      ? projects.map((project) => `<article class="rounded-xl border border-slate-800 bg-slate-950/50 p-4"><div class="flex items-start justify-between gap-3"><div><h3 class="font-bold text-white">${escapeHtml(project.title)}</h3><p class="mt-1 text-xs text-slate-400">${escapeHtml(project.status)} · ${escapeHtml(project.locale)}</p></div><button data-generate="${escapeHtml(project.id)}" class="rounded-lg border border-[#c9a54e] px-3 py-1.5 text-xs font-bold text-[#c9a54e]">Generate</button></div></article>`).join('')
+      : '<p class="text-sm text-slate-400">No projects yet.</p>';
+  }
+
+  async function loadProjects() {
+    if (!activeWorkspaceId) {
+      renderProjects([]);
+      return;
+    }
+    const data = await api(`/api/projects?workspace_id=${encodeURIComponent(activeWorkspaceId)}`);
+    renderProjects(data.projects || []);
+  }
+
+  async function loadAccount() {
+    const data = await api('/api/me');
+    account.textContent = data.user.email || '';
+    const memberships = data.memberships || [];
+    const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (character) => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;',
+    }[character]));
+    workspaceList.innerHTML = memberships.length
+      ? memberships.map((item) => `<button data-workspace="${escapeHtml(item.workspace_id)}" class="block w-full rounded-lg border border-slate-800 px-3 py-2 text-left hover:border-[#c9a54e]">${escapeHtml(item.workspaces?.name || item.workspace_id)}</button>`).join('')
+      : '<p>No workspace yet.</p>';
+    activeWorkspaceId = memberships[0]?.workspace_id || null;
+    await loadProjects();
+  }
+
+  document.querySelector('#workspace-form')?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    try {
+      const form = new FormData(event.currentTarget);
+      await api('/api/workspaces', { method: 'POST', body: JSON.stringify({ name: form.get('name') }) });
+      await loadAccount();
+      status.textContent = 'Workspace created.';
+    } catch (error) {
+      status.textContent = error.message;
+    }
+  });
+
+  document.querySelector('#project-form')?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!activeWorkspaceId) {
+      status.textContent = 'Create or select a workspace first.';
+      return;
+    }
+    try {
+      const form = new FormData(event.currentTarget);
+      await api('/api/projects', { method: 'POST', body: JSON.stringify({ workspace_id: activeWorkspaceId, title: form.get('title') }) });
+      event.currentTarget.reset();
+      await loadProjects();
+      status.textContent = 'Project created.';
+    } catch (error) {
+      status.textContent = error.message;
+    }
+  });
+
+  workspaceList?.addEventListener('click', async (event) => {
+    const button = event.target.closest('[data-workspace]');
+    if (!button) return;
+    activeWorkspaceId = button.dataset.workspace;
+    await loadProjects();
+  });
+
+  projectList?.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-generate]');
+    if (!button) return;
+    document.querySelector('#generation-form-wrap').classList.remove('hidden');
+    document.querySelector('#generation-form [name="project_id"]').value = button.dataset.generate;
+    document.querySelector('#generation-form [name="destination"]').focus();
+  });
+
+  document.querySelector('#generation-form')?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    try {
+      const form = new FormData(event.currentTarget);
+      status.textContent = 'Generating...';
+      await api('/api/ai/generate', {
+        method: 'POST',
+        body: JSON.stringify({
+          project_id: form.get('project_id'),
+          destination: form.get('destination'),
+          audience: form.get('audience'),
+          duration: form.get('duration'),
+          preferences: form.get('preferences'),
+          locale: 'en',
+        }),
+      });
+      status.textContent = 'Generation complete and saved as a project version.';
+      document.querySelector('#generation-form-wrap').classList.add('hidden');
+      await loadProjects();
+    } catch (error) {
+      status.textContent = error.message;
+    }
+  });
+
+  document.querySelector('#sign-out')?.addEventListener('click', async () => {
+    await client.auth.signOut();
+    window.location.href = '/app/login/';
+  });
+
+  loadAccount().catch((error) => { status.textContent = error.message; });
+</script>

@@ -1,0 +1,54 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
+const supabaseKey = import.meta.env.PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+---
+
+<Layout title="Sign in | Travel4You" description="Sign in to your Travel4You workspace." locale="en">
+  <main class="min-h-screen bg-[#07111e] flex items-center justify-center px-4">
+    <form id="auth-form" class="w-full max-w-md rounded-2xl border border-slate-800 bg-[#0b1726] p-8 shadow-2xl">
+      <p class="text-xs font-bold uppercase tracking-[0.2em] text-[#c9a54e] mb-3">Travel4You SaaS</p>
+      <h1 class="font-serif text-3xl font-bold text-white mb-2">Sign in</h1>
+      <p class="text-sm text-slate-400 mb-6">Create or access your Travel Project workspace.</p>
+      <label class="block text-sm text-slate-300 mb-2" for="email">Email</label>
+      <input id="email" name="email" type="email" required class="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-3 text-white mb-4" />
+      <label class="block text-sm text-slate-300 mb-2" for="password">Password</label>
+      <input id="password" name="password" type="password" required minlength="8" class="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-3 text-white mb-6" />
+      <div class="grid grid-cols-2 gap-3">
+        <button type="submit" data-mode="signin" class="rounded-lg bg-[#c9a54e] px-4 py-3 font-bold text-[#07111e]">Sign in</button>
+        <button type="submit" data-mode="signup" class="rounded-lg border border-[#c9a54e] px-4 py-3 font-bold text-[#c9a54e]">Create account</button>
+      </div>
+      <p id="auth-status" role="status" class="mt-4 text-sm text-slate-400"></p>
+    </form>
+  </main>
+</Layout>
+
+<script define:vars={{ supabaseUrl, supabaseKey }}>
+  import { createClient } from '@supabase/supabase-js';
+
+  const client = createClient(supabaseUrl, supabaseKey);
+  const form = document.querySelector('#auth-form');
+  const status = document.querySelector('#auth-status');
+
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const submitter = event.submitter;
+    const mode = submitter?.dataset.mode;
+    const email = new FormData(form).get('email');
+    const password = new FormData(form).get('password');
+    status.textContent = 'Working...';
+    const result = mode === 'signup'
+      ? await client.auth.signUp({ email, password })
+      : await client.auth.signInWithPassword({ email, password });
+    if (result.error) {
+      status.textContent = result.error.message;
+      return;
+    }
+    if (mode === 'signup' && !result.data.session) {
+      status.textContent = 'Check your email to verify the account, then sign in.';
+      return;
+    }
+    window.location.href = '/app/';
+  });
+</script>
