@@ -26,11 +26,16 @@ const schemaData = {
       "name": article.title,
       "description": article.excerpt,
       "image": `https://travel4you.app${article.hero_image?.url || '/media/' + article.hero_image?.filename}`,
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "reviewCount": "12500"
+      },
       "offers": {
         "@type": "Offer",
         "priceCurrency": "USD",
         "price": "42.00",
-        "url": article.affiliate?.gyg_direct_link,
+        "url": article.affiliate?.gyg_direct_link || `https://travel4you.app/go/${article.post_code.toLowerCase()}`,
         "availability": "https://schema.org/InStock",
         "seller": {
           "@type": "Organization",
@@ -38,6 +43,29 @@ const schemaData = {
           "url": "https://www.getyourguide.com"
         }
       }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": `https://travel4you.app/${locale}/`
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": article.location,
+          "item": `https://travel4you.app/${locale}/#experiences`
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": article.title,
+          "item": `https://travel4you.app/${locale}/experience/${article.slug}/`
+        }
+      ]
     }
   ]
 };

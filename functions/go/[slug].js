@@ -54,10 +54,16 @@ export async function onRequest(context) {
   
   const targetPath = TOURS_DIRECTORY[slug] || '';
   
-  let targetUrl = 'https://www.getyourguide.com/?partner_id=' + partnerId + '&cmp=t4u_' + country;
+  let targetUrl = '';
   
   if (targetPath) {
     targetUrl = `https://www.getyourguide.com/${targetPath}/?partner_id=${partnerId}&cmp=t4u_app_${country.toLowerCase()}_${slug}`;
+  } else if (slug && slug.length > 2) {
+    // Intelligent fallback: Convert slug into high-intent luxury search query on GetYourGuide
+    const cleanQuery = encodeURIComponent(slug.replace(/[_-]/g, ' ') + ' luxury private tour');
+    targetUrl = `https://www.getyourguide.com/s/?q=${cleanQuery}&partner_id=${partnerId}&cmp=t4u_app_search_${country.toLowerCase()}_${slug}`;
+  } else {
+    targetUrl = `https://www.getyourguide.com/?partner_id=${partnerId}&cmp=t4u_app_home_${country.toLowerCase()}`;
   }
 
   return Response.redirect(targetUrl, 302);
