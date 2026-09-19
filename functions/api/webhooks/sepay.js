@@ -84,7 +84,10 @@ export async function onRequestPost({ request, env }) {
       .eq('order_reference', orderReference)
       .maybeSingle();
     if (paymentError) throw paymentError;
-    if (!payment) return json({ error: 'Payment reference not found.' }, 404);
+    if (!payment) {
+      console.warn('SePay webhook ignored: payment reference not found', { orderReference, eventId });
+      return json({ success: true, ignored: true, reason: 'payment_reference_not_found' });
+    }
     if (payment.status === 'paid') return json({ success: true, alreadyPaid: true });
     if (Number(payment.amount) !== amount) return json({ error: 'Payment amount mismatch.' }, 400);
     if (payment.currency !== 'VND') return json({ error: 'Unsupported SePay payment currency.' }, 400);

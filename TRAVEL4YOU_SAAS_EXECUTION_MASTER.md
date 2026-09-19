@@ -1875,20 +1875,33 @@ Both attempts reported:
 
 `HTTP 0 - 22: The requested URL returned error: 404 Not Found`
 
-This is not treated as a successful payment test. Direct probes from outside
-SePay continue to reach the deployed Pages Function and return HTTP `401
-Invalid webhook signature` when no signature is supplied, including with and
-without a trailing slash. Therefore the handler is live, but SePay's test
-sender is not reaching the same route successfully or is reporting an
-upstream path/transport failure. No money was transferred and no entitlement
-was unlocked.
+Direct probes from outside SePay reached the deployed Pages Function and
+returned `401 Invalid webhook signature` without the required headers. A
+diagnostic request signed with the local HMAC secret reached the same handler
+and returned `404 Payment reference not found`. This proves the route and
+timestamped HMAC contract are working; the dashboard test payload simply does
+not match a pending application payment.
+
+## 26.19 SePay test sender acknowledgement fix
+
+`functions/api/webhooks/sepay.js` now acknowledges unknown payment references
+with HTTP 200 and `{"success":true,"ignored":true}`. The handler does not mark
+anything paid, create a subscription, or activate entitlements in this case;
+it only records a warning for operational investigation. This makes unrelated
+SePay test events safe to acknowledge while preserving rejection for invalid
+signatures, malformed JSON, amount mismatches, unsupported currencies, and
+inactive plans.
+
+The next payment gate is a controlled checkout whose order reference and amount
+are known to the application. That test must verify payment status, subscription
+activation, entitlement activation, and duplicate-event idempotency. No money
+was transferred and no entitlement was unlocked during the dashboard tests.
 
 Production release status remains:
 
 - Cloudflare deployment: verified.
 - SePay secret: stored locally and encrypted in Cloudflare.
-- SePay send-test: blocked by SePay-reported 404; investigate webhook log/URL
-  delivery details before accepting payment flow.
+- SePay dashboard test sender: awaiting retest after the acknowledgement fix.
 - PayPal sandbox checkout: pending.
 
 ---
