@@ -2001,6 +2001,90 @@ Production release status remains:
 - Required validation: build, inspect rendered head output, and use the
   Travelpayouts dashboard “Check Drive connection” action after deployment.
 
+## 26.24 VIP LAN progress update — 2026-09-19 23:14 ICT
+
+### Executive status
+
+Travel4You is a live Astro + Cloudflare Pages luxury travel platform at
+`https://travel4you.app/`. The public experience remains static, fast,
+SEO-friendly, and localized, while the SaaS layer is being added behind
+authenticated Cloudflare Pages Functions and Supabase APIs.
+
+The current release is ready for continued product development and controlled
+affiliate testing. Real-money payment release, full Auth/RLS acceptance
+testing, and production AI endpoint hardening remain follow-up items and must
+not be presented as completed production guarantees.
+
+### Affiliate identities and benefits
+
+| Platform | Current identity | Why it is used | Status |
+|---|---|---|---|
+| GetYourGuide | Partner ID `D5OEC57` | Main VIP experiences, tours, activities, and direct attribution | Unified across redirects, CTAs, catalog, search data, and generated links |
+| GetYourGuide | `getyourguidemedia@gmail.com` | Partner account contact | Recorded for operations and partner communication |
+| Travelpayouts Drive | Source `575698` | Cross-program monetization, widgets, and Drive attribution | Website ownership confirmed; Drive active in the dashboard |
+| Travelpayouts legacy marker | Marker `770720` / source `567182` | Existing Travelpayouts/Booking attribution from a separate account context | Preserved until an explicit migration decision |
+
+The two affiliate systems are deliberately separated. `D5OEC57` must not be
+used as a Travelpayouts marker, and `770720` must not be presented as the
+GetYourGuide identity. This preserves attribution history and prevents
+commission reporting from being mixed.
+
+### Completed product and technical work
+
+1. Astro static rendering, responsive luxury UI, Cloudflare Pages deployment,
+   localized routes, sitemap generation, and SEO metadata/hreflang foundations.
+2. 1,000+ destination/experience catalog, client search index, category
+   filters, localized navigation, experience detail pages, related content,
+   and booking CTAs.
+3. Project-wide GetYourGuide migration to `D5OEC57`; former `4G5BPIE` removed
+   from active project data and runtime surfaces.
+4. Official Travelpayouts Drive script installed as a static script in the
+   shared document head. Travelpayouts confirmed website ownership and the
+   dashboard shows Drive active with maximum monetization boost.
+5. Supabase Auth/Postgres/RLS structure, workspace/project API boundaries,
+   publication API, entitlement model, and AI generation boundaries.
+6. PayPal webhook foundation, SePay checkout/webhook flow, HMAC validation,
+   payment idempotency path, and subscription/entitlement activation path.
+7. Telegram payment-success notification after successful persistence to chat
+   `-1001828947537`; Telegram failure does not roll back a recorded payment.
+8. Technical architecture, deployment, affiliate, payment, security, and
+   handover documentation.
+
+### Content volume now
+
+- `src/data/articles.json`: **120 article/experience records** currently
+  present in the app repository.
+- Destination and experience catalog: **1,000+ searchable records**.
+- The 120 records are not the same as the 1,000 catalog entries: catalog
+  entries may be discovery/booking records without a long-form article.
+- New content must pass demand validation, quality scoring, affiliate
+  disclosure, and drip-feed scheduling rather than bulk publication.
+
+### Ten-day execution plan for VIP LAN
+
+| Day | Delivery target | Acceptance check |
+|---:|---|---|
+| 1 | Production baseline, deployment, environment, and affiliate audit | Live pages return 200; `D5OEC57`, Drive source `575698`, and no old GetYourGuide ID |
+| 2 | Controlled GetYourGuide click/redirect test | Redirect preserves `partner_id=D5OEC57`; evidence recorded without exposing secrets |
+| 3 | First demand-validated VIP content batch | Every article has intent, quality score, CTA, disclosure, and canonical URL |
+| 4 | Travelpayouts widgets for hotel/experience comparison surfaces | Widget renders in production and remains compatible with Drive |
+| 5 | Controlled SePay payment lifecycle test | Pending → paid → entitlement → Telegram; replay creates no duplicate result |
+| 6 | PayPal sandbox capture/webhook test | Verified webhook updates the correct order and is idempotent |
+| 7 | Supabase Auth/RLS two-user isolation test | User A cannot read or mutate User B workspace, project, or publication |
+| 8 | SaaS operating hardening | Rate-limit review, structured error logging, and reachable production AI endpoint plan |
+| 9 | Drip-feed the next editorial batch | QA confirms links, schema, hreflang, alt text, disclosure, and live status |
+| 10 | Release review and KPI handover | Confirm dashboard metrics, update the master sheet, and create the next backlog |
+
+### Immediate priorities
+
+1. Keep `D5OEC57` and `770720` separate; do not replace one with the other.
+2. Remove Marker `770720` only after a measured migration plan and owner
+   approval, because it may represent historical attribution.
+3. Do not call payment release complete until matching SePay, PayPal sandbox,
+   and replay/idempotency checks pass.
+4. Report only dashboard-confirmed clicks, leads, payments, and commissions;
+   catalog size is not revenue.
+
 ---
 
 **END OF MASTER EXECUTION FILE**
