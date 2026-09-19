@@ -1892,16 +1892,20 @@ SePay test events safe to acknowledge while preserving rejection for invalid
 signatures, malformed JSON, amount mismatches, unsupported currencies, and
 inactive plans.
 
+SePay Dashboard **Gửi thử** was rerun after deployment and completed
+successfully with HTTP 200. The response preview was
+`{"success":true,"ignored":true,"reason":"payment_reference_not_found"}`.
+No money was transferred and no entitlement was unlocked during this test.
+
 The next payment gate is a controlled checkout whose order reference and amount
 are known to the application. That test must verify payment status, subscription
-activation, entitlement activation, and duplicate-event idempotency. No money
-was transferred and no entitlement was unlocked during the dashboard tests.
+activation, entitlement activation, and duplicate-event idempotency.
 
 Production release status remains:
 
 - Cloudflare deployment: verified.
 - SePay secret: stored locally and encrypted in Cloudflare.
-- SePay dashboard test sender: awaiting retest after the acknowledgement fix.
+- SePay dashboard test sender: verified HTTP 200 after the acknowledgement fix.
 - PayPal sandbox checkout: pending.
 
 ---
