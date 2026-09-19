@@ -1,0 +1,143 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import articlesData from '../../data/articles.json';
+import destinationsData from '../../data/destinations.json';
+
+export async function getStaticPaths() {
+  const enArticles = (articlesData as any[]).filter(art => art.locale === 'en');
+  return enArticles.map(article => ({
+    params: { slug: article.slug },
+    props: { article }
+  }));
+}
+
+const { article } = Astro.props;
+
+const schemaData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TouristAttraction",
+      "@id": `https://travel4you.app/experience/${article.slug}/#attraction`,
+      "name": article.title,
+      "description": article.excerpt,
+      "image": `https://travel4you.app${article.hero_image?.url || '/media/' + article.hero_image?.filename}`,
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "reviewCount": "12500"
+      },
+      "offers": {
+        "@type": "Offer",
+        "priceCurrency": "USD",
+        "price": "42.00",
+        "url": article.affiliate?.gyg_direct_link || `https://travel4you.app/go/${article.post_code.toLowerCase()}`,
+        "availability": "https://schema.org/InStock",
+        "seller": {
+          "@type": "Organization",
+          "name": "GetYourGuide",
+          "url": "https://www.getyourguide.com"
+        }
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://travel4you.app/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": article.location,
+          "item": "https://travel4you.app/#experiences"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": article.title,
+          "item": `https://travel4you.app/experience/${article.slug}/`
+        }
+      ]
+    }
+  ]
+};
+---
+
+<Layout
+  title={`${article.title} | Travel4You Luxury Guide`}
+  description={article.excerpt}
+  locale="en"
+  image={article.hero_image?.url}
+  schema={schemaData}
+>
+  <Header currentLocale="en" />
+
+  <main class="flex-grow pb-24">
+    
+    <!-- Hero Article Header -->
+    <header class="relative py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#0b1726] to-[#07111e] border-b border-slate-800">
+      <div class="max-w-4xl mx-auto text-center">
+        
+        <div class="inline-flex items-center space-x-2 text-xs font-bold text-[#c9a54e] uppercase tracking-widest bg-[#c9a54e]/10 border border-[#c9a54e]/30 px-3.5 py-1 rounded-full mb-6">
+          <span>📍</span>
+          <span>{article.location}</span>
+          <span class="text-slate-500">•</span>
+          <span class="text-amber-400">★ {article.affiliate?.rating}</span>
+        </div>
+
+        <h1 class="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight mb-6">
+          {article.title}
+        </h1>
+
+        <p class="text-base sm:text-lg text-slate-300 leading-relaxed max-w-3xl mx-auto mb-8">
+          {article.excerpt}
+        </p>
+
+        <!-- CTA Bar -->
+        <div class="flex flex-wrap items-center justify-center gap-4">
+          <a
+            href={article.affiliate?.gyg_direct_link}
+            target="_blank"
+            rel="nofollow sponsored noopener"
+            class="bg-[#ff7043] hover:bg-[#f4511e] text-white font-bold text-sm uppercase tracking-wider px-8 py-3.5 rounded-xl shadow-lg shadow-[#ff7043]/30 transition-all duration-300"
+          >
+            Check Live Availability on GetYourGuide →
+          </a>
+          <span class="text-xs text-slate-400 flex items-center space-x-1">
+            <span class="text-emerald-400 font-bold">✓</span>
+            <span>24h Free Cancellation Guarantee</span>
+          </span>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- Main Editorial Content -->
+    <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-12">
+      
+      <!-- Feature Hero 4K Photo -->
+      {article.hero_image && (
+        <div class="mb-12 rounded-2xl overflow-hidden shadow-2xl border border-slate-800">
+          <img
+            src={article.hero_image.url}
+            alt={article.title}
+            class="w-full h-auto object-cover max-h-[550px]"
+          />
+        </div>
+      )}
+
+      <!-- Body Content Rendered from Verified Grade A Multilingual HTML -->
+      <div class="prose prose-invert prose-lg max-w-none prose-headings:font-serif prose-headings:text-white prose-p:text-slate-300 prose-p:leading-relaxed prose-a:text-[#c9a54e] prose-a:underline hover:prose-a:text-[#dfba63] prose-strong:text-white prose-table:border-collapse prose-th:bg-[#07111e] prose-th:text-white prose-td:border-slate-800 prose-td:text-slate-300" set:html={article.html} />
+
+    </article>
+
+  </main>
+
+  <Footer currentLocale="en" />
+</Layout>

@@ -1,0 +1,9 @@
+name = "travel4you-app"
+compatibility_date = "2026-09-19"
+pages_build_output_dir = "dist"
+
+[vars]
+SITE_URL = "https://travel4you.app"
+GETYOURGUIDE_PARTNER_ID = "4G5BPIE"
+TRAVELPAYOUTS_MARKER = "770720"
+TRAVELPAYOUTS_SOURCE = "567182"

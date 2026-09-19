@@ -1,0 +1,5 @@
+# Treat binary images as non-delta to avoid memory exhaustion during git push
+*.jpg -delta
+*.jpeg -delta
+*.png -delta
+*.webp -delta

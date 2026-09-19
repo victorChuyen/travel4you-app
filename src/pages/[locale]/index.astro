@@ -1,0 +1,119 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import DestinationCard from '../../components/DestinationCard.astro';
+import destinationsData from '../../data/destinations.json';
+import i18n from '../../data/i18n.json';
+
+export async function getStaticPaths() {
+  const nonEnLocales = ['de', 'fr', 'es', 'it', 'ja', 'ko', 'zh-tw', 'zh-cn', 'pt', 'ru'];
+  return nonEnLocales.map(locale => ({
+    params: { locale },
+    props: { locale }
+  }));
+}
+
+const { locale } = Astro.props;
+const dict = (i18n as any)[locale] || (i18n as any).en;
+---
+
+<Layout
+  title={`${dict.site_title} | ${dict.site_tagline}`}
+  description={dict.hero_subtitle}
+  locale={locale}
+>
+  <Header currentLocale={locale} />
+
+  <main class="flex-grow">
+    
+    <!-- Hero Section -->
+    <section class="relative min-h-[80vh] flex items-center justify-center overflow-hidden py-24 px-4 sm:px-6 lg:px-8">
+      
+      <div class="absolute inset-0 z-0">
+        <img
+          src="/media/GYG_EU_PARIS_paris-seine-river-dinner-cruise-bateaux-mouches_paris-eiffel-tower-sunset-cruise-4k.jpg"
+          alt="Paris Cruise 4K"
+          class="w-full h-full object-cover object-center brightness-[0.35]"
+        />
+        <div class="absolute inset-0 bg-gradient-to-b from-[#07111e]/80 via-[#07111e]/60 to-[#07111e]"></div>
+      </div>
+
+      <div class="relative z-10 max-w-5xl mx-auto text-center">
+        
+        <div class="inline-flex flex-wrap items-center justify-center gap-3 mb-8">
+          <span class="bg-[#c9a54e]/20 border border-[#c9a54e]/50 text-[#c9a54e] text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full backdrop-blur-md shadow-lg">
+            👑 {dict.nav_curators}
+          </span>
+          <span class="bg-slate-900/80 border border-slate-700 text-slate-300 text-xs font-medium px-4 py-1.5 rounded-full backdrop-blur-md">
+            ⚡ {dict.official_gyg_partner} #4G5BPIE
+          </span>
+          <span class="bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 text-xs font-semibold px-4 py-1.5 rounded-full backdrop-blur-md">
+            {dict.free_cancellation_badge}
+          </span>
+        </div>
+
+        <h1 class="font-serif text-3xl sm:text-5xl md:text-6xl font-bold text-white tracking-tight leading-[1.15] mb-6">
+          {dict.hero_headline}
+        </h1>
+
+        <p class="text-base sm:text-lg md:text-xl text-slate-300 max-w-3xl mx-auto font-normal leading-relaxed mb-10">
+          {dict.hero_subtitle}
+        </p>
+
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <a
+            href="#experiences"
+            class="w-full sm:w-auto bg-[#c9a54e] hover:bg-[#dfba63] text-[#07111e] font-bold text-sm uppercase tracking-wider px-8 py-4 rounded-xl shadow-xl shadow-[#c9a54e]/20 transition-all duration-300"
+          >
+            {dict.cta_explore} →
+          </a>
+          <a
+            href="https://www.getyourguide.com/?partner_id=4G5BPIE"
+            target="_blank"
+            rel="nofollow sponsored noopener"
+            class="w-full sm:w-auto bg-slate-900/90 hover:bg-slate-800 text-white border border-slate-700 font-semibold text-sm px-8 py-4 rounded-xl backdrop-blur-md transition-all duration-300"
+          >
+            GetYourGuide ↗
+          </a>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- Destination Grid -->
+    <section id="experiences" class="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+        <div>
+          <span class="text-xs font-bold text-[#c9a54e] uppercase tracking-[0.2em] block mb-2">
+            Collection 2026
+          </span>
+          <h2 class="font-serif text-3xl sm:text-4xl font-bold text-white tracking-tight">
+            {dict.nav_experiences}
+          </h2>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {destinationsData.map((dest) => (
+          <DestinationCard
+            title={dest.english_title}
+            slug={dest.slugs[locale] || dest.slugs.en}
+            location={dest.location}
+            image={dest.hero_image}
+            rating={dest.rating}
+            price={dest.price_display}
+            gygLink={dest.gyg_direct_link}
+            locale={locale}
+          />
+        ))}
+      </div>
+
+    </section>
+
+  </main>
+
+  <Footer currentLocale={locale} />
+</Layout>

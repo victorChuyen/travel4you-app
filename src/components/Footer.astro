@@ -1,0 +1,106 @@
+---
+import i18n from '../data/i18n.json';
+
+interface Props {
+  currentLocale?: string;
+}
+
+const { currentLocale = 'en' } = Astro.props;
+const dict = (i18n as any)[currentLocale] || (i18n as any).en;
+---
+
+<footer class="bg-[#040a12] border-t border-slate-800/80 pt-16 pb-12 text-slate-400 text-sm mt-auto">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+      
+      <!-- Col 1: Brand & Sovereign Authority -->
+      <div class="space-y-4">
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 rounded-lg bg-[#c9a54e] flex items-center justify-center text-[#07111e] font-serif font-bold text-base">
+            4U
+          </div>
+          <span class="font-serif tracking-wider text-base font-bold text-white uppercase">
+            Travel4You Sovereign
+          </span>
+        </div>
+        <p class="text-xs text-slate-400 leading-relaxed">
+          The sovereign editorial network curating the world's most breathtaking VIP journeys, private charters, and cultural sanctuaries. Empowering discerning travelers with priority fast-track access.
+        </p>
+        <div class="inline-flex items-center space-x-2 bg-slate-900 border border-slate-700/80 rounded-lg px-3 py-1.5 text-[11px] text-[#c9a54e]">
+          <span>👑</span>
+          <span class="font-bold">Official GetYourGuide Partner #4G5BPIE</span>
+        </div>
+      </div>
+
+      <!-- Col 2: Top Destinations -->
+      <div>
+        <h4 class="font-serif text-sm font-bold text-white uppercase tracking-wider mb-4 border-l-2 border-[#c9a54e] pl-2.5">
+          Curated Destinations
+        </h4>
+        <ul class="space-y-2.5 text-xs">
+          <li><a href="/experience/paris-seine-dinner-cruise-eiffel-tower-vip/" class="hover:text-[#c9a54e] transition-colors">Paris Seine VIP Dinner Cruises</a></li>
+          <li><a href="/experience/rome-colosseum-underground-arena-vatican-vip/" class="hover:text-[#c9a54e] transition-colors">Rome Colosseum Underground & Vatican</a></li>
+          <li><a href="/experience/lake-como-private-boat-tour-bellagio/" class="hover:text-[#c9a54e] transition-colors">Lake Como Wooden Boat Charters</a></li>
+          <li><a href="/experience/kyoto-arashiyama-bamboo-tea-ceremony-vip/" class="hover:text-[#c9a54e] transition-colors">Kyoto Arashiyama & Private Tea Houses</a></li>
+          <li><a href="/experience/maldives-luxury-catamaran-manta-snorkeling/" class="hover:text-[#c9a54e] transition-colors">Maldives Luxury Catamarans & Manta Rays</a></li>
+          <li><a href="/experience/venice-grand-canal-private-gondola-serenade-doges-palace-vip/" class="hover:text-[#c9a54e] transition-colors">Venice Grand Canal & Private Gondolas</a></li>
+        </ul>
+      </div>
+
+      <!-- Col 3: Trust & Guarantees -->
+      <div>
+        <h4 class="font-serif text-sm font-bold text-white uppercase tracking-wider mb-4 border-l-2 border-[#c9a54e] pl-2.5">
+          Sovereign Guarantees
+        </h4>
+        <ul class="space-y-3 text-xs">
+          <li class="flex items-start space-x-2">
+            <span class="text-[#c9a54e] font-bold">✓</span>
+            <span><strong>24h Free Cancellation:</strong> 100% full refund with a single tap up to 24 hours before departure.</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-[#c9a54e] font-bold">✓</span>
+            <span><strong>Mobile QR Vouchers:</strong> Paperless instant check-in directly through smartphone wallets.</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-[#c9a54e] font-bold">✓</span>
+            <span><strong>Best Price Guarantee:</strong> Settle securely in your local currency with zero foreign fees.</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Col 4: 11 Languages & Legal Compliance -->
+      <div>
+        <h4 class="font-serif text-sm font-bold text-white uppercase tracking-wider mb-4 border-l-2 border-[#c9a54e] pl-2.5">
+          Global Locales (11)
+        </h4>
+        <div class="flex flex-wrap gap-1.5 text-[11px] mb-4">
+          <a href="/" class="px-2 py-1 bg-slate-900 border border-slate-800 rounded hover:border-[#c9a54e] hover:text-[#c9a54e]">EN</a>
+          <a href="/de/" class="px-2 py-1 bg-slate-900 border border-slate-800 rounded hover:border-[#c9a54e] hover:text-[#c9a54e]">DE</a>
+          <a href="/fr/" class="px-2 py-1 bg-slate-900 border border-slate-800 rounded hover:border-[#c9a54e] hover:text-[#c9a54e]">FR</a>
+          <a href="/es/" class="px-2 py-1 bg-slate-900 border border-slate-800 rounded hover:border-[#c9a54e] hover:text-[#c9a54e]">ES</a>
+          <a href="/it/" class="px-2 py-1 bg-slate-900 border border-slate-800 rounded hover:border-[#c9a54e] hover:text-[#c9a54e]">IT</a>
+          <a href="/ja/" class="px-2 py-1 bg-slate-900 border border-slate-800 rounded hover:border-[#c9a54e] hover:text-[#c9a54e]">JA</a>
+          <a href="/ko/" class="px-2 py-1 bg-slate-900 border border-slate-800 rounded hover:border-[#c9a54e] hover:text-[#c9a54e]">KO</a>
+          <a href="/zh-tw/" class="px-2 py-1 bg-slate-900 border border-slate-800 rounded hover:border-[#c9a54e] hover:text-[#c9a54e]">ZH-TW</a>
+          <a href="/zh-cn/" class="px-2 py-1 bg-slate-900 border border-slate-800 rounded hover:border-[#c9a54e] hover:text-[#c9a54e]">ZH-CN</a>
+          <a href="/pt/" class="px-2 py-1 bg-slate-900 border border-slate-800 rounded hover:border-[#c9a54e] hover:text-[#c9a54e]">PT</a>
+          <a href="/ru/" class="px-2 py-1 bg-slate-900 border border-slate-800 rounded hover:border-[#c9a54e] hover:text-[#c9a54e]">RU</a>
+        </div>
+        <div class="p-3 bg-slate-950/80 border border-slate-800/80 rounded-lg text-[11px] text-slate-400 leading-relaxed">
+          {dict.disclaimer}
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="border-t border-slate-800/60 pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-4">
+      <p>© {new Date().getFullYear()} Travel4You.app. All rights reserved. Deployed on Cloudflare Pages Edge.</p>
+      <div class="flex items-center space-x-6">
+        <span class="text-slate-400">Partner ID: <strong class="text-slate-300">4G5BPIE</strong> (8%)</span>
+        <span class="text-slate-400">Marker: <strong class="text-slate-300">770720</strong></span>
+        <span class="text-[#c9a54e] font-semibold">#GetYourGuidePartner #ad</span>
+      </div>
+    </div>
+  </div>
+</footer>
