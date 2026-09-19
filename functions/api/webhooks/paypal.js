@@ -1,5 +1,6 @@
 import { getSupabaseServiceClient, json } from '../_lib/supabase.js';
 import { verifyPayPalWebhook } from '../_lib/paypal.js';
+import { sendPaymentSuccessNotification } from '../_lib/telegram.js';
 
 function getPaymentReference(event) {
   const resource = event.resource || {};
@@ -60,7 +61,7 @@ export async function onRequestPost({ request, env }) {
 
     const { data: payment, error: paymentError } = await client
       .from('payments')
-      .select('id,amount,currency,status')
+      .select('id,amount,currency,status,order_reference,raw_metadata_json')
       .eq('provider', 'paypal')
       .eq('order_reference', reference)
       .maybeSingle();
@@ -96,6 +97,17 @@ export async function onRequestPost({ request, env }) {
       .eq('provider', 'paypal')
       .eq('external_event_id', eventId);
     if (processedError) throw processedError;
+
+    try {
+      await sendPaymentSuccessNotification(env, {
+        ...payment,
+        external_payment_id: String(event.resource?.id || eventId),
+        paid_at: paidAt,
+      });
+    } catch (notificationError) {
+      console.error('PayPal payment recorded but Telegram notification failed', notificationError);
+    }
+
     return json({ ok: true, paymentId: payment.id });
   } catch (error) {
     console.error('POST /api/webhooks/paypal failed', error);

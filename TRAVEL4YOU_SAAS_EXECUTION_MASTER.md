@@ -1908,6 +1908,22 @@ Production release status remains:
 - SePay dashboard test sender: verified HTTP 200 after the acknowledgement fix.
 - PayPal sandbox checkout: pending.
 
+## 26.20 Telegram payment-success notification
+
+- Added a shared Telegram Bot API notifier for successful SePay and PayPal
+  payments.
+- Notification is sent only after the payment row and webhook event have been
+  committed successfully.
+- A Telegram delivery failure is logged but does not roll back a valid payment
+  or cause the provider to retry it.
+- The message includes provider event ID, order reference, amount, currency,
+  plan code, and Vietnam-local payment time; bot tokens are never logged.
+- Required Cloudflare encrypted secret: `TELEGRAM_BOT_TOKEN`.
+- Cloudflare variable: `TELEGRAM_CHAT_ID=-1001828947537`.
+- The Telegram bot must be an administrator/member able to post in the target
+  group/channel. The token must be entered through Cloudflare Secrets and must
+  not be committed or pasted into chat.
+
 ---
 
 **END OF MASTER EXECUTION FILE**

@@ -1,4 +1,5 @@
 import { getSupabaseServiceClient, json } from '../_lib/supabase.js';
+import { sendPaymentSuccessNotification } from '../_lib/telegram.js';
 
 async function hasValidWebhookSignature(request, env, rawBody) {
   const signature = request.headers.get('x-sepay-signature');
@@ -79,7 +80,7 @@ export async function onRequestPost({ request, env }) {
 
     const { data: payment, error: paymentError } = await client
       .from('payments')
-      .select('id,workspace_id,amount,currency,status,raw_metadata_json')
+      .select('id,workspace_id,amount,currency,status,order_reference,raw_metadata_json')
       .eq('provider', 'sepay')
       .eq('order_reference', orderReference)
       .maybeSingle();
@@ -178,6 +179,16 @@ export async function onRequestPost({ request, env }) {
       .eq('provider', 'sepay')
       .eq('external_event_id', eventId);
     if (processedError) throw processedError;
+
+    try {
+      await sendPaymentSuccessNotification(env, {
+        ...payment,
+        external_payment_id: eventId,
+        paid_at: paidAt,
+      });
+    } catch (notificationError) {
+      console.error('SePay payment recorded but Telegram notification failed', notificationError);
+    }
 
     return json({ success: true, paymentId: payment.id });
   } catch (error) {
