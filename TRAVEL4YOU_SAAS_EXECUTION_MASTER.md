@@ -2354,6 +2354,12 @@ membership policies now require the workspace owner/admin for membership
 creation and updates; the owner bootstrap path remains allowed only when the
 new row matches the workspace owner.
 
+The corrective migration is committed as
+`supabase/migrations/20260920094000_harden_membership_rls.sql`. It still needs
+to be applied with `supabase db push` using the linked project credentials;
+the Supabase CLI is not installed in the current environment, so this step is
+not claimed as completed against the remote database.
+
 ---
 
 **END OF MASTER EXECUTION FILE**
