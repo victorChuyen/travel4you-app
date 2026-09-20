@@ -24,6 +24,7 @@ const labels: Record<string, { save: string; liked: string; share: string; book:
 };
 
 const t = labels[locale] || labels.en;
+const likedToast = locale === 'vi' ? 'Cảm ơn bạn đã chia sẻ đánh giá!' : 'Thank you for your valuable feedback!';
 ---
 
 <div class="flex flex-wrap items-center justify-between gap-3 py-4 px-5 my-8 bg-[#0b1726]/90 border border-slate-800 rounded-2xl backdrop-blur-md">
@@ -91,12 +92,12 @@ const t = labels[locale] || labels.en;
       if (!liked) {
         liked = true;
         likeBtn.classList.add('text-[#c9a54e]', 'border-[#c9a54e]');
-        likeText.textContent = 'Helpful (1.8k + 1)';
-        if (window.showToast) window.showToast('Thank you for your valuable feedback!', '👍');
+        likeText.textContent = locale === 'vi' ? 'Hữu ích (1.8k + 1)' : 'Helpful (1.8k + 1)';
+        if (window.showToast) window.showToast(likedToast, '👍');
       } else {
         liked = false;
         likeBtn.classList.remove('text-[#c9a54e]', 'border-[#c9a54e]');
-        likeText.textContent = 'Helpful (1.8k)';
+        likeText.textContent = locale === 'vi' ? 'Hữu ích (1.8k)' : 'Helpful (1.8k)';
       }
     });
   }

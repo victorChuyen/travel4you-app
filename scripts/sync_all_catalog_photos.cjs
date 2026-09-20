@@ -132,7 +132,13 @@ fs.writeFileSync(CATALOG_PATH, JSON.stringify(catalog, null, 2), 'utf8');
 console.log(`💾 Updated ${CATALOG_PATH}`);
 
 // Regenerate search index
-const searchIndex = catalog.map(c => ({
+const usedSlugs = new Map();
+const searchIndex = catalog.map(c => {
+  const baseSlug = c.slug;
+  const occurrence = (usedSlugs.get(baseSlug) || 0) + 1;
+  usedSlugs.set(baseSlug, occurrence);
+  const uniqueSlug = occurrence === 1 ? baseSlug : `${baseSlug}-${String(c.id).padStart(4, '0')}`;
+  return {
   i: c.id,
   p: c.post_code,
   t: c.title,
@@ -144,8 +150,9 @@ const searchIndex = catalog.map(c => ({
   m: c.hero_image,
   u: c.gyg_direct_link,
   d: c.has_detail_page,
-  k: c.slug
-}));
+  k: uniqueSlug
+  };
+});
 
 fs.writeFileSync(SEARCH_INDEX_PATH, JSON.stringify(searchIndex), 'utf8');
 console.log(`💾 Updated search index at ${SEARCH_INDEX_PATH}`);

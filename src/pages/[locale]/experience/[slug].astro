@@ -16,6 +16,20 @@ export async function getStaticPaths() {
 
 const { article } = Astro.props;
 const locale = article.locale;
+const isVietnamese = locale === 'vi';
+const pageLabels = isVietnamese
+  ? {
+      home: 'Trang chủ',
+      booking: 'Đặt chỗ trên GetYourGuide',
+      cancellation: 'Điều kiện hủy tùy từng trải nghiệm; hãy kiểm tra chính sách hiện hành trước khi đặt.',
+      titleSuffix: 'Cẩm nang trải nghiệm'
+    }
+  : {
+      home: 'Home',
+      booking: 'Book on GetYourGuide',
+      cancellation: 'Cancellation terms vary by experience; verify the current policy before booking.',
+      titleSuffix: 'Experience Guide'
+    };
 const ratingText = article.affiliate?.rating || '';
 const ratingMatch = ratingText.match(/(\d+(?:\.\d+)?)\s*\/\s*5/);
 const reviewCountMatch = ratingText.match(/([\d,]+)\+?\s*reviews?/i);
@@ -61,7 +75,7 @@ const schemaData = {
         {
           "@type": "ListItem",
           "position": 1,
-          "name": "Home",
+          "name": pageLabels.home,
           "item": `https://travel4you.app/${locale}/`
         },
         {
@@ -83,7 +97,7 @@ const schemaData = {
 ---
 
 <Layout
-  title={`${article.title} | Travel4You Concierge`}
+  title={`${article.title} | ${pageLabels.titleSuffix} | Travel4You`}
   description={article.excerpt}
   locale={locale}
   image={article.hero_image?.url}
@@ -120,11 +134,11 @@ const schemaData = {
             rel="nofollow sponsored noopener"
             class="bg-[#ff7043] hover:bg-[#f4511e] text-white font-bold text-sm uppercase tracking-wider px-8 py-3.5 rounded-xl shadow-lg shadow-[#ff7043]/30 transition-all duration-300"
           >
-            GetYourGuide VIP Booking →
+            {pageLabels.booking} →
           </a>
           <span class="text-xs text-slate-400 flex items-center space-x-1">
             <span class="text-emerald-400 font-bold">✓</span>
-            <span>Cancellation terms vary — verify before booking</span>
+            <span>{pageLabels.cancellation}</span>
           </span>
         </div>
 
