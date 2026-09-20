@@ -175,6 +175,10 @@ cd D:\n8n-selfhost\travel4you.app
 node scripts/create_customer_handover_sheet.cjs
 ```
 
+For the owner OAuth path, configure `GOOGLE_OAUTH_REFRESH_TOKEN` only in the
+local secret environment together with the existing Google OAuth client
+credentials. Never paste the refresh token into this document or a Sheet.
+
 It creates these customer-facing tabs without writing to the old internal
 master workbook:
 
@@ -186,9 +190,17 @@ master workbook:
 - `05_ACCEPTANCE`
 - `06_CONTENT_CATALOG`
 
-The workbook must be created with a service-account key that has access to the
-source workbook and sufficient Drive quota. The key file is intentionally not
-included in Git.
+The workbook can be created with either:
+
+1. a user OAuth refresh token for the Drive owner; or
+2. a service-account key with access to the source workbook and sufficient
+   Drive quota.
+
+The new Google Cloud project currently blocks service-account key creation via
+the organization policy `iam.disableServiceAccountKeyCreation`. Do not disable
+that security policy merely to create a downloadable key. Use user OAuth or
+Workload Identity Federation instead. Credential files and refresh tokens are
+intentionally not included in Git.
 
 ## 10. Known handover blockers
 
