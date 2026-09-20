@@ -2393,6 +2393,19 @@ Static validation and `npm run build` passed. Real payment acceptance remains
 blocked until the owner supplies/sets the real SePay VND price map and runs
 provider sandbox tests.
 
+Safe production webhook smoke tests completed on 2026-09-20 10:24 ICT:
+
+- `POST /api/webhooks/sepay` with an invalid signature: HTTP `401`;
+- `POST /api/webhooks/paypal` with an empty unsigned body: HTTP `400`;
+- no payment, subscription, or database mutation was attempted by these
+  probes.
+
+The base SaaS schema is present in the remote Supabase project, but the
+corrective membership RLS migration remains a separate deployment gate. The
+next acceptance sequence is: apply the corrective migration, run two-user
+workspace isolation tests, configure an approved SePay price map, then run
+provider sandbox replay/idempotency tests.
+
 The Auth/RLS review also found and corrected a membership escalation path in
 the original migration: a signed-in user could insert a membership for
 themselves into an arbitrary workspace or update their own role/status. The
