@@ -108,8 +108,17 @@ readable.
 ## 6. AI and 1,000-article target
 
 The 1,000-record catalog and the 1,000-article production target are not the
-same measurement. The customer team must first inventory the actual article
-files and live records, then identify the remaining gap.
+same measurement. The current local audit on 2026-09-20 found:
+
+- `public/data/destinations_search_index.json`: **1,000 records**;
+- `src/data/articles.json`: **120 records**;
+- `credentials/travel4you/data/ready_articles/`: **1,015 JSON files** across
+  the satellite folders.
+
+These counts must not be merged into one success number. The next acceptance
+step is to reconcile slugs, locales, quality status, and publication status
+before producing more content. The 1,015 ready files are an inventory signal,
+not proof that 1,000 unique customer-ready articles are live.
 
 For Phase 2, use bounded batches:
 
@@ -154,7 +163,8 @@ refund handling, and idempotent webhook processing.
 - [ ] Unauthenticated SaaS APIs return HTTP 401.
 - [ ] AI endpoint has a reachable approved provider before production use.
 - [ ] Payment prices and webhook credentials are approved before activation.
-- [ ] Article inventory has been reconciled against the 1,000 target.
+- [ ] Article inventory has been reconciled by unique slug, locale, quality,
+  and live/pending status against the 1,000 target.
 
 ## 9. Handover workbook
 

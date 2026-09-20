@@ -2617,6 +2617,35 @@ bounded production worker, not a replacement for the public application.
 
 No VPS has been provisioned and no 24/7 video worker is currently running.
 
+## 26.40 Inventory checkpoint — 2026-09-20 14:58 ICT
+
+VM/GPU planning is deferred by owner decision. The next workstream remains
+local-first content and handover validation.
+
+The local filesystem audit found:
+
+| Asset | Count | Interpretation |
+| --- | ---: | --- |
+| `public/data/destinations_search_index.json` | 1,000 | Searchable catalog records |
+| `src/data/articles.json` | 120 | App article records |
+| `credentials/travel4you/data/ready_articles/` | 1,015 | JSON files across satellite folders |
+
+These are different datasets and must not be presented as one completed
+1,000-article result. The 1,015-file count is not yet a unique, live,
+customer-ready article count. Before any AI batch is authorized, reconcile
+unique slug, locale, destination, quality gate, media, canonical URL, and live
+publication status. Then calculate the exact remaining gap or surplus.
+
+### Immediate sequence
+
+1. Build a deterministic inventory report from the ready-article folders.
+2. Detect duplicate slugs, duplicate content hashes, missing media, and
+   missing affiliate/SEO fields.
+3. Join the inventory to the searchable catalog and live URL status.
+4. Mark each record as `ready`, `needs_review`, `duplicate`, or `published`.
+5. Export the reconciled result to the standalone customer handover workbook.
+6. Only then approve bounded article/video batches; keep VM planning deferred.
+
 The only owner inputs that cannot be safely invented are approved SePay
 prices, the production 9router endpoint/API key, and two test-user
 credentials or permission to create them. Until those are supplied, the
