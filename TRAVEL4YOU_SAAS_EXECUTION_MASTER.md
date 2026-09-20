@@ -2128,6 +2128,40 @@ The selected affiliate platforms are:
   pass.
 - Record only verified dashboard, deployment, payment, and attribution data.
 
+## 26.26 Luxury Rova character profile — 2026-09-20 07:41 ICT
+
+The team attribution registry now includes the active member ID `rova`,
+available through `/m/rova`. The member keeps the project-wide GetYourGuide
+Partner ID `D5OEC57` and the existing Travelpayouts attribution boundary.
+
+**Display identity:** Luxury Rova Travel4U Lifestyle
+**Badge:** Luxury Lifestyle Curator
+**Tier:** Pro
+**Positioning:** a strong, elegant, discovery-led luxury lifestyle voice.
+
+The editorial style combines:
+
+- confident and distinctive luxury;
+- discovery of rare and lesser-known places;
+- romantic journeys and couple experiences;
+- refined local cuisine and signature dishes;
+- living local culture with respect and modern perspective;
+- practical, honest guidance behind the glamour.
+
+**Voice standard:** seductive, sharp, visual, confident, and inspirational
+without exaggerating prices, guarantees, reviews, cancellation terms, or
+local claims.
+
+**Audience:** discerning luxury travelers, couples planning romantic journeys,
+and readers who want sophisticated access to local food and culture.
+
+**Signature rule:** every Rova story should connect destination, emotion,
+romance, cuisine, and local culture into one memorable travel experience.
+
+The full structured profile is duplicated in
+`src/data/team_members.json` and `public/data/team_members.json` so both the
+edge router and client attribution banner use the same identity.
+
 ---
 
 **END OF MASTER EXECUTION FILE**

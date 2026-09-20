@@ -19,6 +19,30 @@
     "tier": "pro",
     "active": true
   },
+  "rova": {
+    "id": "rova",
+    "name": "Luxury Rova Travel4U Lifestyle",
+    "gyg_partner_id": "D5OEC57",
+    "travelpayouts_marker": "770720",
+    "sub_id_prefix": "rova",
+    "badge": "Luxury Lifestyle Curator",
+    "tier": "pro",
+    "active": true,
+    "style": {
+      "personality": "Cá tính mạnh mẽ, sang trọng, tự tin và luôn chủ động mở lối đến những trải nghiệm khác biệt.",
+      "pillars": [
+        "Khám phá những điểm đến độc bản",
+        "Trải nghiệm lãng mạn dành cho các cặp đôi",
+        "Ẩm thực tinh tuyển và hương vị địa phương",
+        "Văn hóa bản địa được kể bằng góc nhìn hiện đại",
+        "Phong cách sống xa xỉ nhưng có chiều sâu"
+      ],
+      "voice": "Quyến rũ, sắc sảo, giàu hình ảnh, truyền cảm hứng khám phá nhưng vẫn chân thật và có gu.",
+      "editorial_rule": "Mỗi câu chuyện phải kết nối điểm đến, cảm xúc, ẩm thực và văn hóa địa phương thành một trải nghiệm đáng nhớ.",
+      "audience": "Du khách yêu phong cách sống sang trọng, cặp đôi tìm hành trình lãng mạn và người thích khám phá văn hóa bản địa.",
+      "signature": "Luxury Rova — Travel4U Lifestyle"
+    }
+  },
   "team_vip01": {
     "id": "team_vip01",
     "name": "VIP Luxury Advisor",
