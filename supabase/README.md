@@ -41,3 +41,20 @@ resume processing.
 The workspace membership policies intentionally do not allow self-joining by
 workspace ID or self-editing a membership role/status. Only the workspace
 owner or an active admin can create or change memberships.
+
+## VIP affiliate commission policy
+
+The active VIP seller commission is represented by the
+`affiliate_commission_rate` entitlement. The current mapping is:
+
+| Commercial package | SaaS plan code | Commission |
+| --- | --- | ---: |
+| VIP package 1 | `creator` | 10% |
+| VIP package 2 | `pro` | 20% |
+| VIP package 3 | `agency` | 30% |
+| Free | `free` | 0% |
+
+Package 2 may sell any eligible package and earns 20%. Package 3 earns 30%.
+The entitlement is a policy value only; payout calculation must still validate
+the seller's active subscription, qualifying order, refund/chargeback status,
+and idempotency before recording a commission.

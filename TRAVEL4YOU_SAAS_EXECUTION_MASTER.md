@@ -2427,6 +2427,24 @@ The live policy definitions also confirm that membership updates require
 insert policy permits only workspace admins or the constrained owner bootstrap
 condition. Two-user authenticated isolation testing remains the next gate.
 
+## 26.35 VIP affiliate commission policy — 2026-09-20 10:46 ICT
+
+The commercial rule is now versioned in the SaaS entitlement layer:
+
+| VIP package | Existing plan mapping | Commission on qualifying sales |
+| --- | --- | ---: |
+| Gói 1 | `creator` | 10% |
+| Gói 2 | `pro` | 20%; may sell any eligible package |
+| Gói 3 | `agency` | 30% |
+| Free | `free` | 0% |
+
+The new `affiliate_commission_rate` entitlement is seeded by
+`supabase/migrations/20260920104500_vip_affiliate_commission_policy.sql`.
+This makes the policy queryable through the existing entitlement API without
+hard-coding percentages in the frontend. It does not issue payouts by itself:
+future commission settlement must verify active subscription, qualifying
+order, refunds/chargebacks, and webhook idempotency.
+
 ---
 
 **END OF MASTER EXECUTION FILE**
