@@ -2646,6 +2646,35 @@ publication status. Then calculate the exact remaining gap or surplus.
 5. Export the reconciled result to the standalone customer handover workbook.
 6. Only then approve bounded article/video batches; keep VM planning deferred.
 
+## 26.41 Project progress snapshot — 2026-09-20 15:49 ICT
+
+The project is tracked across **10 delivery stages**:
+
+| # | Stage | Status | Verified result / remaining gate |
+| ---: | --- | --- | --- |
+| 1 | Public website and multilingual UX | ✅ Done | Production site is live; Astro build passes |
+| 2 | Search/catalog experience | ✅ Done | Search index contains 1,000 records |
+| 3 | Affiliate attribution | ✅ Done | GetYourGuide/Rova/redirect attribution hardened |
+| 4 | VIP lead capture | ✅ Done | `/api/leads`, validation, server-side write, duplicate protection |
+| 5 | Supabase Auth/SaaS foundation | 🟡 In progress | RLS and protected routes hardened; two-user isolation still pending |
+| 6 | AI generation routing | 🟡 Local-ready | 9router primary + Ollama fallback; remote production endpoint not configured |
+| 7 | Billing and commission settlement | 🟡 Foundation only | Entitlements/policy exist; official SePay prices, payment tests, and settlement remain |
+| 8 | Content production and 1,000 target | 🟡 Reconciliation required | 120 app articles, 1,000 search records, 1,015 ready JSON files; counts are not interchangeable |
+| 9 | Customer handover | ✅ Workbook ready | Dedicated workbook `1j2NkyG9dgJKEvwcADC9PED6xvpEo-jsHd__Y8GJlM6U` has 7 project tabs |
+| 10 | Phase 2 AI video / GPU VM | ⏸ Deferred | No VM, GPU worker, or 24/7 video service provisioned |
+
+Overall assessment: **4 stages are complete, 4 are in progress or require
+owner inputs, 1 is local-ready, and 1 is deferred**. This is a delivery
+status classification, not a percentage claim.
+
+Latest verification:
+
+- `npm run build`: **PASS**;
+- handover tabs: `00_README`, `01_ARCHITECTURE`, `02_ENVIRONMENT`,
+  `03_DEPLOYMENT`, `04_SECURITY`, `05_ACCEPTANCE`, `06_CONTENT_CATALOG`;
+- Git working tree: only `supabase/.temp/` remains untracked and is excluded
+  from delivery.
+
 The only owner inputs that cannot be safely invented are approved SePay
 prices, the production 9router endpoint/API key, and two test-user
 credentials or permission to create them. Until those are supplied, the
