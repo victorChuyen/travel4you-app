@@ -54,7 +54,9 @@ The active VIP seller commission is represented by the
 | VIP package 3 | `agency` | 30% |
 | Free | `free` | 0% |
 
-Package 2 may sell any eligible package and earns 20%. Package 3 earns 30%.
+Package 2 may sell any eligible package and earns 20%. Package 3 may also sell
+any eligible package and earns 30%. The seller's own package determines the
+rate; the package purchased by the customer does not change that rate.
 The entitlement is a policy value only; payout calculation must still validate
 the seller's active subscription, qualifying order, refund/chargeback status,
 and idempotency before recording a commission.

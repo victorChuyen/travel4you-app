@@ -2435,7 +2435,7 @@ The commercial rule is now versioned in the SaaS entitlement layer:
 | --- | --- | ---: |
 | Gói 1 | `creator` | 10% |
 | Gói 2 | `pro` | 20%; may sell any eligible package |
-| Gói 3 | `agency` | 30% |
+| Gói 3 | `agency` | 30%; may sell any eligible package |
 | Free | `free` | 0% |
 
 The new `affiliate_commission_rate` entitlement is seeded by
@@ -2443,7 +2443,10 @@ The new `affiliate_commission_rate` entitlement is seeded by
 This makes the policy queryable through the existing entitlement API without
 hard-coding percentages in the frontend. It does not issue payouts by itself:
 future commission settlement must verify active subscription, qualifying
-order, refunds/chargebacks, and webhook idempotency.
+order, refunds/chargebacks, and webhook idempotency. The seller's own VIP
+package determines the commission rate; the package purchased by the customer
+does not change it. Therefore Gói 2 earns 20% on any eligible package sale,
+and Gói 3 earns 30% on any eligible package sale.
 
 ---
 
