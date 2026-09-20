@@ -2414,10 +2414,18 @@ creation and updates; the owner bootstrap path remains allowed only when the
 new row matches the workspace owner.
 
 The corrective migration is committed as
-`supabase/migrations/20260920094000_harden_membership_rls.sql`. It still needs
-to be applied with `supabase db push` using the linked project credentials;
-the Supabase CLI is not installed in the current environment, so this step is
-not claimed as completed against the remote database.
+`supabase/migrations/20260920094000_harden_membership_rls.sql` and was applied
+through the authenticated Supabase SQL Editor on 2026-09-20 10:41 ICT. The
+live verification query returned all three expected policies:
+
+- `workspaces_member_select` (`SELECT`);
+- `workspace_members_admin_insert` (`INSERT`);
+- `workspace_members_admin_update` (`UPDATE`).
+
+The live policy definitions also confirm that membership updates require
+`is_workspace_admin(workspace_id)` in both `USING` and `WITH CHECK`, while the
+insert policy permits only workspace admins or the constrained owner bootstrap
+condition. Two-user authenticated isolation testing remains the next gate.
 
 ---
 
