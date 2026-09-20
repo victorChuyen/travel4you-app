@@ -16,6 +16,32 @@ export async function getStaticPaths() {
 
 const { article } = Astro.props;
 const locale = article.locale;
+const ratingText = article.affiliate?.rating || '';
+const ratingMatch = ratingText.match(/(\d+(?:\.\d+)?)\s*\/\s*5/);
+const reviewCountMatch = ratingText.match(/([\d,]+)\+?\s*reviews?/i);
+const priceMatch = (article.affiliate?.price_display || '').match(/(\d+(?:\.\d+)?)/);
+const aggregateRating = ratingMatch && reviewCountMatch
+  ? {
+      "@type": "AggregateRating",
+      "ratingValue": ratingMatch[1],
+      "bestRating": "5",
+      "reviewCount": reviewCountMatch[1].replace(/,/g, '')
+    }
+  : undefined;
+const offer = priceMatch
+  ? {
+      "@type": "Offer",
+      "priceCurrency": "USD",
+      "price": priceMatch[1],
+      "url": article.affiliate?.gyg_direct_link,
+      "availability": "https://schema.org/InStock",
+      "seller": {
+        "@type": "Organization",
+        "name": "GetYourGuide",
+        "url": "https://www.getyourguide.com"
+      }
+    }
+  : undefined;
 
 const schemaData = {
   "@context": "https://schema.org",
@@ -26,23 +52,8 @@ const schemaData = {
       "name": article.title,
       "description": article.excerpt,
       "image": `https://travel4you.app${article.hero_image?.url || '/media/' + article.hero_image?.filename}`,
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.8",
-        "reviewCount": "12500"
-      },
-      "offers": {
-        "@type": "Offer",
-        "priceCurrency": "USD",
-        "price": "42.00",
-        "url": article.affiliate?.gyg_direct_link || `https://travel4you.app/go/${article.post_code.toLowerCase()}`,
-        "availability": "https://schema.org/InStock",
-        "seller": {
-          "@type": "Organization",
-          "name": "GetYourGuide",
-          "url": "https://www.getyourguide.com"
-        }
-      }
+      ...(aggregateRating ? { "aggregateRating": aggregateRating } : {}),
+      ...(offer ? { "offers": offer } : {})
     },
     {
       "@type": "BreadcrumbList",
@@ -113,7 +124,7 @@ const schemaData = {
           </a>
           <span class="text-xs text-slate-400 flex items-center space-x-1">
             <span class="text-emerald-400 font-bold">✓</span>
-            <span>24h Free Cancellation Guarantee</span>
+            <span>Cancellation terms vary — verify before booking</span>
           </span>
         </div>
 

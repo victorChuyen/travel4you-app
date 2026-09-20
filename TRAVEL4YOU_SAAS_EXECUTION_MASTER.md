@@ -2162,6 +2162,51 @@ The full structured profile is duplicated in
 `src/data/team_members.json` and `public/data/team_members.json` so both the
 edge router and client attribution banner use the same identity.
 
+## 26.27 Production hardening audit — 2026-09-20 07:46 ICT
+
+Before starting the next 90-day content phase, a production hardening pass
+was completed on the customer-facing app.
+
+### Fixed immediately
+
+- Fixed a duplicate closing block in the SearchBar client script that stopped
+  search/filter event handlers from running.
+- Fixed the `All (1,000)` category behavior: it now loads the full search
+  index instead of restoring only the initial 10 curated cards.
+- Added a guarded array check when loading
+  `public/data/destinations_search_index.json`.
+- Removed hard-coded schema values (`$42.00`, rating `4.8`, review count
+  `12,500`) from English and localized experience pages.
+- Experience schema now emits `AggregateRating` and `Offer` only when the
+  corresponding record contains parseable source data.
+- Replaced global unconditional cancellation claims with a clear instruction
+  to verify the live provider terms for each experience.
+
+### Validation evidence
+
+- `npm run build`: passed.
+- `git diff --check`: passed after the final documentation cleanup.
+- Local production preview interaction:
+  - initial curated set: 10 cards;
+  - Europe filter: 24 matching cards rendered;
+  - Kyoto search: 1 matching result;
+  - All filter: counter shows 1,000 and Load More is available.
+- Live critical routes previously returned HTTP 200, and `/m/rova` returns
+  the expected 302 with `t4u_member_ref=rova`.
+
+### Remaining hardening backlog before scaling content
+
+1. Complete end-to-end affiliate click attribution checks for
+   `D5OEC57` and Travelpayouts Drive `575698`.
+2. Replace any remaining locale copy that makes universal cancellation or
+   review-count claims with record-specific verified terms.
+3. Complete payment webhook, Auth/RLS isolation, and production AI endpoint
+   acceptance tests.
+4. Add automated route/link and structured-data regression checks to the
+   release process.
+5. Only after these checks pass, resume the 90-day content expansion and
+   revenue plan.
+
 ---
 
 **END OF MASTER EXECUTION FILE**

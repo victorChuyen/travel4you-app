@@ -231,6 +231,7 @@ const t = placeholders[currentLocale] || placeholders.en;
     let currentRenderCount = 24;
     let currentFilteredList = [];
     let debounceTimer = null;
+    let showCuratedInitialSet = true;
 
     // Detect current locale accurately from URL pathname
     function detectLocale() {
@@ -253,8 +254,9 @@ const t = placeholders[currentLocale] || placeholders.en;
       try {
         const res = await fetch('/data/destinations_search_index.json');
         if (res.ok) {
-          fullIndex = await res.json();
-          return fullIndex;
+            const data = await res.json();
+            fullIndex = Array.isArray(data) ? data : [];
+            return fullIndex;
         }
       } catch (e) {
         console.warn('Could not load 1000 search index:', e);
@@ -412,9 +414,6 @@ const t = placeholders[currentLocale] || placeholders.en;
       if (window.initBookmarks) window.initBookmarks();
     }
 
-      if (window.initBookmarks) window.initBookmarks();
-    }
-
     function renderLoadMoreBtn(total) {
       let loadMoreContainer = document.getElementById('load-more-container');
       if (!loadMoreContainer) {
@@ -459,7 +458,7 @@ const t = placeholders[currentLocale] || placeholders.en;
       }
 
       // If no query and filter is 'all', restore initial 10 curated cards
-      if (!searchQuery && activeFilter === 'all') {
+      if (!searchQuery && activeFilter === 'all' && showCuratedInitialSet) {
         if (container) container.innerHTML = initialHtml;
         if (noResultsEl) noResultsEl.style.display = 'none';
         if (counterBox) counterBox.classList.add('hidden');
@@ -510,6 +509,7 @@ const t = placeholders[currentLocale] || placeholders.en;
       searchInput.addEventListener('input', (e) => {
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(() => {
+          showCuratedInitialSet = false;
           searchQuery = e.target.value.toLowerCase().trim();
           applyFilters();
         }, 120);
@@ -544,6 +544,7 @@ const t = placeholders[currentLocale] || placeholders.en;
         if (check) check.classList.remove('hidden');
         
         activeFilter = pill.getAttribute('data-filter') || 'all';
+        showCuratedInitialSet = false;
         applyFilters();
       });
     });
