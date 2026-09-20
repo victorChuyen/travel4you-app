@@ -20,8 +20,14 @@ function parseGeneratedContent(content) {
   return parsed;
 }
 
-async function callRouter(input, env) {
-  const baseUrl = (env.AI_ROUTER_BASE_URL || 'http://127.0.0.1:8787').replace(/\/$/, '');
+function buildMessages(input) {
+  return [
+    { role: 'system', content: 'Return only valid JSON for a premium editable travel project.' },
+    { role: 'user', content: JSON.stringify({ input, output_schema: { project: {}, summary: {}, days: [], experiences: [], practical_notes: [], cta: {} } }) },
+  ];
+}
+
+async function callOpenAiCompatible(baseUrl, input, env) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), Number(env.AI_ROUTER_TIMEOUT_MS || 30000));
   try {
@@ -35,10 +41,7 @@ async function callRouter(input, env) {
         model: env.AI_ROUTER_DEFAULT_MODEL || 'default',
         temperature: 0.4,
         response_format: { type: 'json_object' },
-        messages: [
-          { role: 'system', content: 'Return only valid JSON for a premium editable travel project.' },
-          { role: 'user', content: JSON.stringify({ input, output_schema: { project: {}, summary: {}, days: [], experiences: [], practical_notes: [], cta: {} } }) },
-        ],
+        messages: buildMessages(input),
       }),
       signal: controller.signal,
     });
@@ -49,6 +52,52 @@ async function callRouter(input, env) {
     return { payload, content: content.replace(/^```json\s*/i, '').replace(/\s*```$/i, '').trim() };
   } finally {
     clearTimeout(timeout);
+  }
+}
+
+async function callOllama(input, env) {
+  const baseUrl = (env.OLLAMA_BASE_URL || 'http://127.0.0.1:11434').replace(/\/$/, '');
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), Number(env.OLLAMA_TIMEOUT_MS || 60000));
+  try {
+    const response = await fetch(`${baseUrl}/api/chat`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        model: env.OLLAMA_DEFAULT_MODEL || 'qwen2.5:0.5b',
+        stream: false,
+        format: 'json',
+        messages: buildMessages(input),
+      }),
+      signal: controller.signal,
+    });
+    if (!response.ok) throw new Error(`Ollama returned HTTP ${response.status}.`);
+    const payload = await response.json();
+    const content = payload?.message?.content;
+    if (typeof content !== 'string' || !content.trim()) throw new Error('Ollama returned no content.');
+    return {
+      payload: { model: payload.model || env.OLLAMA_DEFAULT_MODEL || 'qwen2.5:0.5b', usage: {} },
+      content: content.replace(/^```json\s*/i, '').replace(/\s*```$/i, '').trim(),
+    };
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+async function callRouter(input, env) {
+  try {
+    return await callOpenAiCompatible(
+      (env.AI_ROUTER_BASE_URL || 'http://127.0.0.1:8787').replace(/\/$/, ''),
+      input,
+      env,
+    );
+  } catch (primaryError) {
+    console.warn('9router unavailable; trying Ollama fallback', primaryError?.message || primaryError);
+    try {
+      return await callOllama(input, env);
+    } catch (fallbackError) {
+      throw new Error(`AI generation failed: 9router (${primaryError.message}); Ollama fallback (${fallbackError.message}).`);
+    }
   }
 }
 

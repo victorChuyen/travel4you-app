@@ -29,6 +29,16 @@ best-effort rate limit protect the edge endpoint; no Telegram notification is
 sent by this flow. Configure `SUPABASE_SERVICE_ROLE_KEY` as an encrypted
 Cloudflare Pages secret before deployment.
 
+### AI generation routing
+
+Authenticated project generation prefers the configured 9router-compatible
+endpoint. If that endpoint times out, is unavailable, or returns an error, the
+Pages Function attempts the configured Ollama endpoint using
+`OLLAMA_BASE_URL` and `OLLAMA_DEFAULT_MODEL`. The local fallback is intended
+for development or a network-reachable Ollama host; `127.0.0.1` is not reachable
+from Cloudflare Pages, so production must set a reachable fallback URL if it is
+required there.
+
 ---
 
 ## 🛠️ LOCAL DEVELOPMENT

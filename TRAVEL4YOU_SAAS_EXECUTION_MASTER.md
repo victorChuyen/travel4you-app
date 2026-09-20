@@ -2505,6 +2505,26 @@ publishing in the background.
 | 9 | Configure the 9router production endpoint and run controlled generation | Authenticated project reaches `completed`; failed jobs are visible |
 | 10 | VIP LAN handover and operating report | URLs, handoff checklist, dashboards, test evidence and blockers |
 
+## 26.37 Local AI routing audit — 2026-09-20 11:46 ICT
+
+The local environment audit found:
+
+- `AI_ROUTER_BASE_URL` exists as `http://127.0.0.1:8787`;
+- `AI_ROUTER_API_KEY` is empty;
+- `AI_ROUTER_DEFAULT_MODEL` is empty;
+- no 9router variables exist in the shared WordPress operations `.env`;
+- no confirmed public/remote 9router endpoint is configured;
+- Ollama is listening on `127.0.0.1:11434`;
+- Ollama exposes `qwen2.5:0.5b`, and a direct JSON chat smoke test passed.
+
+The authenticated AI generation route now prefers 9router and falls back to
+Ollama on timeout, network failure, or upstream error. The fallback is
+configured locally with `OLLAMA_BASE_URL`, `OLLAMA_DEFAULT_MODEL`, and
+`OLLAMA_TIMEOUT_MS`. This is not an autonomous writer scheduler: generation
+still requires an authenticated project request. Cloudflare Pages cannot
+reach local `127.0.0.1`, so production requires a network-reachable 9router
+or Ollama endpoint before remote AI generation can be claimed live.
+
 The only owner inputs that cannot be safely invented are approved SePay
 prices, the production 9router endpoint/API key, and two test-user
 credentials or permission to create them. Until those are supplied, the
