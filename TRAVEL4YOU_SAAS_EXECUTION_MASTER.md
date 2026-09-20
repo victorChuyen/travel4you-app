@@ -2459,6 +2459,55 @@ package determines the commission rate; the package purchased by the customer
 does not change it. Therefore Gói 2 earns 20% on any eligible package sale,
 and Gói 3 earns 30% on any eligible package sale.
 
+## 26.36 Ten-day VIP LAN handover plan — 2026-09-20 11:30 ICT
+
+### Current handover truth
+
+The public site is live at `https://travel4you.app/` and the following
+production checks pass:
+
+- public homepage and Vietnamese homepage return HTTP 200;
+- GetYourGuide attribution uses partner ID `D5OEC57`;
+- Rova attribution persists through the member route/cookie;
+- responsive footer CTA is live;
+- VIP consultation lead form is implemented in source and writes through
+  `POST /api/leads` using the server-side Supabase service key;
+- production unauthenticated SaaS endpoints remain protected with HTTP 401;
+- live Supabase RLS corrective policies and VIP commission entitlements are
+  applied and verified.
+
+### Important non-claim
+
+The AI writing team is **not running as a background production scheduler**.
+The current `/api/ai/generate` route is an authenticated, on-demand project
+generation path that calls `AI_ROUTER_BASE_URL`/9router when configured.
+No cron, queue worker, GitHub Actions workflow, or autonomous writer process
+was found in the `travel4you.app` repository. The legacy autonomous writer
+scripts under `credentials/travel4you/` belong to the wider WordPress
+operations system; they are not proof that this SaaS app is currently
+publishing in the background.
+
+### Delivery sequence for the next 10 days
+
+| Day | Delivery gate | Acceptance evidence |
+| --- | --- | --- |
+| 1 | Apply and verify `public.leads` plus commission ledger migrations | Table existence, RLS query, no public lead read |
+| 2 | Submit one marked QA VIP lead using the owner-provided contact | HTTP 201, one `new` row, no duplicate submission |
+| 3 | Create two dedicated test Auth users | Separate accounts, profiles and workspaces created |
+| 4 | Execute two-user RLS isolation suite | Cross-workspace reads/writes rejected |
+| 5 | Configure approved SePay plan prices | Server secret present; checkout rejects mismatched amounts |
+| 6 | Run SePay sandbox signature, amount, reference and replay tests | Valid event activates once; replay is idempotent |
+| 7 | Run PayPal sandbox order/webhook tests | Verified event activates the selected subscription |
+| 8 | Add server-side commission settlement | Seller plan determines 10/20/30%; refunds void, replay does not duplicate |
+| 9 | Configure the 9router production endpoint and run controlled generation | Authenticated project reaches `completed`; failed jobs are visible |
+| 10 | VIP LAN handover and operating report | URLs, handoff checklist, dashboards, test evidence and blockers |
+
+The only owner inputs that cannot be safely invented are approved SePay
+prices, the production 9router endpoint/API key, and two test-user
+credentials or permission to create them. Until those are supplied, the
+system must remain in protected/test mode and must not claim autonomous AI
+publishing or live commission payouts.
+
 ---
 
 **END OF MASTER EXECUTION FILE**
