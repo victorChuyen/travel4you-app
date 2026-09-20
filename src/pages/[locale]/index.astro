@@ -75,7 +75,7 @@ const dict = (i18n as any)[locale] || (i18n as any).en;
       <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
         <div>
           <span class="text-xs font-bold text-[#c9a54e] uppercase tracking-[0.2em] block mb-2">
-            Collection 2026
+            {dict.collection_label || 'Collection 2026'}
           </span>
           <h2 class="font-serif text-3xl sm:text-4xl font-bold text-white tracking-tight">
             {dict.nav_experiences}
@@ -86,9 +86,9 @@ const dict = (i18n as any)[locale] || (i18n as any).en;
       <!-- Empty Search State -->
       <div id="no-search-results-msg" style="display: none;" class="text-center py-16 px-4 bg-[#0b1726]/60 border border-slate-800 rounded-3xl mb-8">
         <span class="text-4xl mb-3 block">🔍</span>
-        <h3 class="font-serif text-xl font-bold text-white mb-2">Không tìm thấy trải nghiệm phù hợp</h3>
+        <h3 class="font-serif text-xl font-bold text-white mb-2">{dict.no_results_title || 'Không tìm thấy trải nghiệm phù hợp'}</h3>
         <p class="text-xs text-slate-400 max-w-md mx-auto">
-          Vui lòng thử từ khóa khác hoặc bấm "Tất Cả" ở trên để xem toàn bộ danh mục điểm đến vàng.
+          {dict.no_results_body || 'Hãy thử một từ khóa khác hoặc chọn “Tất cả điểm đến” để xem toàn bộ danh mục.'}
         </p>
       </div>
 

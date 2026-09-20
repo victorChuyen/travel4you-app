@@ -42,7 +42,7 @@ const homeUrl = currentLocale === 'en' ? '/' : `/${currentLocale}/`;
             Travel4You
           </span>
           <span class="text-[10px] tracking-[0.25em] text-[#c9a54e] uppercase font-semibold">
-            Sovereign Concierge
+            {currentLocale === 'vi' ? 'Tư vấn du lịch thượng lưu' : 'Sovereign Concierge'}
           </span>
         </div>
       </a>
@@ -70,7 +70,7 @@ const homeUrl = currentLocale === 'en' ? '/' : `/${currentLocale}/`;
           
           <div class="absolute right-0 mt-2 w-48 bg-[#0b1b30] border border-slate-700/80 rounded-xl shadow-2xl py-2 invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-200 z-50">
             <div class="px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-800">
-              Select Locale
+              {currentLocale === 'vi' ? 'Chọn ngôn ngữ' : 'Select Locale'}
             </div>
             <div class="max-h-64 overflow-y-auto py-1">
               {languages.map((lang) => (
@@ -93,7 +93,7 @@ const homeUrl = currentLocale === 'en' ? '/' : `/${currentLocale}/`;
           rel="nofollow sponsored noopener"
           class="hidden sm:inline-flex items-center space-x-2 bg-gradient-to-r from-[#ff7043] to-[#f4511e] hover:from-[#f4511e] hover:to-[#e64a19] text-white text-xs font-bold uppercase tracking-wider px-4 py-2.5 rounded-full shadow-lg shadow-[#ff7043]/20 hover:shadow-[#ff7043]/40 transition-all duration-300"
         >
-          <span>GetYourGuide VIP</span>
+          <span>{currentLocale === 'vi' ? 'GetYourGuide VIP' : 'GetYourGuide VIP'}</span>
           <span>→</span>
         </a>
 
@@ -102,7 +102,7 @@ const homeUrl = currentLocale === 'en' ? '/' : `/${currentLocale}/`;
           id="mobile-menu-toggle"
           type="button"
           class="md:hidden flex items-center justify-center w-10 h-10 rounded-lg bg-slate-900 border border-slate-700/80 text-slate-300 hover:text-white hover:border-[#c9a54e] transition-all focus:outline-none"
-          aria-label="Toggle Mobile Navigation"
+          aria-label="          {currentLocale === 'vi' ? 'Mở hoặc đóng menu điều hướng' : 'Toggle Mobile Navigation'}"
           aria-expanded="false"
         >
           <svg id="icon-menu" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -158,7 +158,7 @@ const homeUrl = currentLocale === 'en' ? '/' : `/${currentLocale}/`;
     <!-- Mobile Language Selector Grid (12 Locales) -->
     <div class="pt-3 border-t border-slate-800/80">
       <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-2 px-1">
-        Select Language (12 Locales)
+        {currentLocale === 'vi' ? 'Chọn ngôn ngữ (12 ngôn ngữ)' : 'Select Language (12 Locales)'}
       </span>
       <div class="grid grid-cols-3 gap-2">
         {languages.map((lang) => (
@@ -175,7 +175,7 @@ const homeUrl = currentLocale === 'en' ? '/' : `/${currentLocale}/`;
     <!-- Mobile Curators Note -->
     <div class="p-3 bg-slate-900/90 border border-slate-800/80 rounded-xl text-xs text-slate-400">
       <span class="text-[#c9a54e] font-bold block mb-1">👑 Curators</span>
-      <span>Curated by Luxury Victor Travel4U & Luxury Lucky Travel4U. Verified GetYourGuide Partner.</span>
+      <span>{currentLocale === 'vi' ? 'Tuyển chọn bởi Luxury Victor Travel4U và Luxury Lucky Travel4U. Đối tác GetYourGuide chính thức.' : 'Curated by Luxury Victor Travel4U & Luxury Lucky Travel4U. Verified GetYourGuide Partner.'}</span>
     </div>
 
     <!-- Mobile Direct GYG CTA -->
@@ -223,4 +223,3 @@ const homeUrl = currentLocale === 'en' ? '/' : `/${currentLocale}/`;
     }
   </script>
 </header>
-

@@ -2256,6 +2256,26 @@ sections at iPhone width after the change. The page remains responsive for
 Android phones, tablets, and desktop breakpoints, and the content flow stays
 semantic for SEO.
 
+## 26.30 Vietnamese localization refinement — 2026-09-20 08:10 ICT
+
+The Vietnamese homepage copy was reviewed for meaning and natural usage rather
+than literal word-for-word translation. The following corrections were made:
+
+- `Giám Tuyển` was replaced with `Tuyển chọn đặc biệt`, which is clearer in a
+  luxury travel context.
+- `Được 12.500+ Du Khách Tin Tưởng` was removed because it incorrectly implied
+  a review-count endorsement. It now states the actual relationship:
+  `Đối tác trải nghiệm chính thức của GetYourGuide`.
+- The cancellation badge now tells visitors to check the terms for each
+  experience instead of making a universal cancellation promise.
+- Hero, search, category, empty-state, card CTA, bookmark/share, price, header,
+  and footer labels now use natural Vietnamese wording.
+- Vietnamese card descriptions now distinguish editorial selection from the
+  provider's live cancellation policy.
+
+The change keeps affiliate and trust claims factual while making the
+Vietnamese experience readable for native users on mobile and desktop.
+
 ---
 
 **END OF MASTER EXECUTION FILE**

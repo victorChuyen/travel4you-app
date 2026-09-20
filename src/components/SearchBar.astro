@@ -43,17 +43,17 @@ const placeholders: Record<string, {
     search: "Tìm kiếm 1.000+ điểm đến, du thuyền, trải nghiệm thượng lưu...",
     date: "Thời gian: Bất kỳ",
     guests: "1 - 2 Khách",
-    btn: "Khám Phá",
-    all: "✨ Tất Cả (1.000)",
+    btn: "Tìm kiếm",
+    all: "✨ Tất cả điểm đến (1.000)",
     europe: "🇫🇷 Châu Âu",
     asia: "🇯🇵 Châu Á",
-    islands: "🇲🇻 Đảo Ngọc",
+    islands: "🇲🇻 Các hòn đảo",
     safari: "🦒 Safari Châu Phi",
     me: "🇦🇪 Trung Đông",
-    wellness: "🌿 Spa & Trị Liệu",
-    hotels: "👑 Khách Sạn 5 Sao",
-    found: "Hành Trình Thượng Lưu Được Tìm Thấy",
-    loadMore: "Khám Phá Thêm Trải Nghiệm ↓",
+    wellness: "🌿 Nghỉ dưỡng & chăm sóc sức khỏe",
+    hotels: "👑 Khu nghỉ dưỡng 5 sao",
+    found: "trải nghiệm được tìm thấy",
+    loadMore: "Xem thêm trải nghiệm ↓",
     showing: "Đang hiển thị"
   }
 };
@@ -82,8 +82,8 @@ const t = placeholders[currentLocale] || placeholders.en;
           id="search-clear-btn"
           type="button"
           class="hidden absolute right-3 text-slate-400 hover:text-white text-xs w-5 h-5 rounded-full bg-slate-800 flex items-center justify-center transition-all"
-          title="Clear search"
-          aria-label="Clear search"
+          title={currentLocale === 'vi' ? 'Xóa từ khóa tìm kiếm' : 'Clear search'}
+          aria-label={currentLocale === 'vi' ? 'Xóa từ khóa tìm kiếm' : 'Clear search'}
         >
           ✕
         </button>
@@ -123,7 +123,7 @@ const t = placeholders[currentLocale] || placeholders.en;
   </div>
 
   <!-- Quick Category Filter Pills (10 Sovereign Categories & Regions) -->
-  <div class="flex items-center justify-center flex-wrap gap-2 pt-3" id="category-filter-pills" role="tablist" aria-label="Experience categories">
+  <div class="flex items-center justify-center flex-wrap gap-2 pt-3" id="category-filter-pills" role="tablist" aria-label={currentLocale === 'vi' ? 'Danh mục trải nghiệm' : 'Experience categories'}>
     <button
       type="button"
       data-filter="all"
@@ -313,8 +313,8 @@ const t = placeholders[currentLocale] || placeholders.en;
                 type="button"
                 class="bookmark-btn w-8 h-8 rounded-full bg-[#07111e]/90 backdrop-blur-md border border-slate-700 ${isSaved ? 'text-rose-500 border-rose-500/60' : 'text-slate-300'} hover:text-rose-500 hover:border-red-500/50 flex items-center justify-center transition-all shadow-md focus:outline-none"
                 data-slug="${item.k}"
-                title="Bookmark this experience"
-                aria-label="Bookmark"
+                title="${isVietnamese ? 'Lưu trải nghiệm này' : 'Bookmark this experience'}"
+                aria-label="${isVietnamese ? 'Lưu trải nghiệm này' : 'Bookmark'}"
               >
                 <svg class="heart-icon w-4 h-4" fill="${isSaved ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
@@ -326,8 +326,8 @@ const t = placeholders[currentLocale] || placeholders.en;
                 class="card-share-btn w-8 h-8 rounded-full bg-[#07111e]/90 backdrop-blur-md border border-slate-700 text-slate-300 hover:text-[#c9a54e] hover:border-[#c9a54e]/50 flex items-center justify-center transition-all shadow-md focus:outline-none"
                 data-url="${detailUrl}"
                 data-title="${item.t}"
-                title="Share"
-                aria-label="Share"
+                title="${isVietnamese ? 'Chia sẻ trải nghiệm này' : 'Share'}"
+                aria-label="${isVietnamese ? 'Chia sẻ trải nghiệm này' : 'Share'}"
               >
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>
@@ -336,7 +336,7 @@ const t = placeholders[currentLocale] || placeholders.en;
             </div>
 
             <div class="absolute bottom-3 left-3.5">
-              <span class="text-[10px] text-slate-300 block uppercase tracking-wider font-medium">${isVietnamese ? 'Khởi điểm' : 'Starting from'}</span>
+              <span class="text-[10px] text-slate-300 block uppercase tracking-wider font-medium">${isVietnamese ? 'Giá từ' : 'Starting from'}</span>
               <span class="text-base font-bold text-white font-serif">${item.g}</span>
             </div>
 
@@ -367,7 +367,7 @@ const t = placeholders[currentLocale] || placeholders.en;
                   <span>→</span>
                 </a>
               ` : `
-                <span class="text-[11px] text-slate-400 font-medium">GetYourGuide Verified</span>
+                <span class="text-[11px] text-slate-400 font-medium">${isVietnamese ? 'Đối tác GetYourGuide' : 'GetYourGuide Verified'}</span>
               `}
 
               <a
@@ -376,7 +376,7 @@ const t = placeholders[currentLocale] || placeholders.en;
                 rel="nofollow sponsored noopener"
                 class="bg-[#ff7043] hover:bg-[#f4511e] text-white text-xs font-bold px-4 py-2 rounded-xl shadow-md shadow-[#ff7043]/20 hover:shadow-[#ff7043]/40 transition-all text-center flex items-center space-x-1"
               >
-                <span>${isVietnamese ? 'Đặt Chỗ' : 'Reserve VIP'}</span>
+                <span>${isVietnamese ? 'Xem chỗ trống' : 'Reserve VIP'}</span>
                 <span>→</span>
               </a>
             </div>
