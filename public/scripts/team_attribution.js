@@ -64,7 +64,11 @@
       if (parsed.hostname.includes('getyourguide.com')) {
         parsed.searchParams.set('partner_id', partnerId);
         const currentCmp = parsed.searchParams.get('cmp') || 'app_1000';
-        parsed.searchParams.set('cmp', currentCmp.replace(/^app_1000_/, `team_${subId}_`).replace(/^t4u_app_/, `team_${subId}_`));
+        const memberPrefix = `team_${subId}_`;
+        const normalizedCmp = currentCmp.startsWith(memberPrefix)
+          ? currentCmp
+          : `${memberPrefix}${currentCmp.replace(/^(app_1000_|t4u_app_)/, '')}`;
+        parsed.searchParams.set('cmp', normalizedCmp);
         return parsed.toString();
       }
     } catch (e) {
