@@ -60,3 +60,16 @@ rate; the package purchased by the customer does not change that rate.
 The entitlement is a policy value only; payout calculation must still validate
 the seller's active subscription, qualifying order, refund/chargeback status,
 and idempotency before recording a commission.
+
+The commission ledger migration adds `public.affiliate_commissions` with a
+unique `(seller_workspace_id, qualifying_sale_reference)` key. Only service
+role/server-side settlement code should insert, approve, void, or pay ledger
+rows; workspace members have read-only access to their own workspace rows.
+
+## VIP leads
+
+`20260920113000_vip_leads.sql` creates `public.leads` for the public concierge
+CTA. `POST /api/leads` validates and inserts with the Supabase service role.
+RLS intentionally has no anonymous `SELECT` or `INSERT` policy. If a lead is
+assigned a `workspace_id`, active members of that workspace can read it; the
+service role remains the only public-form writer.

@@ -14,28 +14,42 @@ const isAppRoute = Astro.url.pathname.startsWith('/app');
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     {!isAppRoute && (
       <section class="mb-12 rounded-2xl border border-[#c9a54e]/35 bg-gradient-to-br from-[#0d1b2c] to-[#07111e] p-5 sm:p-7" aria-labelledby="footer-cta-title">
-        <div class="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+        <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(320px,480px)] lg:items-center">
           <div class="max-w-2xl">
-            <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#c9a54e]">
-              {currentLocale === 'vi' ? 'Travel4You SaaS' : 'Travel4You SaaS'}
-            </p>
+            <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#c9a54e]">VIP Concierge</p>
             <h2 id="footer-cta-title" class="mt-2 font-serif text-2xl font-bold text-white sm:text-3xl">
-              {currentLocale === 'vi' ? 'Biến ý tưởng chuyến đi thành kế hoạch rõ ràng.' : 'Turn your travel idea into a clear project.'}
+              {currentLocale === 'vi' ? 'Để chúng tôi thiết kế chuyến đi VIP của bạn.' : 'Let us design your private VIP journey.'}
             </h2>
             <p class="mt-2 text-sm leading-relaxed text-slate-300">
               {currentLocale === 'vi'
-                ? 'Tạo workspace để lưu dự án, xây dựng kế hoạch và tiếp tục phát triển hành trình của riêng bạn.'
-                : 'Create a workspace to save projects, build plans, and keep developing your next journey.'}
+                ? 'Chia sẻ mong muốn, điểm đến và ngân sách. Đội ngũ concierge sẽ liên hệ với đề xuất phù hợp.'
+                : 'Share your wishes, destination and budget. Our concierge team will follow up with a tailored proposal.'}
             </p>
           </div>
-          <div class="flex w-full flex-col gap-3 sm:w-auto sm:min-w-[190px]">
-            <a href="/app/login/" class="inline-flex min-h-11 items-center justify-center rounded-lg bg-[#c9a54e] px-5 py-3 text-center text-sm font-bold text-[#07111e] transition hover:bg-[#e1bd63] focus:outline-none focus:ring-2 focus:ring-[#c9a54e] focus:ring-offset-2 focus:ring-offset-[#07111e]">
-              {currentLocale === 'vi' ? 'Bắt đầu workspace' : 'Start your workspace'}
-            </a>
-            <a href={currentLocale === 'vi' ? '/vi/' : '/'} class="inline-flex min-h-11 items-center justify-center rounded-lg border border-slate-600 px-5 py-3 text-center text-sm font-semibold text-slate-200 transition hover:border-[#c9a54e] hover:text-[#c9a54e] focus:outline-none focus:ring-2 focus:ring-[#c9a54e] focus:ring-offset-2 focus:ring-offset-[#07111e]">
-              {currentLocale === 'vi' ? 'Khám phá trải nghiệm' : 'Explore experiences'}
-            </a>
-          </div>
+          <form id="vip-lead-form" class="grid gap-3 sm:grid-cols-2" action="/api/leads" method="post">
+            <label class="sr-only" for="vip-name">{currentLocale === 'vi' ? 'Họ tên' : 'Name'}</label>
+            <input id="vip-name" name="name" required maxlength="120" autocomplete="name" placeholder={currentLocale === 'vi' ? 'Họ tên *' : 'Your name *'} class="min-h-11 rounded-lg border border-slate-700 bg-slate-950/60 px-3 text-sm text-white placeholder:text-slate-500 focus:border-[#c9a54e] focus:outline-none" />
+            <label class="sr-only" for="vip-email">Email</label>
+            <input id="vip-email" name="email" required type="email" maxlength="254" autocomplete="email" placeholder="Email *" class="min-h-11 rounded-lg border border-slate-700 bg-slate-950/60 px-3 text-sm text-white placeholder:text-slate-500 focus:border-[#c9a54e] focus:outline-none" />
+            <label class="sr-only" for="vip-phone">{currentLocale === 'vi' ? 'Số điện thoại' : 'Phone'}</label>
+            <input id="vip-phone" name="phone" type="tel" maxlength="32" autocomplete="tel" placeholder={currentLocale === 'vi' ? 'Số điện thoại' : 'Phone'} class="min-h-11 rounded-lg border border-slate-700 bg-slate-950/60 px-3 text-sm text-white placeholder:text-slate-500 focus:border-[#c9a54e] focus:outline-none" />
+            <label class="sr-only" for="vip-destination">{currentLocale === 'vi' ? 'Điểm đến' : 'Destination'}</label>
+            <input id="vip-destination" name="destination" maxlength="160" placeholder={currentLocale === 'vi' ? 'Điểm đến mong muốn' : 'Preferred destination'} class="min-h-11 rounded-lg border border-slate-700 bg-slate-950/60 px-3 text-sm text-white placeholder:text-slate-500 focus:border-[#c9a54e] focus:outline-none" />
+            <select name="request_type" required class="min-h-11 rounded-lg border border-slate-700 bg-slate-950/60 px-3 text-sm text-white focus:border-[#c9a54e] focus:outline-none">
+              <option value="">{currentLocale === 'vi' ? 'Bạn cần hỗ trợ gì? *' : 'What can we arrange? *'}</option>
+              <option value="private_itinerary">{currentLocale === 'vi' ? 'Lịch trình riêng' : 'Private itinerary'}</option>
+              <option value="vip_experience">{currentLocale === 'vi' ? 'Trải nghiệm VIP' : 'VIP experience'}</option>
+              <option value="hotel_villa">{currentLocale === 'vi' ? 'Khách sạn / villa' : 'Hotel / villa'}</option>
+              <option value="other">{currentLocale === 'vi' ? 'Yêu cầu khác' : 'Other request'}</option>
+            </select>
+            <input name="budget" maxlength="80" placeholder={currentLocale === 'vi' ? 'Ngân sách dự kiến' : 'Estimated budget'} class="min-h-11 rounded-lg border border-slate-700 bg-slate-950/60 px-3 text-sm text-white placeholder:text-slate-500 focus:border-[#c9a54e] focus:outline-none" />
+            <textarea name="message" maxlength="2000" rows="2" placeholder={currentLocale === 'vi' ? 'Mô tả ngắn yêu cầu của bạn' : 'Tell us briefly what you need'} class="sm:col-span-2 rounded-lg border border-slate-700 bg-slate-950/60 px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:border-[#c9a54e] focus:outline-none"></textarea>
+            <div aria-hidden="true" class="hidden"><input name="website" tabindex="-1" autocomplete="off" /></div>
+            <button type="submit" class="sm:col-span-2 inline-flex min-h-11 items-center justify-center rounded-lg bg-[#c9a54e] px-5 py-3 text-sm font-bold text-[#07111e] transition hover:bg-[#e1bd63] focus:outline-none focus:ring-2 focus:ring-[#c9a54e] disabled:cursor-not-allowed disabled:opacity-60">
+              {currentLocale === 'vi' ? 'Nhận tư vấn VIP' : 'Request VIP consultation'}
+            </button>
+            <p id="vip-lead-status" class="sm:col-span-2 min-h-5 text-xs" role="status" aria-live="polite"></p>
+          </form>
         </div>
       </section>
     )}
@@ -137,3 +151,39 @@ const isAppRoute = Astro.url.pathname.startsWith('/app');
     </div>
   </div>
 </footer>
+
+{!isAppRoute && (
+  <script is:inline>
+    const form = document.getElementById('vip-lead-form');
+    if (form) {
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const status = document.getElementById('vip-lead-status');
+        const button = form.querySelector('button[type="submit"]');
+        if (status) status.textContent = '';
+        if (button) button.disabled = true;
+        try {
+          const response = await fetch('/api/leads', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json', accept: 'application/json' },
+            body: JSON.stringify(Object.fromEntries(new FormData(form)))
+          });
+          const result = await response.json().catch(() => ({}));
+          if (!response.ok) throw new Error(result.error || 'Unable to submit your request.');
+          form.reset();
+          if (status) {
+            status.className = 'sm:col-span-2 min-h-5 text-xs text-emerald-300';
+            status.textContent = document.documentElement.lang === 'vi' ? 'Đã nhận yêu cầu. Chúng tôi sẽ sớm liên hệ.' : 'Request received. Our concierge will be in touch soon.';
+          }
+        } catch (error) {
+          if (status) {
+            status.className = 'sm:col-span-2 min-h-5 text-xs text-rose-300';
+            status.textContent = error.message;
+          }
+        } finally {
+          if (button) button.disabled = false;
+        }
+      });
+    }
+  </script>
+)}

@@ -13,9 +13,21 @@ Built with the modern **JAMstack / Edge Static Site Generation (SSG)** paradigm 
 * **Styling:** Tailwind CSS Luxury Palette (`#07111e` Deep Midnight Navy, `#c9a54e` Sovereign Gold, `#ff7043` High-CRO Coral).
 * **Edge Hosting:** Cloudflare Pages (330+ Edge Data Centers globally, sub-50ms TTFB).
 * **Edge Functions:** `functions/go/[slug].js` (Smart Affiliate Cloaking & Geo-IP country targeting).
+* **VIP lead capture:** `POST /api/leads` validates the public concierge form and writes
+  server-side to Supabase `public.leads` with the service-role key. The table has RLS,
+  no anonymous select/insert policy, and workspace-scoped member reads only.
 * **Locales (11):** `en`, `de`, `fr`, `es`, `it`, `ja`, `ko`, `zh-tw`, `zh-cn`, `pt`, `ru`.
 * **CRO standard:** 4-Point Lana Benchmark (Hero VIP Callout, Comparison Matrix, Contextual Hour-by-Hour Itinerary, 24h Free Cancellation Guarantee Box).
 * **Media:** 73 Verified UHD 4K authentic photographs with 0% MD5 duplicate rate.
+
+### VIP concierge lead capture
+
+The responsive footer CTA is localized for English and Vietnamese (and remains
+available on the other public locale pages). It collects name, email, optional
+phone, request type, destination, budget, and message. A honeypot and
+best-effort rate limit protect the edge endpoint; no Telegram notification is
+sent by this flow. Configure `SUPABASE_SERVICE_ROLE_KEY` as an encrypted
+Cloudflare Pages secret before deployment.
 
 ---
 

@@ -102,6 +102,17 @@ partners.travel4you.app
 └── Partner / supplier portal
 ```
 
+## Public VIP lead capture
+
+The public acquisition layer includes a localized footer concierge CTA that
+posts to `/api/leads`. The Cloudflare Pages Function validates bounded contact
+fields, rejects the honeypot, applies an optional `RATE_LIMITER` binding (with
+a best-effort isolate fallback), and writes through Supabase service role only.
+`public.leads` is protected by RLS: anonymous clients cannot read or insert
+lead data, while authenticated workspace members can read only leads assigned
+to their workspace. Telegram notifications are intentionally not part of this
+flow until a reviewed helper exists.
+
 For the first 60 days, deployment may remain in the same repository and Cloudflare project if this reduces operational complexity.
 
 ---
