@@ -7,10 +7,39 @@ interface Props {
 
 const { currentLocale = 'en' } = Astro.props;
 const dict = (i18n as any)[currentLocale] || (i18n as any).en;
+const isAppRoute = Astro.url.pathname.startsWith('/app');
 ---
 
 <footer class="bg-[#040a12] border-t border-slate-800/80 pt-16 pb-12 text-slate-400 text-sm mt-auto">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    {!isAppRoute && (
+      <section class="mb-12 rounded-2xl border border-[#c9a54e]/35 bg-gradient-to-br from-[#0d1b2c] to-[#07111e] p-5 sm:p-7" aria-labelledby="footer-cta-title">
+        <div class="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+          <div class="max-w-2xl">
+            <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#c9a54e]">
+              {currentLocale === 'vi' ? 'Travel4You SaaS' : 'Travel4You SaaS'}
+            </p>
+            <h2 id="footer-cta-title" class="mt-2 font-serif text-2xl font-bold text-white sm:text-3xl">
+              {currentLocale === 'vi' ? 'Biến ý tưởng chuyến đi thành kế hoạch rõ ràng.' : 'Turn your travel idea into a clear project.'}
+            </h2>
+            <p class="mt-2 text-sm leading-relaxed text-slate-300">
+              {currentLocale === 'vi'
+                ? 'Tạo workspace để lưu dự án, xây dựng kế hoạch và tiếp tục phát triển hành trình của riêng bạn.'
+                : 'Create a workspace to save projects, build plans, and keep developing your next journey.'}
+            </p>
+          </div>
+          <div class="flex w-full flex-col gap-3 sm:w-auto sm:min-w-[190px]">
+            <a href="/app/login/" class="inline-flex min-h-11 items-center justify-center rounded-lg bg-[#c9a54e] px-5 py-3 text-center text-sm font-bold text-[#07111e] transition hover:bg-[#e1bd63] focus:outline-none focus:ring-2 focus:ring-[#c9a54e] focus:ring-offset-2 focus:ring-offset-[#07111e]">
+              {currentLocale === 'vi' ? 'Bắt đầu workspace' : 'Start your workspace'}
+            </a>
+            <a href={currentLocale === 'vi' ? '/vi/' : '/'} class="inline-flex min-h-11 items-center justify-center rounded-lg border border-slate-600 px-5 py-3 text-center text-sm font-semibold text-slate-200 transition hover:border-[#c9a54e] hover:text-[#c9a54e] focus:outline-none focus:ring-2 focus:ring-[#c9a54e] focus:ring-offset-2 focus:ring-offset-[#07111e]">
+              {currentLocale === 'vi' ? 'Khám phá trải nghiệm' : 'Explore experiences'}
+            </a>
+          </div>
+        </div>
+      </section>
+    )}
+
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
       
       <!-- Col 1: Brand & Sovereign Authority -->

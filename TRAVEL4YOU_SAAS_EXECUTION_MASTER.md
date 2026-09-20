@@ -2301,6 +2301,27 @@ is queued as the next deployment.
 The change keeps affiliate and trust claims factual while making the
 Vietnamese experience readable for native users on mobile and desktop.
 
+## 26.34 Footer SaaS CTA audit — 2026-09-20 10:04 ICT
+
+The footer previously had four responsive content columns, language links,
+trust information, and affiliate disclosure, but no conversion CTA. On
+mobile this meant the visitor reached the end of the page without a clear
+path into the SaaS workspace.
+
+Added a responsive CTA panel before the footer columns:
+
+- primary CTA: `Bắt đầu workspace` / `Start your workspace` → `/app/login/`;
+- secondary CTA: return to the localized experience collection;
+- mobile buttons stack full-width with a minimum 44px touch height;
+- tablet and desktop use a two-part horizontal layout;
+- the CTA is excluded from `/app/*` routes so the authenticated workspace
+  does not advertise a redundant sign-in action;
+- copy describes workspace/project functionality without promising a
+  subscription, free tier, or guaranteed outcome.
+
+The footer remains four-column and SEO-readable, while the new CTA supplies
+the missing SaaS conversion step on mobile.
+
 ## 26.31 Detail-page and catalog hardening — 2026-09-20 08:55 ICT
 
 The Vietnamese detail route was audited and corrected:
