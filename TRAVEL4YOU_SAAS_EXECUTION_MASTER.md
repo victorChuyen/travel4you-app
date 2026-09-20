@@ -2347,6 +2347,13 @@ Static validation and `npm run build` passed. Real payment acceptance remains
 blocked until the owner supplies/sets the real SePay VND price map and runs
 provider sandbox tests.
 
+The Auth/RLS review also found and corrected a membership escalation path in
+the original migration: a signed-in user could insert a membership for
+themselves into an arbitrary workspace or update their own role/status. The
+membership policies now require the workspace owner/admin for membership
+creation and updates; the owner bootstrap path remains allowed only when the
+new row matches the workspace owner.
+
 ---
 
 **END OF MASTER EXECUTION FILE**

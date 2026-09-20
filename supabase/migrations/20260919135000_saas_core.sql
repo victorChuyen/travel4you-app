@@ -313,17 +313,30 @@ create policy profiles_self_select on public.profiles for select using (id = aut
 create policy profiles_self_insert on public.profiles for insert with check (id = auth.uid());
 create policy profiles_self_update on public.profiles for update using (id = auth.uid()) with check (id = auth.uid());
 
-create policy workspaces_member_select on public.workspaces for select using (public.is_workspace_member(id));
+create policy workspaces_member_select on public.workspaces
+for select using (owner_user_id = auth.uid() or public.is_workspace_member(id));
 create policy workspaces_owner_insert on public.workspaces for insert with check (owner_user_id = auth.uid());
 create policy workspaces_admin_update on public.workspaces for update using (public.is_workspace_admin(id)) with check (public.is_workspace_admin(id));
 
 create policy workspace_members_member_select on public.workspace_members
 for select using (public.is_workspace_member(workspace_id));
 create policy workspace_members_admin_insert on public.workspace_members
-for insert with check (public.is_workspace_admin(workspace_id) or user_id = auth.uid());
+for insert with check (
+  public.is_workspace_admin(workspace_id)
+  or exists (
+    select 1
+    from public.workspaces w
+    where w.id = workspace_members.workspace_id
+      and w.owner_user_id = auth.uid()
+      and workspace_members.user_id = auth.uid()
+      and workspace_members.role = 'owner'
+      and workspace_members.status = 'active'
+  )
+);
+
 create policy workspace_members_admin_update on public.workspace_members
-for update using (public.is_workspace_admin(workspace_id) or user_id = auth.uid())
-with check (public.is_workspace_admin(workspace_id) or user_id = auth.uid());
+for update using (public.is_workspace_admin(workspace_id))
+with check (public.is_workspace_admin(workspace_id));
 
 create policy projects_member_select on public.projects for select using (public.is_workspace_member(workspace_id));
 create policy projects_member_insert on public.projects

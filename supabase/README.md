@@ -37,3 +37,7 @@ PayPal checkout validates the amount against the selected plan's USD
 `price_reference`. Both webhook handlers are retry-safe: a fully processed
 event is ignored, while an event recorded before an interrupted activation can
 resume processing.
+
+The workspace membership policies intentionally do not allow self-joining by
+workspace ID or self-editing a membership role/status. Only the workspace
+owner or an active admin can create or change memberships.
