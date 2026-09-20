@@ -2525,6 +2525,98 @@ still requires an authenticated project request. Cloudflare Pages cannot
 reach local `127.0.0.1`, so production requires a network-reachable 9router
 or Ollama endpoint before remote AI generation can be claimed live.
 
+## 26.38 Google Cloud credit verification — 2026-09-20 12:40 ICT
+
+The owner-provided Google Cloud Console screenshot confirms that project
+`project-c98b9fda-c285-4d04-a43` is on a full account with promotional credits
+available until **2026-11-24**. The console displays **233 credits used out of
+7,897,351 displayed credits**. Treat the displayed unit/denomination as
+Google Cloud Console account credit metadata, not as a verified USD balance;
+billing reports remain the source of truth for currency and spend.
+
+Operating controls:
+
+- **Owner decision:** do not spend this credit on 9router hosting, Cloud Run,
+  VPS, remote Ollama, or other infrastructure while the local stack is
+  working.
+- Reserve any approved Google Cloud spend for **Phase 2 only**: controlled AI
+  video production and completing the approved 1,000-article content target.
+- Configure budget alerts at 25%, 50%, 75%, and 90% before Phase 2 spend.
+- Do not run GPU or AI workers continuously without a bounded queue.
+- Require per-batch quotas, deduplication, quality gates, and cost reports.
+- Keep a cost log for video generation, article generation, storage, logging,
+  and egress.
+- Never store the Google account password in `.env`, source code, or Sheets.
+
+### Phase 2 credit-use gate
+
+Credit remains disabled by default until the Phase 2 batch plan is approved.
+The intended order is:
+
+1. Complete the content inventory and identify the exact article gap to 1,000.
+2. Generate articles in bounded batches with demand/intent metadata and
+   Grade-A quality validation.
+3. Generate only the required AI video assets for approved articles.
+4. Deduplicate media, validate captions/attribution, and record cost per batch.
+5. Stop automatically at quota, budget, quality, or duplicate-content limits.
+
+Local Ollama and existing local scripts remain the default execution path for
+development and validation. No claim is made that 1,000 articles or the AI
+video phase has already been produced.
+
+## 26.39 Ca chiều — định hướng VPS GPU Phase 2 — 2026-09-20 14:49 ICT
+
+Owner decision: do not spend the Google Cloud promotional credit on remote
+9router, Cloud Run, VPS, or hosted Ollama while the local stack is working.
+The credit is reserved for Phase 2 production only: controlled AI video
+generation and completing the approved 1,000-article target.
+
+### Target architecture
+
+When Phase 2 is approved, one sufficiently large GPU VPS may host the
+production workers as isolated services:
+
+```text
+Cloudflare Pages / Functions
+             |
+       authenticated gateway
+             |
+       9router local API
+        /            \
+     Ollama       Redis queue
+        |          /       \
+ article worker  video   FFmpeg
+                 worker  renderer
+```
+
+Supabase remains the system of record for Auth, workspaces, projects, AI jobs,
+leads, billing, and RLS. Cloudflare remains the public edge. The VPS is a
+bounded production worker, not a replacement for the public application.
+
+### Operating requirements
+
+- GPU worker jobs run through Redis or an equivalent durable queue.
+- One video job consumes one GPU slot; no unbounded parallel generation.
+- Article and video workers have separate memory/CPU limits and health checks.
+- Failed jobs go to a dead-letter queue; retries are bounded and idempotent.
+- FFmpeg output, prompt hash, model version, source media, QA status, and cost
+  estimate are recorded per job.
+- Ollama is never exposed directly to the public Internet; access goes through
+  an authenticated gateway or private network.
+- GPU execution is enabled only after a batch plan, budget alerts, and stop
+  thresholds are approved.
+
+### Phase 2 production sequence
+
+1. Inventory the real article gap to 1,000; do not assume the target is met.
+2. Generate bounded article batches with intent metadata and Grade-A gates.
+3. Generate videos only for approved high-intent articles first.
+4. Deduplicate media and validate captions, attribution, and output quality.
+5. Record cost and throughput per batch; stop on budget, quota, or quality
+   thresholds.
+
+No VPS has been provisioned and no 24/7 video worker is currently running.
+
 The only owner inputs that cannot be safely invented are approved SePay
 prices, the production 9router endpoint/API key, and two test-user
 credentials or permission to create them. Until those are supplied, the
