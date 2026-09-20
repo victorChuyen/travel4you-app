@@ -9,6 +9,9 @@ node_modules/
 .env
 .env.production
 .env.local
+seowin-*.json
+client_secret_*.json
+*-project=*.txt
 
 # Cloudflare Pages / Wrangler
 .wrangler/
