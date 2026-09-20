@@ -13,6 +13,7 @@ const ARTICLES_PATH = path.join(ROOT_APP, 'src/data/articles.json');
 const articles = JSON.parse(fs.readFileSync(ARTICLES_PATH, 'utf8'));
 const HANDOVER_NAME = `TRAVEL4YOU.APP — CUSTOMER HANDOVER — ${new Date().toISOString().slice(0, 10)}`;
 const SOURCE_PARENT_ID = '1I6oUpyqINKKzHNzL5V-o1eiMg6oEN33u';
+const TARGET_SPREADSHEET_ID = process.env.HANDOVER_SPREADSHEET_ID || '';
 
 async function driveRequest(url, options = {}) {
   const token = await getAccessToken(SA_KEY_FILE);
@@ -73,6 +74,49 @@ async function shareWithOwner(fileId) {
       }),
     },
   );
+}
+
+async function normalizeWorkbook(fileId) {
+  const metadata = await driveRequest(
+    `https://sheets.googleapis.com/v4/spreadsheets/${fileId}?fields=sheets(properties(sheetId,title))`,
+  );
+  const sheets = metadata.sheets || [];
+  if (!sheets.length) throw new Error('Handover spreadsheet has no sheet tab to retain.');
+
+  const [primary, ...extras] = sheets;
+  const requests = extras.map((sheet) => ({
+    deleteSheet: { sheetId: sheet.properties.sheetId },
+  }));
+  if (primary.properties.title !== '00_README') {
+    requests.push({
+      updateSheetProperties: {
+        properties: { sheetId: primary.properties.sheetId, title: '00_README' },
+        fields: 'title',
+      },
+    });
+  }
+
+  await driveRequest(`https://sheets.googleapis.com/v4/spreadsheets/${fileId}:batchUpdate`, {
+    method: 'POST',
+    body: JSON.stringify({ requests }),
+  });
+
+  const token = await getAccessToken(SA_KEY_FILE);
+  const clearResponse = await fetch(
+    `https://sheets.googleapis.com/v4/spreadsheets/${fileId}/values/00_README:clear`,
+    {
+      method: 'POST',
+      headers: {
+        authorization: `Bearer ${token}`,
+        'content-type': 'application/json',
+      },
+      body: '{}',
+    },
+  );
+  if (!clearResponse.ok) {
+    throw new Error(`Failed to clear 00_README: ${clearResponse.status} ${await clearResponse.text()}`);
+  }
+  console.log(`Normalized handover workbook: removed ${extras.length} unrelated tab(s).`);
 }
 
 async function writeHandoverTabs(fileId) {
@@ -176,13 +220,17 @@ async function writeHandoverTabs(fileId) {
 }
 
 async function main() {
-  console.log(`Copying source spreadsheet ${SPREADSHEET_18_THEMES_ID}...`);
-  const copied = await copySpreadsheet();
-  await shareWithOwner(copied.id);
-  await writeHandoverTabs(copied.id);
-  console.log(`HANDOVER_SPREADSHEET_ID=${copied.id}`);
-  console.log(`HANDOVER_URL=https://docs.google.com/spreadsheets/d/${copied.id}/edit`);
-  console.log('Customer handover workbook created and populated successfully.');
+  const fileId = TARGET_SPREADSHEET_ID || (await copySpreadsheet()).id;
+  if (TARGET_SPREADSHEET_ID) {
+    console.log(`Using owner-provided handover spreadsheet ${TARGET_SPREADSHEET_ID}...`);
+    await normalizeWorkbook(fileId);
+  } else {
+    await shareWithOwner(fileId);
+  }
+  await writeHandoverTabs(fileId);
+  console.log(`HANDOVER_SPREADSHEET_ID=${fileId}`);
+  console.log(`HANDOVER_URL=https://docs.google.com/spreadsheets/d/${fileId}/edit`);
+  console.log('Customer handover workbook populated successfully.');
 }
 
 main().catch((error) => {
