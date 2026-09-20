@@ -2207,6 +2207,34 @@ was completed on the customer-facing app.
 5. Only after these checks pass, resume the 90-day content expansion and
    revenue plan.
 
+## 26.28 Live search verification — 2026-09-20 07:59 ICT
+
+The customer-facing search and category tabs were verified on the deployed
+site after the SearchBar fix. With the search field cleared, the live
+category results were:
+
+| Tab | Results |
+|---|---:|
+| Europe | 318 |
+| Asia | 117 |
+| Islands | 107 |
+| Safari | 107 |
+| Middle East | 2 |
+| Wellness Spas | 100 |
+| 5-Star Sanctuaries | 400 |
+
+The All tab loads the full 1,000-record index with pagination. A search for
+`Kyoto` returns the matching result and updates the live counter. A previous
+zero-result observation occurred while the `Kyoto` query remained active when
+switching to unrelated tabs; it was expected query-plus-filter behavior, not
+a broken category handler.
+
+The Travelpayouts Drive script reports a browser-side CORS/configuration
+warning from the external `emrldtp.com` endpoint during local/production
+browser inspection. Travelpayouts ownership and Drive activation remain
+confirmed, and the warning does not block search, navigation, or booking CTA
+interaction. Continue monitoring Drive attribution separately.
+
 ---
 
 **END OF MASTER EXECUTION FILE**
