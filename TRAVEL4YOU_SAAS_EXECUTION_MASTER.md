@@ -2273,6 +2273,29 @@ than literal word-for-word translation. The following corrections were made:
 - Vietnamese card descriptions now distinguish editorial selection from the
   provider's live cancellation policy.
 
+## 26.31 Responsive attribution banner QA — 2026-09-20 09:56 ICT
+
+The Rova member attribution banner was tightened for narrow screens. The
+previous mobile layout displayed three inline messages and reached roughly
+69px, pushing the header and hero below the fold and making the message read
+like narrow columns.
+
+The banner now uses:
+
+- one compact, truncated identity line on phones;
+- the full curator context only from the small-screen breakpoint upward;
+- factual wording (`Explore curated experiences`) instead of the unsupported
+  `Exclusive VIP Access Guaranteed` claim;
+- smaller, consistent padding and an animated status dot that does not affect
+  layout width;
+- a versioned `team_attribution.js` asset so deployed browsers cannot retain
+  the previous banner indefinitely.
+
+The production build passed and the change was committed as `d441d7f`.
+Production cache propagation should be confirmed after the next Cloudflare
+Pages deployment; the current live HTML may temporarily reference the prior
+`20260920-2` asset while the deployment is rolling out.
+
 The change keeps affiliate and trust claims factual while making the
 Vietnamese experience readable for native users on mobile and desktop.
 
