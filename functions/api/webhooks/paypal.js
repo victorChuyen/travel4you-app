@@ -14,7 +14,9 @@ function getPaymentReference(event) {
 
 function getPaymentAmount(event) {
   const resource = event.resource || {};
-  const amount = resource.amount || resource.seller_receivable_breakdown?.gross_amount;
+  const amount = resource.amount
+    || resource.purchase_units?.[0]?.amount
+    || resource.seller_receivable_breakdown?.gross_amount;
   return {
     value: Number(amount?.value),
     currency: String(amount?.currency_code || ''),
@@ -52,7 +54,6 @@ export async function onRequestPost({ request, env }) {
       .eq('external_event_id', eventId)
       .maybeSingle();
     if (existingError) throw existingError;
-    if (existingEvent) return json({ ok: true, duplicate: true });
 
     const reference = getPaymentReference(event);
     if (!reference) return json({ error: 'PayPal event has no payment reference.' }, 400);
@@ -61,7 +62,7 @@ export async function onRequestPost({ request, env }) {
 
     const { data: payment, error: paymentError } = await client
       .from('payments')
-      .select('id,amount,currency,status,order_reference,raw_metadata_json')
+      .select('id,workspace_id,amount,currency,status,order_reference,raw_metadata_json')
       .eq('provider', 'paypal')
       .eq('order_reference', reference)
       .maybeSingle();
@@ -72,15 +73,25 @@ export async function onRequestPost({ request, env }) {
       return json({ error: 'PayPal payment amount mismatch.' }, 400);
     }
 
-    const { error: eventError } = await client.from('billing_webhook_events').insert({
-      provider: 'paypal',
-      external_event_id: eventId,
-      event_type: event.event_type,
-      payload_hash: await hashPayload(event),
-    });
-    if (eventError) {
-      if (eventError.code === '23505') return json({ ok: true, duplicate: true });
-      throw eventError;
+    const { data: currentEvent, error: currentEventError } = await client
+      .from('billing_webhook_events')
+      .select('id,processed_at')
+      .eq('provider', 'paypal')
+      .eq('external_event_id', eventId)
+      .maybeSingle();
+    if (currentEventError) throw currentEventError;
+    if (currentEvent?.processed_at) return json({ ok: true, duplicate: true });
+    if (!currentEvent) {
+      const { error: eventError } = await client.from('billing_webhook_events').insert({
+        provider: 'paypal',
+        external_event_id: eventId,
+        event_type: event.event_type,
+        payload_hash: await hashPayload(event),
+      });
+      if (eventError) {
+        if (eventError.code === '23505') return json({ ok: true, duplicate: true });
+        throw eventError;
+      }
     }
 
     const paidAt = new Date().toISOString();
@@ -90,6 +101,48 @@ export async function onRequestPost({ request, env }) {
       .eq('id', payment.id)
       .eq('status', 'pending');
     if (paymentUpdateError) throw paymentUpdateError;
+
+    const planCode = payment.raw_metadata_json?.plan_code;
+    if (planCode) {
+      const { data: plan, error: planError } = await client
+        .from('plans')
+        .select('id')
+        .eq('code', planCode)
+        .eq('active', true)
+        .maybeSingle();
+      if (planError) throw planError;
+      if (!plan) return json({ error: 'Payment references an inactive plan.' }, 409);
+
+      const periodStart = new Date();
+      const periodEnd = new Date(periodStart);
+      periodEnd.setUTCMonth(periodEnd.getUTCMonth() + 1);
+      const { data: subscription, error: subscriptionError } = await client
+        .from('subscriptions')
+        .select('id')
+        .eq('workspace_id', payment.workspace_id)
+        .eq('billing_provider', 'paypal')
+        .in('status', ['trialing', 'active', 'past_due'])
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (subscriptionError) throw subscriptionError;
+
+      const subscriptionValues = {
+        workspace_id: payment.workspace_id,
+        billing_provider: 'paypal',
+        external_subscription_id: reference,
+        plan_id: plan.id,
+        status: 'active',
+        current_period_start: periodStart.toISOString(),
+        current_period_end: periodEnd.toISOString(),
+        cancel_at_period_end: false,
+      };
+      const subscriptionQuery = subscription
+        ? client.from('subscriptions').update(subscriptionValues).eq('id', subscription.id)
+        : client.from('subscriptions').insert(subscriptionValues);
+      const { error: subscriptionWriteError } = await subscriptionQuery;
+      if (subscriptionWriteError) throw subscriptionWriteError;
+    }
 
     const { error: processedError } = await client
       .from('billing_webhook_events')

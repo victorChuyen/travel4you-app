@@ -14,8 +14,8 @@ export async function onRequestPost({ request, env }) {
     const provider = body.provider === 'sepay' || body.provider === 'paypal' ? body.provider : null;
     const amount = Number(body.amount);
     const currency = String(body.currency || (provider === 'sepay' ? 'VND' : 'USD'));
-    if (!workspaceId || !provider || !Number.isFinite(amount) || amount <= 0) {
-      return json({ error: 'workspace_id, provider and a positive amount are required.' }, 400);
+    if (!workspaceId || !provider || !planCode || !Number.isFinite(amount) || amount <= 0) {
+      return json({ error: 'workspace_id, provider, plan_code and a positive amount are required.' }, 400);
     }
 
     const { data: membership, error: membershipError } = await client
@@ -27,6 +27,42 @@ export async function onRequestPost({ request, env }) {
       .maybeSingle();
     if (membershipError) throw membershipError;
     if (!membership) return json({ error: 'Workspace access denied.' }, 403);
+
+    const { data: plan, error: planError } = await client
+      .from('plans')
+      .select('code,active,price_reference')
+      .eq('code', planCode)
+      .eq('active', true)
+      .maybeSingle();
+    if (planError) throw planError;
+    if (!plan) return json({ error: 'The selected plan is unavailable.' }, 409);
+
+    const referencePrice = plan.price_reference && typeof plan.price_reference === 'object'
+      ? Number(plan.price_reference.amount)
+      : NaN;
+    const referenceCurrency = String(plan.price_reference?.currency || '').toUpperCase();
+    if (provider === 'paypal' && (
+      referenceCurrency !== currency.toUpperCase()
+      || !Number.isFinite(referencePrice)
+      || Math.abs(referencePrice - amount) > 0.01
+    )) {
+      return json({ error: 'The checkout amount does not match the selected plan.' }, 400);
+    }
+    if (provider === 'sepay' && !env.SEPAY_PLAN_PRICES_JSON) {
+      return json({ error: 'SePay plan pricing is not configured.' }, 503);
+    }
+    if (provider === 'sepay') {
+      let sepayPrices;
+      try {
+        sepayPrices = JSON.parse(env.SEPAY_PLAN_PRICES_JSON);
+      } catch {
+        return json({ error: 'SePay plan pricing configuration is invalid.' }, 503);
+      }
+      const expectedAmount = Number(sepayPrices?.[planCode]);
+      if (!Number.isFinite(expectedAmount) || expectedAmount <= 0 || expectedAmount !== amount) {
+        return json({ error: 'The checkout amount does not match the selected plan.' }, 400);
+      }
+    }
 
     if (provider === 'sepay' && !env.SEPAY_ACCOUNT_NUMBER) {
       return json({ error: 'SePay is not configured.' }, 503);

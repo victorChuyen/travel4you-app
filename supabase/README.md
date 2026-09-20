@@ -26,8 +26,14 @@ The SePay callback is:
 POST /api/webhooks/sepay
 ```
 
-It requires the server-only `SEPAY_WEBHOOK_SECRET`, matches the payment
-reference and VND amount, records webhook idempotency, marks the payment as
-paid, and activates the plan stored in the checkout metadata. Verify the
-payload and signature contract against the live SePay account before enabling
-production payments.
+It requires the server-only `SEPAY_WEBHOOK_SECRET` and
+`SEPAY_PLAN_PRICES_JSON` (for example `{"creator":750000,"pro":2500000}`),
+matches the payment reference and configured VND amount, records webhook
+idempotency, marks the payment as paid, and activates the plan stored in the
+checkout metadata. Verify the payload and signature contract against the live
+SePay account before enabling production payments.
+
+PayPal checkout validates the amount against the selected plan's USD
+`price_reference`. Both webhook handlers are retry-safe: a fully processed
+event is ignored, while an event recorded before an interrupted activation can
+resume processing.

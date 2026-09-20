@@ -2327,6 +2327,26 @@ Travelpayouts Drive remains loaded with source `575698`; its external
 `emrldtp.com` CORS warning is still provider-side and does not block the
 GetYourGuide CTA or `/go/` redirect.
 
+## 26.33 SaaS billing hardening — 2026-09-20 09:36 ICT
+
+Billing code was hardened before sandbox acceptance:
+
+- checkout now requires an active `plan_code`;
+- PayPal checkout amount/currency must match the selected plan's
+  `price_reference`;
+- SePay checkout requires server-side `SEPAY_PLAN_PRICES_JSON`, so the client
+  cannot choose an arbitrary low amount and still activate a paid plan;
+- PayPal `CHECKOUT.ORDER.COMPLETED` events now read amounts from
+  `purchase_units[0].amount`;
+- PayPal payment webhooks now activate or renew the corresponding workspace
+  subscription, matching SePay behavior;
+- both providers can resume an event whose webhook row exists but has no
+  `processed_at`, instead of permanently treating it as a duplicate.
+
+Static validation and `npm run build` passed. Real payment acceptance remains
+blocked until the owner supplies/sets the real SePay VND price map and runs
+provider sandbox tests.
+
 ---
 
 **END OF MASTER EXECUTION FILE**

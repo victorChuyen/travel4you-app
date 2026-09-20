@@ -76,7 +76,7 @@ export async function onRequestPost({ request, env }) {
       .eq('external_event_id', eventId)
       .maybeSingle();
     if (existingError) throw existingError;
-    if (existingEvent) return json({ success: true, duplicate: true });
+    if (existingEvent?.processed_at) return json({ success: true, duplicate: true });
 
     const { data: payment, error: paymentError } = await client
       .from('payments')
@@ -107,15 +107,17 @@ export async function onRequestPost({ request, env }) {
       plan = data;
     }
 
-    const { error: eventError } = await client.from('billing_webhook_events').insert({
-      provider: 'sepay',
-      external_event_id: eventId,
-      event_type: eventType,
-      payload_hash: payloadHash,
-    });
-    if (eventError) {
-      if (eventError.code === '23505') return json({ ok: true, duplicate: true });
-      throw eventError;
+    if (!existingEvent) {
+      const { error: eventError } = await client.from('billing_webhook_events').insert({
+        provider: 'sepay',
+        external_event_id: eventId,
+        event_type: eventType,
+        payload_hash: payloadHash,
+      });
+      if (eventError) {
+        if (eventError.code === '23505') return json({ ok: true, duplicate: true });
+        throw eventError;
+      }
     }
 
     const paidAt = new Date().toISOString();
