@@ -2475,6 +2475,9 @@ production checks pass:
 - production unauthenticated SaaS endpoints remain protected with HTTP 401;
 - live Supabase RLS corrective policies and VIP commission entitlements are
   applied and verified.
+- the VIP lead migration is applied and a controlled QA submission using the
+  owner-provided contact returned HTTP `201`; a repeated submission is now
+  rejected within a ten-minute email idempotency window.
 
 ### Important non-claim
 
@@ -2492,7 +2495,7 @@ publishing in the background.
 | Day | Delivery gate | Acceptance evidence |
 | --- | --- | --- |
 | 1 | Apply and verify `public.leads` plus commission ledger migrations | Table existence, RLS query, no public lead read |
-| 2 | Submit one marked QA VIP lead using the owner-provided contact | HTTP 201, one `new` row, no duplicate submission |
+| 2 | Submit one marked QA VIP lead using the owner-provided contact | HTTP 201, one `new` row; repeated email is rejected for ten minutes |
 | 3 | Create two dedicated test Auth users | Separate accounts, profiles and workspaces created |
 | 4 | Execute two-user RLS isolation suite | Cross-workspace reads/writes rejected |
 | 5 | Configure approved SePay plan prices | Server secret present; checkout rejects mismatched amounts |

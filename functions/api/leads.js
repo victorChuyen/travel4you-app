@@ -75,6 +75,17 @@ export async function onRequestPost({ request, env }) {
     if (message.length > MAX.message) return json({ error: 'Message is too long.' }, 400);
 
     const client = getSupabaseServiceClient(env);
+    const recentCutoff = new Date(Date.now() - 10 * 60 * 1000).toISOString();
+    const { data: recentLead, error: recentLeadError } = await client
+      .from('leads')
+      .select('id')
+      .eq('email', email)
+      .gte('created_at', recentCutoff)
+      .limit(1)
+      .maybeSingle();
+    if (recentLeadError) throw recentLeadError;
+    if (recentLead) return json({ error: 'A recent request from this email is already being reviewed.' }, 409);
+
     const { error } = await client.from('leads').insert({
       name,
       email,
