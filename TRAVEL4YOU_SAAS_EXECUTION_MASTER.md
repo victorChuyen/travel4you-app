@@ -2290,11 +2290,13 @@ The banner now uses:
   layout width;
 - a versioned `team_attribution.js` asset so deployed browsers cannot retain
   the previous banner indefinitely.
+- `role="status"` plus an accessible attribution label for screen readers.
 
-The production build passed and the change was committed as `d441d7f`.
-Production cache propagation should be confirmed after the next Cloudflare
-Pages deployment; the current live HTML may temporarily reference the prior
-`20260920-2` asset while the deployment is rolling out.
+Production QA at 390px, 412px, 768px, and 1440px found no horizontal overflow.
+The deployed mobile banner is approximately 25px high, versus approximately
+69px previously; tablet is approximately 38px. The production build passed.
+The responsive change was committed as `d441d7f`; the accessibility follow-up
+is queued as the next deployment.
 
 The change keeps affiliate and trust claims factual while making the
 Vietnamese experience readable for native users on mobile and desktop.

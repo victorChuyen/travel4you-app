@@ -94,8 +94,10 @@
     if (!banner) {
       banner = document.createElement('div');
       banner.id = 'team-curator-banner';
-      banner.className = 'w-full bg-[#071424] border-b border-[#c9a54e]/40 py-1.5 sm:py-2 px-3 sm:px-4 text-center text-[10px] sm:text-xs leading-tight text-slate-300 flex items-center justify-center z-40 transition-all';
       const compactName = member.name.replace(/^Luxury\s+/i, '');
+      banner.setAttribute('role', 'status');
+      banner.setAttribute('aria-label', `${compactName} attribution active`);
+      banner.className = 'w-full bg-[#071424] border-b border-[#c9a54e]/40 py-1.5 sm:py-2 px-3 sm:px-4 text-center text-[10px] sm:text-xs leading-tight text-slate-300 flex items-center justify-center z-40 transition-all';
       banner.innerHTML = `
         <span class="inline-block w-1.5 h-1.5 shrink-0 rounded-full bg-emerald-400 animate-pulse mr-2"></span>
         <span class="sm:hidden max-w-[calc(100vw-2.5rem)] truncate"><strong>${compactName}</strong><span class="text-slate-500"> · </span><span class="text-[#c9a54e] font-semibold">${member.badge || 'Verified Partner'}</span></span>
