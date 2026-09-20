@@ -2276,6 +2276,33 @@ than literal word-for-word translation. The following corrections were made:
 The change keeps affiliate and trust claims factual while making the
 Vietnamese experience readable for native users on mobile and desktop.
 
+## 26.31 Detail-page and catalog hardening — 2026-09-20 08:55 ICT
+
+The Vietnamese detail route was audited and corrected:
+
+- localized the detail-page title suffix, breadcrumb home label, booking CTA,
+  and cancellation notice;
+- localized ActionBar feedback text after clicking Like;
+- softened the Vietnamese video trust copy so it does not imply a provider
+  guarantee;
+- corrected the remaining Vietnamese article claim that universally promised
+  free cancellation and localized the review wording where it was still in
+  English.
+
+The 1,000-record search index contained 17 duplicate `k` values across 615
+unique keys. Duplicate keys are now assigned deterministic ID suffixes for
+the second and later records, preserving all 1,000 catalog entries while
+making detail/bookmark identity unique. The catalog sync script now applies
+the same rule on future regeneration.
+
+Validation completed:
+
+- `npm run build`: PASS;
+- search index: 1,000 records, 1,000 unique keys;
+- affiliate audit: 1,850 GetYourGuide links checked, all use `D5OEC57`;
+- legacy GetYourGuide ID `4G5BPIE`: 0 occurrences;
+- working tree clean and changes pushed to `main`.
+
 ---
 
 **END OF MASTER EXECUTION FILE**
