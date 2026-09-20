@@ -2235,6 +2235,27 @@ browser inspection. Travelpayouts ownership and Drive activation remain
 confirmed, and the warning does not block search, navigation, or booking CTA
 interaction. Continue monitoring Drive attribution separately.
 
+## 26.29 Responsive spacing QA — 2026-09-20 08:03 ICT
+
+The mobile screenshot showed unnecessary vertical space between the search
+counter and the collection heading. Root cause: both home templates forced
+the hero to `min-h-[68vh]` even when the mobile search controls wrapped into
+multiple rows.
+
+The responsive spacing was tightened in both
+`src/pages/index.astro` and `src/pages/[locale]/index.astro`:
+
+- mobile hero: content-driven height with compact vertical padding;
+- tablet: intermediate padding;
+- desktop: retains the larger luxury hero rhythm and `68vh` minimum;
+- experience section: reduced mobile/tablet padding while preserving desktop
+  breathing room.
+
+The preview QA measured zero artificial gap between hero and experience
+sections at iPhone width after the change. The page remains responsive for
+Android phones, tablets, and desktop breakpoints, and the content flow stays
+semantic for SEO.
+
 ---
 
 **END OF MASTER EXECUTION FILE**
