@@ -2303,6 +2303,30 @@ Validation completed:
 - legacy GetYourGuide ID `4G5BPIE`: 0 occurrences;
 - working tree clean and changes pushed to `main`.
 
+## 26.32 Affiliate conversion QA — 2026-09-20 09:07 ICT
+
+Production route checks completed:
+
+- `/`, `/vi/`: HTTP 200;
+- `/m/rova`: HTTP 302, `t4u_member_ref=rova`, redirect includes `ref=rova`;
+- `/go/gyg_paris_001?ref=rova`: HTTP 302 to GetYourGuide with
+  `partner_id=D5OEC57` and `cmp=team_rova_vn_gyg_paris_001`;
+- `/go/gyg_paris_001` with cookie `t4u_member_ref=rova`: same attribution,
+  confirming cookie-based persistence.
+
+The browser QA found that existing card URLs such as
+`cmp=blog_de_gyg_paris_001` were not rewritten for a team member because the
+client attribution helper only recognized the older `app_1000` and `t4u_app`
+prefixes. The helper now preserves the content context while prepending the
+member prefix, for example:
+`cmp=team_rova_blog_de_gyg_paris_001`.
+
+The attribution script cache key was versioned in the shared layout so the
+production browser does not retain the previous rewrite logic after deploy.
+Travelpayouts Drive remains loaded with source `575698`; its external
+`emrldtp.com` CORS warning is still provider-side and does not block the
+GetYourGuide CTA or `/go/` redirect.
+
 ---
 
 **END OF MASTER EXECUTION FILE**
