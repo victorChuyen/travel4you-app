@@ -38,7 +38,7 @@ function escapeHtml(value) {
   }[character]));
 }
 
-function leadEmailContent({ name, email, phone, requestType, destination, budget, message }) {
+function leadEmailContent({ name, email, phone, request_type: requestType, destination, budget, message }) {
   const fields = [
     ['Name', name],
     ['Email', email],
