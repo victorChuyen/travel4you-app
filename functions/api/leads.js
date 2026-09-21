@@ -184,10 +184,15 @@ export async function onRequestPost({ request, env }) {
     if (error) throw error;
 
     let emailSent = false;
+    let emailStatus = 'not-attempted';
     try {
       await sendLeadEmails(env, lead);
       emailSent = true;
+      emailStatus = 'sent';
     } catch (emailError) {
+      emailStatus = emailError?.message === 'RESEND_API_KEY is not configured'
+        ? 'missing-secret'
+        : 'provider-rejected';
       console.error('VIP lead email delivery failed', emailError?.message || emailError);
     }
 
@@ -197,6 +202,7 @@ export async function onRequestPost({ request, env }) {
         ? 'You are subscribed to Travel4You guide updates.'
         : 'Your VIP request has been received.',
       emailSent,
+      emailStatus,
     }, 201);
   } catch (error) {
     if (error instanceof Response) return error;
