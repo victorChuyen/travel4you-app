@@ -75,7 +75,7 @@ async function sendLeadEmails(env, lead) {
     const payload = await response.json().catch(() => null);
     if (!response.ok) {
       const reason = payload?.message || payload?.name || `HTTP ${response.status}`;
-      throw new Error(`Resend rejected email: ${reason}`);
+      throw new Error(`RESEND_HTTP_${response.status}: ${reason}`);
     }
     return payload;
   }
@@ -190,9 +190,12 @@ export async function onRequestPost({ request, env }) {
       emailSent = true;
       emailStatus = 'sent';
     } catch (emailError) {
+      const resendStatus = emailError?.message?.match(/^RESEND_HTTP_(\d+)/)?.[1];
       emailStatus = emailError?.message === 'RESEND_API_KEY is not configured'
         ? 'missing-secret'
-        : 'provider-rejected';
+        : resendStatus
+          ? `provider-http-${resendStatus}`
+          : 'provider-rejected';
       console.error('VIP lead email delivery failed', emailError?.message || emailError);
     }
 
