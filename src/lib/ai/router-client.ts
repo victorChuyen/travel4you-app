@@ -18,6 +18,7 @@ export async function generateProjectWith9router(
       body: JSON.stringify({
         model: env.AI_ROUTER_DEFAULT_MODEL || 'default',
         temperature: 0.4,
+        stream: false,
         response_format: { type: 'json_object' },
         messages: [
           {

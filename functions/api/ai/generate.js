@@ -40,6 +40,7 @@ async function callOpenAiCompatible(baseUrl, input, env) {
       body: JSON.stringify({
         model: env.AI_ROUTER_DEFAULT_MODEL || 'default',
         temperature: 0.4,
+        stream: false,
         response_format: { type: 'json_object' },
         messages: buildMessages(input),
       }),
@@ -85,12 +86,24 @@ async function callOllama(input, env) {
 }
 
 async function callRouter(input, env) {
+  const routerBaseUrl = (env.AI_ROUTER_BASE_URL || 'http://127.0.0.1:20128').replace(/\/$/, '');
+  const runInParallel = String(env.AI_ROUTER_PARALLEL || '').toLowerCase() === 'true';
+
+  if (runInParallel) {
+    const [routerResult, ollamaResult] = await Promise.allSettled([
+      callOpenAiCompatible(routerBaseUrl, input, env),
+      callOllama(input, env),
+    ]);
+    const failures = [];
+    if (routerResult.status === 'fulfilled') return routerResult.value;
+    failures.push(`9router (${routerResult.reason?.message || routerResult.reason})`);
+    if (ollamaResult.status === 'fulfilled') return ollamaResult.value;
+    failures.push(`Ollama (${ollamaResult.reason?.message || ollamaResult.reason})`);
+    throw new Error(`AI generation failed: ${failures.join('; ')}.`);
+  }
+
   try {
-    return await callOpenAiCompatible(
-      (env.AI_ROUTER_BASE_URL || 'http://127.0.0.1:8787').replace(/\/$/, ''),
-      input,
-      env,
-    );
+    return await callOpenAiCompatible(routerBaseUrl, input, env);
   } catch (primaryError) {
     console.warn('9router unavailable; trying Ollama fallback', primaryError?.message || primaryError);
     try {

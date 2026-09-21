@@ -13,31 +13,52 @@ Built with the modern **JAMstack / Edge Static Site Generation (SSG)** paradigm 
 * **Styling:** Tailwind CSS Luxury Palette (`#07111e` Deep Midnight Navy, `#c9a54e` Sovereign Gold, `#ff7043` High-CRO Coral).
 * **Edge Hosting:** Cloudflare Pages (330+ Edge Data Centers globally, sub-50ms TTFB).
 * **Edge Functions:** `functions/go/[slug].js` (Smart Affiliate Cloaking & Geo-IP country targeting).
-* **VIP lead capture:** `POST /api/leads` validates the public concierge form and writes
-  server-side to Supabase `public.leads` with the service-role key. The table has RLS,
-  no anonymous select/insert policy, and workspace-scoped member reads only.
+* **Guide-update capture:** `POST /api/leads` validates the public newsletter form and writes
+  server-side to Supabase `public.leads` with the server secret. Newsletter subscribers use
+  `request_type=newsletter`; the table has RLS, no anonymous select/insert policy, and
+  workspace-scoped member reads only.
 * **Locales (11):** `en`, `de`, `fr`, `es`, `it`, `ja`, `ko`, `zh-tw`, `zh-cn`, `pt`, `ru`.
 * **CRO standard:** 4-Point Lana Benchmark (Hero VIP Callout, Comparison Matrix, Contextual Hour-by-Hour Itinerary, 24h Free Cancellation Guarantee Box).
 * **Media:** 73 Verified UHD 4K authentic photographs with 0% MD5 duplicate rate.
 
-### VIP concierge lead capture
+### Guide-update subscription
 
-The responsive footer CTA is localized for English and Vietnamese (and remains
-available on the other public locale pages). It collects name, email, optional
-phone, request type, destination, budget, and message. A honeypot and
-best-effort rate limit protect the edge endpoint; no Telegram notification is
-sent by this flow. Configure `SUPABASE_SERVICE_ROLE_KEY` as an encrypted
-Cloudflare Pages secret before deployment.
+The responsive footer CTA collects an email address for new luxury travel guides
+and selected experience updates. It does not promise bespoke itinerary design
+or concierge services. A honeypot and best-effort rate limit protect the edge
+endpoint. After the subscription is stored in Supabase, the Pages Function
+sends a notification to `getyourguidemedia@gmail.com` and a confirmation to
+the subscriber using the Resend Email API.
+
+Before deployment:
+
+1. Create a Resend account and add `travel4you.app` as a verified domain.
+2. Publish the SPF, DKIM, and DMARC records shown by Resend.
+3. Verify that `support@travel4you.app` is an approved sender address.
+4. Configure `RESEND_API_KEY` and `SUPABASE_SERVICE_ROLE_KEY` as encrypted
+   Cloudflare Pages secrets.
+
+The production Pages secret is present, but delivery is not considered
+complete until a real subscription test returns `emailSent: true`. If it
+returns `false`, verify the Resend domain and DNS records before treating the
+email workflow as accepted.
+
+If the Resend secret is missing or delivery fails, the lead remains stored and
+the endpoint returns `emailSent: false`; the failure is logged server-side for
+operations review. No Gmail password or private credential is stored in the
+repository.
 
 ### AI generation routing
 
-Authenticated project generation prefers the configured 9router-compatible
-endpoint. If that endpoint times out, is unavailable, or returns an error, the
-Pages Function attempts the configured Ollama endpoint using
-`OLLAMA_BASE_URL` and `OLLAMA_DEFAULT_MODEL`. The local fallback is intended
-for development or a network-reachable Ollama host; `127.0.0.1` is not reachable
-from Cloudflare Pages, so production must set a reachable fallback URL if it is
-required there.
+Authenticated project generation uses the authenticated 9router tunnel in
+production. Local development can additionally run Ollama in parallel when
+`AI_ROUTER_PARALLEL=true`; a valid 9router result is preferred and a valid
+Ollama result is used when 9router is unavailable. The current production
+endpoint is `https://ruvxwm8.abc-tunnel.us/v1`, while local Ollama runs at
+`http://127.0.0.1:11434`. Cloudflare Pages cannot reach a developer's
+`127.0.0.1`, so the tunnel must remain online and its API key must remain a
+Cloudflare Pages secret. If the tunnel URL changes, update `AI_ROUTER_BASE_URL`
+and redeploy.
 
 ---
 

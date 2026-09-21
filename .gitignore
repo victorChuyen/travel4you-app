@@ -16,6 +16,9 @@ client_secret_*.json
 # Cloudflare Pages / Wrangler
 .wrangler/
 
+# Supabase local state
+supabase/.temp/
+
 # OS files
 .DS_Store
 Thumbs.db

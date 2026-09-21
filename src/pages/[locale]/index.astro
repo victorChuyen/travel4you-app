@@ -5,6 +5,7 @@ import Footer from '../../components/Footer.astro';
 import DestinationCard from '../../components/DestinationCard.astro';
 import SearchBar from '../../components/SearchBar.astro';
 import destinationsData from '../../data/destinations.json';
+import articlesData from '../../data/articles.json';
 import i18n from '../../data/i18n.json';
 
 export async function getStaticPaths() {
@@ -17,6 +18,11 @@ export async function getStaticPaths() {
 
 const { locale } = Astro.props;
 const dict = (i18n as any)[locale] || (i18n as any).en;
+const localizedTitles = new Map(
+  (articlesData as any[])
+    .filter((article) => article.locale === locale)
+    .map((article) => [article.hub_folder, article.title])
+);
 ---
 
 <Layout
@@ -95,7 +101,7 @@ const dict = (i18n as any)[locale] || (i18n as any).en;
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="destinations-grid-container">
         {destinationsData.map((dest) => (
           <DestinationCard
-            title={dest.english_title}
+            title={localizedTitles.get(dest.hub_folder) || dest.english_title}
             slug={dest.slugs[locale] || dest.slugs.en}
             location={dest.location}
             image={dest.hero_image}

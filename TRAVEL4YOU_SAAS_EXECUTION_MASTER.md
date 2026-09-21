@@ -102,10 +102,13 @@ partners.travel4you.app
 └── Partner / supplier portal
 ```
 
-## Public VIP lead capture
+## Public lead and guide-update capture
 
-The public acquisition layer includes a localized footer concierge CTA that
-posts to `/api/leads`. The Cloudflare Pages Function validates bounded contact
+The public acquisition layer includes a localized footer guide-update CTA that
+posts to `/api/leads` with `request_type=newsletter`. It is an editorial
+subscription form, not a promise of bespoke itinerary design or concierge
+service. The legacy VIP request types remain available for approved sales
+flows. The Cloudflare Pages Function validates bounded contact
 fields, rejects the honeypot, applies an optional `RATE_LIMITER` binding (with
 a best-effort isolate fallback), and writes through Supabase service role only.
 `public.leads` is protected by RLS: anonymous clients cannot read or insert
@@ -1856,7 +1859,9 @@ Still not configured in Cloudflare production:
 - `SEPAY_API_KEY` — optional for inbound-only webhook flow.
 - Supabase browser/runtime variables from `.env.example` are not currently present in the dashboard variable list; they must be added as encrypted variables or committed to `wrangler.toml` and redeployed:
   `PUBLIC_SUPABASE_URL`, `PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_JWKS_URL`.
-- `AI_ROUTER_BASE_URL` must not remain `http://127.0.0.1:8787` in production; it needs a reachable VPS/Cloudflare endpoint before AI generation can work remotely.
+- `AI_ROUTER_BASE_URL` must not remain a loopback address in production; it
+  needs a reachable VPS/Cloudflare endpoint before AI generation can work
+  remotely.
 
 Important deployment note: local project changes remain uncommitted in the working tree. Cloudflare Git deployments only receive changes pushed to the connected repository. The production domain was serving the public static site, but API probes returned HTTP 405; Pages Functions deployment still needs confirmation after the SaaS code is pushed/deployed.
 
@@ -2470,14 +2475,29 @@ production checks pass:
 - GetYourGuide attribution uses partner ID `D5OEC57`;
 - Rova attribution persists through the member route/cookie;
 - responsive footer CTA is live;
-- VIP consultation lead form is implemented in source and writes through
-  `POST /api/leads` using the server-side Supabase service key;
+- guide-update subscription form is implemented in source and writes through
+  `POST /api/leads` with `request_type=newsletter` using the server-side
+  Supabase secret;
 - production unauthenticated SaaS endpoints remain protected with HTTP 401;
 - live Supabase RLS corrective policies and VIP commission entitlements are
   applied and verified.
-- the VIP lead migration is applied and a controlled QA submission using the
-  owner-provided contact returned HTTP `201`; a repeated submission is now
-  rejected within a ten-minute email idempotency window.
+- the original public lead migration and QA flow were previously verified;
+  the new newsletter constraint migration still requires production
+  application and a fresh end-to-end subscription test.
+
+### Handover blockers as of 2026-09-21 10:09 ICT
+
+- The local checkout has no `SUPABASE_DB_URL` value and no Supabase project
+  link; the migration cannot be pushed from this machine without an approved
+  database connection or Supabase CLI access token.
+- Docker is not installed locally, so local Supabase health/status checks
+  cannot run.
+- The production deployment must not be updated to use the newsletter form
+  until the migration is applied and the Resend/Supabase test passes.
+- The migration is now applied and the newsletter release is deployed, but
+  the controlled production subscription test still returns `emailSent:false`.
+  Cloudflare has `RESEND_API_KEY` as an encrypted secret; Resend sender-domain
+  verification/DNS is the remaining closure gate.
 
 ### Important non-claim
 
@@ -2509,21 +2529,46 @@ publishing in the background.
 
 The local environment audit found:
 
-- `AI_ROUTER_BASE_URL` exists as `http://127.0.0.1:8787`;
+- `AI_ROUTER_BASE_URL` is configured locally as `http://127.0.0.1:20128`,
+  matching the repository's 9router client scripts;
 - `AI_ROUTER_API_KEY` is empty;
 - `AI_ROUTER_DEFAULT_MODEL` is empty;
-- no 9router variables exist in the shared WordPress operations `.env`;
-- no confirmed public/remote 9router endpoint is configured;
+- the local 9router port `20128` is currently not listening;
 - Ollama is listening on `127.0.0.1:11434`;
 - Ollama exposes `qwen2.5:0.5b`, and a direct JSON chat smoke test passed.
 
-The authenticated AI generation route now prefers 9router and falls back to
-Ollama on timeout, network failure, or upstream error. The fallback is
-configured locally with `OLLAMA_BASE_URL`, `OLLAMA_DEFAULT_MODEL`, and
-`OLLAMA_TIMEOUT_MS`. This is not an autonomous writer scheduler: generation
-still requires an authenticated project request. Cloudflare Pages cannot
-reach local `127.0.0.1`, so production requires a network-reachable 9router
-or Ollama endpoint before remote AI generation can be claimed live.
+The authenticated AI generation route now supports parallel local execution
+when `AI_ROUTER_PARALLEL=true`: it sends the same request to 9router and
+Ollama concurrently, prefers a valid 9router response, and uses a valid
+Ollama response when 9router is unavailable. The local `.env` enables this
+mode. This is not an autonomous writer scheduler: generation still requires
+an authenticated project request. Cloudflare Pages cannot reach local
+`127.0.0.1`, so production requires a network-reachable 9router or Ollama
+endpoint before remote AI generation can be claimed live.
+
+## 26.39 9router local gateway activated — 2026-09-21
+
+The local 9router gateway is now running on `127.0.0.1:20128`. Verification
+returned HTTP 200 from `/v1/models` with 157 available models, and an
+authenticated non-streaming chat request returned HTTP 200 with a valid
+response. The AI route explicitly sends `stream: false` because the
+generation parser expects one JSON response rather than server-sent events.
+Ollama remains available on `127.0.0.1:11434`; parallel mode continues to
+prefer a valid 9router result and fall back to Ollama when needed.
+
+## 26.40 9router tunnel connected to production — 2026-09-21
+
+The authenticated 9router tunnel
+`https://ruvxwm8.abc-tunnel.us/v1` was verified with HTTP 200 for both model
+discovery and a non-streaming chat request. The production Pages project now
+stores `AI_ROUTER_API_KEY` as an encrypted secret, and `AI_ROUTER_BASE_URL`
+points to the tunnel in `wrangler.toml`. Production parallel mode is disabled
+because Cloudflare Pages cannot reach local Ollama; local development retains
+the Ollama fallback. The site was rebuilt and deployed after this change.
+
+The tunnel is an operational dependency: keep the 9router process and tunnel
+online, rotate the API key if exposed, and update the URL plus redeploy if the
+tunnel address changes.
 
 ## 26.38 Google Cloud credit verification — 2026-09-20 12:40 ICT
 
@@ -2680,6 +2725,105 @@ prices, the production 9router endpoint/API key, and two test-user
 credentials or permission to create them. Until those are supplied, the
 system must remain in protected/test mode and must not claim autonomous AI
 publishing or live commission payouts.
+
+## 26.31 Luxury search parity audit — 2026-09-20
+
+The app search bar was audited against the stronger implementation in
+`D:\n8n-selfhost\travel4u.us`. The app component was updated to preserve the
+1,000-record experience catalog while adopting the reference interaction
+model:
+
+- luxury-stay search language and localized placeholders;
+- interactive date popover with seasonal shortcuts and check-in/check-out
+  inputs;
+- interactive guests, children, and rooms selector;
+- responsive category-pill carousel and desktop wrapping;
+- accessible live result counter, clear action, and filter/search handlers.
+
+The change is limited to
+`src/components/SearchBar.astro`; it does not change catalog data, affiliate
+URLs, article routes, or the search index schema. `npm run build` and
+`git diff --check` both pass after the update.
+
+## 26.32 Multilingual UI completeness correction — 2026-09-20
+
+The first search parity pass exposed a broader localization defect: several
+shared controls used English/Vietnamese conditionals, while localized home
+pages still rendered English catalog titles. The correction adds the shared
+`src/data/uiTranslations.ts` dictionary for all 12 supported locales and
+wires it into the Header, Footer, and DestinationCard components. The
+localized home route now resolves each card title from the matching locale
+article record instead of always using `english_title`. Search date/guest
+popover labels are also localized for every supported locale.
+
+`npm run build` and `git diff --check` pass after this correction. The
+remaining content-quality gate is editorial: some source article records
+themselves still contain English titles/body copy for locales whose metadata
+was generated without full transcreation. Those records must be regenerated
+through the localization content pipeline rather than masked with UI
+fallbacks.
+
+## 26.33 VIP lead email workflow — 2026-09-20
+
+The VIP lead endpoint now keeps the existing Supabase persistence flow and,
+after a successful insert, sends two transactional emails through the Resend
+Email API:
+
+- an internal notification to `getyourguidemedia@gmail.com`;
+- a confirmation to the customer from `support@travel4you.app`.
+
+The internal message uses the customer's address as `Reply-To`, so the owner
+can answer directly from Gmail. The customer confirmation uses
+`getyourguidemedia@gmail.com` as `Reply-To`. Email delivery is reported as
+`emailSent` in the JSON response and failures are logged without discarding
+the stored lead. The sender domain must be verified and authenticated in Resend
+before production deployment. Configure `RESEND_API_KEY` as an encrypted
+Cloudflare Pages secret; Cloudflare Email Sending is not required.
+
+## 26.34 Customer handover configuration and content expansion plan — 2026-09-21
+
+The handover now separates production configuration from editorial scale-up.
+The production email path is Resend (`support@travel4you.app`), while Supabase
+remains the lead system of record. Required production secrets are stored only
+in Cloudflare Pages:
+
+- `RESEND_API_KEY`;
+- `SUPABASE_SECRET_KEY` or the approved server-side service-role secret.
+
+The customer must verify the Resend domain, publish the exact SPF/DKIM/DMARC
+records supplied by Resend, deploy the current build, and complete one real
+VIP lead test. Acceptance requires a Supabase row, owner notification,
+customer confirmation, correct Reply-To behavior, and `emailSent: true`.
+Secrets must never be placed in source, public assets, spreadsheets, or
+handover notes.
+
+The content roadmap is deliberately demand-led:
+
+1. Reconcile the current 120 app article records against the 1,000-record
+   catalog by unique slug, locale, media, affiliate fields, quality, and live
+   URL status.
+2. Approve a first batch of 12 source articles covering six priority clusters:
+   Paris, Rome, Lake Como, Kyoto, Maldives, and Santorini.
+3. Expand in bounded 24–36 article sprints covering safari, Swiss Alps,
+   Amalfi, Bali, Dubai, Portugal, and high-intent comparison/itinerary
+   searches.
+4. Localize only after the source article passes editorial and affiliate QA.
+5. Publish at a maximum of two approved articles per day per site and record
+   the evidence, status, and production URL in the handover workbook.
+
+No search volume, quality score, affiliate performance, or publication status
+may be invented. Each brief must retain its evidence source/date, intent,
+canonical slug, locale, media/license status, affiliate link status, and
+refresh date. The 1,000-record catalog is not presented as 1,000 published
+SEO articles.
+
+The customer workbook now separates `06_CONTENT_CATALOG` (120 existing
+localized editorial rows) from `07_AFFILIATE_CATALOG_1000` (1,000 catalog
+points with GYG links and campaign identifiers). A 12-record pilot was
+generated through 9router and saved as local drafts in
+`src/data/article_pilot_batch_12.json`. All 12 passed structural validation;
+none has been merged into the production article dataset or published until
+owner/editorial approval is recorded.
 
 ---
 

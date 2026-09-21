@@ -4,30 +4,49 @@ interface Props {
 }
 
 const { currentLocale = 'en' } = Astro.props;
+const popoverLabels: Record<string, {
+  dateHeading: string; seasons: string; autumn: string; winter: string; spring: string; summer: string;
+  chooseDates: string; anyDate: string; apply: string; guestsHeading: string; adults: string;
+  adultsHint: string; children: string; childrenHint: string; rooms: string; defaultGuests: string;
+}> = {
+  en: { dateHeading: 'Choose your travel dates', seasons: 'Curated seasonal journeys:', autumn: 'Golden Autumn', winter: 'VIP New Year', spring: 'Cherry Blossom', summer: 'Summer Islands', chooseDates: 'Or choose check-in & check-out:', anyDate: 'Any date', apply: 'Apply', guestsHeading: 'Guests & suites', adults: 'Adults', adultsHint: '18 years and over', children: 'Children', childrenHint: 'Ages 0–17', rooms: 'Rooms / villas', defaultGuests: 'Default (2 guests)' },
+  vi: { dateHeading: 'Chọn Thời Gian Nghỉ Dưỡng', seasons: 'Gợi Ý Mùa Du Lịch Hoàng Gia:', autumn: 'Mùa Thu Vàng', winter: 'Năm Mới VIP', spring: 'Hoa Anh Đào', summer: 'Biển Đảo Nghỉ Hè', chooseDates: 'Hoặc Chọn Ngày Check-in & Check-out:', anyDate: 'Bất kỳ ngày nào', apply: 'Áp Dụng', guestsHeading: 'Số Lượng Khách & Biệt Thự', adults: 'Người Lớn', adultsHint: 'Từ 18 tuổi trở lên', children: 'Trẻ Em', childrenHint: 'Từ 0 - 17 tuổi', rooms: 'Phòng / Biệt Thự', defaultGuests: 'Mặc định (2 khách)' },
+  de: { dateHeading: 'Reisedaten auswählen', seasons: 'Ausgewählte Jahreszeiten:', autumn: 'Goldener Herbst', winter: 'VIP-Neujahr', spring: 'Kirschblüte', summer: 'Sommerinseln', chooseDates: 'Oder Check-in und Check-out wählen:', anyDate: 'Beliebige Daten', apply: 'Anwenden', guestsHeading: 'Gäste und Suiten', adults: 'Erwachsene', adultsHint: 'Ab 18 Jahren', children: 'Kinder', childrenHint: '0–17 Jahre', rooms: 'Zimmer / Villen', defaultGuests: 'Standard (2 Gäste)' },
+  fr: { dateHeading: 'Choisir vos dates', seasons: 'Escapades saisonnières:', autumn: 'Automne doré', winter: 'Nouvel An VIP', spring: 'Cerisiers en fleurs', summer: 'Îles d’été', chooseDates: 'Ou choisir arrivée et départ:', anyDate: 'Dates flexibles', apply: 'Appliquer', guestsHeading: 'Voyageurs et suites', adults: 'Adultes', adultsHint: '18 ans et plus', children: 'Enfants', childrenHint: '0 à 17 ans', rooms: 'Chambres / villas', defaultGuests: 'Par défaut (2 voyageurs)' },
+  es: { dateHeading: 'Elija sus fechas', seasons: 'Viajes de temporada:', autumn: 'Otoño dorado', winter: 'Año Nuevo VIP', spring: 'Cerezos en flor', summer: 'Islas de verano', chooseDates: 'O elija entrada y salida:', anyDate: 'Cualquier fecha', apply: 'Aplicar', guestsHeading: 'Huéspedes y suites', adults: 'Adultos', adultsHint: '18 años o más', children: 'Niños', childrenHint: 'De 0 a 17 años', rooms: 'Habitaciones / villas', defaultGuests: 'Predeterminado (2 huéspedes)' },
+  it: { dateHeading: 'Scegli le date', seasons: 'Viaggi stagionali selezionati:', autumn: 'Autunno dorato', winter: 'Capodanno VIP', spring: 'Fioritura dei ciliegi', summer: 'Isole d’estate', chooseDates: 'Oppure scegli check-in e check-out:', anyDate: 'Qualsiasi data', apply: 'Applica', guestsHeading: 'Ospiti e suite', adults: 'Adulti', adultsHint: 'Dai 18 anni', children: 'Bambini', childrenHint: 'Da 0 a 17 anni', rooms: 'Camere / ville', defaultGuests: 'Predefinito (2 ospiti)' },
+  ja: { dateHeading: '旅行日程を選択', seasons: '季節のおすすめ:', autumn: '黄金の秋', winter: 'VIPニューイヤー', spring: '桜の季節', summer: '夏の島々', chooseDates: 'またはチェックイン・アウトを選択:', anyDate: '日付指定なし', apply: '適用', guestsHeading: '人数とスイート', adults: '大人', adultsHint: '18歳以上', children: '子ども', childrenHint: '0～17歳', rooms: '客室 / ヴィラ', defaultGuests: '初期設定（2名）' },
+  ko: { dateHeading: '여행 날짜 선택', seasons: '추천 계절 여행:', autumn: '황금빛 가을', winter: 'VIP 새해', spring: '벚꽃 시즌', summer: '여름 섬 휴양', chooseDates: '또는 체크인·체크아웃 선택:', anyDate: '날짜 무관', apply: '적용', guestsHeading: '게스트 및 스위트', adults: '성인', adultsHint: '만 18세 이상', children: '어린이', childrenHint: '0~17세', rooms: '객실 / 빌라', defaultGuests: '기본값 (2명)' },
+  'zh-tw': { dateHeading: '選擇旅遊日期', seasons: '精選季節旅程:', autumn: '金秋之旅', winter: 'VIP新年', spring: '櫻花季', summer: '夏日海島', chooseDates: '或選擇入住與退房日期:', anyDate: '不限日期', apply: '套用', guestsHeading: '貴賓與套房', adults: '成人', adultsHint: '18歲以上', children: '兒童', childrenHint: '0至17歲', rooms: '客房 / 別墅', defaultGuests: '預設（2位貴賓）' },
+  'zh-cn': { dateHeading: '选择旅行日期', seasons: '精选季节旅程:', autumn: '金秋之旅', winter: 'VIP新年', spring: '樱花季', summer: '夏日海岛', chooseDates: '或选择入住与退房日期:', anyDate: '不限日期', apply: '应用', guestsHeading: '贵宾与套房', adults: '成人', adultsHint: '18岁以上', children: '儿童', childrenHint: '0至17岁', rooms: '客房 / 别墅', defaultGuests: '默认（2位贵宾）' },
+  pt: { dateHeading: 'Escolha as suas datas', seasons: 'Viagens sazonais selecionadas:', autumn: 'Outono dourado', winter: 'Ano Novo VIP', spring: 'Flores de cerejeira', summer: 'Ilhas de verão', chooseDates: 'Ou escolha entrada e saída:', anyDate: 'Qualquer data', apply: 'Aplicar', guestsHeading: 'Hóspedes e suites', adults: 'Adultos', adultsHint: '18 anos ou mais', children: 'Crianças', childrenHint: '0–17 anos', rooms: 'Quartos / villas', defaultGuests: 'Predefinição (2 hóspedes)' },
+  ru: { dateHeading: 'Выберите даты поездки', seasons: 'Сезонные путешествия:', autumn: 'Золотая осень', winter: 'VIP-Новый год', spring: 'Сезон сакуры', summer: 'Летние острова', chooseDates: 'Или выберите заезд и выезд:', anyDate: 'Любые даты', apply: 'Применить', guestsHeading: 'Гости и номера', adults: 'Взрослые', adultsHint: 'От 18 лет', children: 'Дети', childrenHint: 'От 0 до 17 лет', rooms: 'Номера / виллы', defaultGuests: 'По умолчанию (2 гостя)' }
+};
+const popover = popoverLabels[currentLocale] || popoverLabels.en;
 
-const placeholders: Record<string, { 
-  search: string; 
-  date: string; 
-  guests: string; 
-  btn: string; 
-  all: string; 
-  europe: string; 
-  asia: string; 
-  islands: string; 
-  safari: string; 
-  me: string; 
-  wellness: string; 
+const placeholders: Record<string, {
+  search: string;
+  date: string;
+  guests: string;
+  btn: string;
+  all: string;
+  europe: string;
+  asia: string;
+  islands: string;
+  safari: string;
+  me: string;
+  wellness: string;
   hotels: string;
   found: string;
   loadMore: string;
   showing: string;
 }> = {
   en: {
-    search: "Search 1,000+ luxury places, tours, private yachts...",
+    search: "Search 1,000+ luxury stays, suites...",
     date: "Anytime",
     guests: "1 - 2 Guests",
     btn: "Search",
-    all: "✨ All (1,000)",
+    all: "✨ All (1,000+)",
     europe: "🇫🇷 Europe",
     asia: "🇯🇵 Asia",
     islands: "🇲🇻 Islands",
@@ -35,45 +54,215 @@ const placeholders: Record<string, {
     me: "🇦🇪 Middle East",
     wellness: "🌿 Wellness Spas",
     hotels: "👑 5-Star Sanctuaries",
-    found: "Sovereign Experiences Found",
-    loadMore: "Load More Experiences ↓",
+    found: "Luxury Sanctuaries Found",
+    loadMore: "Load More Sanctuaries ↓",
     showing: "Showing"
   },
   vi: {
-    search: "Tìm kiếm 1.000+ điểm đến, du thuyền, trải nghiệm thượng lưu...",
+    search: "Tìm kiếm 1.000+ khách sạn, biệt thự...",
     date: "Thời gian: Bất kỳ",
     guests: "1 - 2 Khách",
-    btn: "Tìm kiếm",
-    all: "✨ Tất cả điểm đến (1.000)",
+    btn: "Khám Phá",
+    all: "✨ Tất Cả (1.000+)",
     europe: "🇫🇷 Châu Âu",
     asia: "🇯🇵 Châu Á",
-    islands: "🇲🇻 Các hòn đảo",
+    islands: "🇲🇻 Đảo Ngọc",
     safari: "🦒 Safari Châu Phi",
     me: "🇦🇪 Trung Đông",
-    wellness: "🌿 Nghỉ dưỡng & chăm sóc sức khỏe",
-    hotels: "👑 Khu nghỉ dưỡng 5 sao",
-    found: "trải nghiệm được tìm thấy",
-    loadMore: "Xem thêm trải nghiệm ↓",
+    wellness: "🌿 Spa & Trị Liệu",
+    hotels: "👑 Khách Sạn 5 Sao",
+    found: "Điểm Đến Thượng Lưu Phù Hợp",
+    loadMore: "Khám Phá Thêm Điểm Đến ↓",
     showing: "Đang hiển thị"
+  },
+  de: {
+    search: "1.000+ Luxus-Refugien & Suiten...",
+    date: "Jederzeit",
+    guests: "1 - 2 Gäste",
+    btn: "Suchen",
+    all: "✨ Alle (1.000+)",
+    europe: "🇫🇷 Europa",
+    asia: "🇯🇵 Asien",
+    islands: "🇲🇻 Inseln",
+    safari: "🦒 Safari",
+    me: "🇦🇪 Naher Osten",
+    wellness: "🌿 Wellness & Spa",
+    hotels: "👑 5-Sterne-Paläste",
+    found: "Luxus-Refugien gefunden",
+    loadMore: "Mehr Refugien laden ↓",
+    showing: "Angezeigt"
+  },
+  fr: {
+    search: "Rechercher 1 000+ sanctuaires d'exception...",
+    date: "Dates flexibles",
+    guests: "1 - 2 Personnes",
+    btn: "Explorer",
+    all: "✨ Tous (1 000+)",
+    europe: "🇫🇷 Europe",
+    asia: "🇯🇵 Asie",
+    islands: "🇲🇻 Îles Privées",
+    safari: "🦒 Safari Africain",
+    me: "🇦🇪 Moyen-Orient",
+    wellness: "🌿 Bien-être & Spas",
+    hotels: "👑 Palaces 5 Étoiles",
+    found: "Sanctuaires de Luxe Trouvés",
+    loadMore: "Afficher plus d'adresses ↓",
+    showing: "Affichage"
+  },
+  es: {
+    search: "Buscar 1.000+ santuarios de lujo...",
+    date: "Cualquier fecha",
+    guests: "1 - 2 Huéspedes",
+    btn: "Buscar",
+    all: "✨ Todos (1.000+)",
+    europe: "🇫🇷 Europa",
+    asia: "🇯🇵 Asia",
+    islands: "🇲🇻 Islas Exclusivas",
+    safari: "🦒 Safari Africano",
+    me: "🇦🇪 Oriente Medio",
+    wellness: "🌿 Bienestar y Spas",
+    hotels: "👑 Palacios de 5 Estrellas",
+    found: "Santuarios de Lujo Encontrados",
+    loadMore: "Cargar más santuarios ↓",
+    showing: "Mostrando"
+  },
+  it: {
+    search: "Cerca oltre 1.000 santuari di lusso...",
+    date: "Qualsiasi data",
+    guests: "1 - 2 Ospiti",
+    btn: "Cerca",
+    all: "✨ Tutti (1.000+)",
+    europe: "🇫🇷 Europa",
+    asia: "🇯🇵 Asia",
+    islands: "🇲🇻 Isole Private",
+    safari: "🦒 Safari Africano",
+    me: "🇦🇪 Medio Oriente",
+    wellness: "🌿 Benessere & Spa",
+    hotels: "👑 Palazzi a 5 Stelle",
+    found: "Santuari di Lusso Trovati",
+    loadMore: "Carica altri santuari ↓",
+    showing: "Mostrati"
+  },
+  ja: {
+    search: "1,000件以上の至高リゾートを検索...",
+    date: "指定なし",
+    guests: "1 - 2名",
+    btn: "検索",
+    all: "✨ すべて (1,000+)",
+    europe: "🇫🇷 ヨーロッパ",
+    asia: "🇯🇵 アジア",
+    islands: "🇲🇻 孤島リゾート",
+    safari: "🦒 アフリカサファリ",
+    me: "🇦🇪 中東ラグジュアリー",
+    wellness: "🌿 ウェルネス＆スパ",
+    hotels: "👑 5つ星パレス",
+    found: "件の至高の宿が見つかりました",
+    loadMore: "さらに読み込む ↓",
+    showing: "表示中"
+  },
+  ko: {
+    search: "1,000개 이상의 최고급 숙소 검색...",
+    date: "일정 무관",
+    guests: "1 - 2인",
+    btn: "검색",
+    all: "✨ 전체 (1,000+)",
+    europe: "🇫🇷 유럽",
+    asia: "🇯🇵 아시아",
+    islands: "🇲🇻 프라이빗 아일랜드",
+    safari: "🦒 아프리카 사파리",
+    me: "🇦🇪 중동 럭셔리",
+    wellness: "🌿 웰니스 & 스파",
+    hotels: "👑 5성급 럭셔리 팰리스",
+    found: "개의 럭셔리 생크추어리를 찾았습니다",
+    loadMore: "더 많은 생크추어리 보기 ↓",
+    showing: "표시 중"
+  },
+  'zh-tw': {
+    search: "搜尋全球 1,000+ 頂級奢華旅宿...",
+    date: "不限日期",
+    guests: "1 - 2 位貴賓",
+    btn: "立即探索",
+    all: "✨ 全部 (1,000+)",
+    europe: "🇫🇷 歐洲頂級",
+    asia: "🇯🇵 亞洲秘境",
+    islands: "🇲🇻 海島渡假",
+    safari: "🦒 非洲原野",
+    me: "🇦🇪 中東奢華",
+    wellness: "🌿 身心療癒養生",
+    hotels: "👑 五星傳世宮殿",
+    found: "間頂級奢華旅宿已為您呈現",
+    loadMore: "載入更多奢華旅宿 ↓",
+    showing: "正在顯示"
+  },
+  'zh-cn': {
+    search: "搜索全球 1,000+ 顶级奢华酒店...",
+    date: "不限日期",
+    guests: "1 - 2 位贵宾",
+    btn: "立即探索",
+    all: "✨ 全部 (1,000+)",
+    europe: "🇫🇷 欧洲顶级",
+    asia: "🇯🇵 亚洲秘境",
+    islands: "🇲🇻 海岛度假",
+    safari: "🦒 非洲原野",
+    me: "🇦🇪 中东奢华",
+    wellness: "🌿 身心疗愈养生",
+    hotels: "👑 五星传世宫殿",
+    found: "间顶级奢华酒店已为您呈现",
+    loadMore: "加载更多奢华酒店 ↓",
+    showing: "正在显示"
+  },
+  pt: {
+    search: "Pesquisar 1.000+ santuários de luxo...",
+    date: "Qualquer data",
+    guests: "1 - 2 Hóspedes",
+    btn: "Pesquisar",
+    all: "✨ Todos (1.000+)",
+    europe: "🇫🇷 Europa",
+    asia: "🇯🇵 Ásia",
+    islands: "🇲🇻 Ilhas Privadas",
+    safari: "🦒 Safari Africano",
+    me: "🇦🇪 Médio Oriente",
+    wellness: "🌿 Bem-Estar e Spas",
+    hotels: "👑 Palácios 5 Estrelas",
+    found: "Santuários de Luxo Encontrados",
+    loadMore: "Carregar mais santuários ↓",
+    showing: "A apresentar"
+  },
+  ru: {
+    search: "Поиск среди 1 000+ отелей и вилл...",
+    date: "В любое время",
+    guests: "1 - 2 гостя",
+    btn: "Найти",
+    all: "✨ Все (1 000+)",
+    europe: "🇫🇷 Европа",
+    asia: "🇯🇵 Азия",
+    islands: "🇲🇻 Острова",
+    safari: "🦒 Сафари",
+    me: "🇦🇪 Ближний Восток",
+    wellness: "🌿 Спа и оздоровление",
+    hotels: "👑 5-звездочные дворцы",
+    found: "Роскошных отелей найдено",
+    loadMore: "Загрузить ещё отели ↓",
+    showing: "Показано"
   }
 };
 
 const t = placeholders[currentLocale] || placeholders.en;
 ---
 
-<div class="w-full max-w-4xl mx-auto mb-6">
+<div class="w-full max-w-4xl mx-auto mb-8 sm:mb-12 relative z-30">
   <!-- GYG-Style Floating Search Bar Pill -->
-  <div class="bg-[#0b1726]/95 backdrop-blur-xl border border-slate-700/80 rounded-2xl sm:rounded-full p-2.5 shadow-2xl shadow-black/50 transition-all duration-300 hover:border-[#c9a54e]/60">
-    <div class="flex flex-col sm:flex-row items-center gap-2 sm:gap-0">
-      
+  <div class="bg-[#0b1726]/95 backdrop-blur-xl border border-slate-700/80 rounded-2xl sm:rounded-full p-2 sm:p-2.5 shadow-2xl shadow-black/50 transition-all duration-300 hover:border-[#c9a54e]/60 relative z-30">
+    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-0">
+
       <!-- Input 1: Destination / Experience Keyword Search -->
-      <div class="flex items-center flex-grow w-full px-4 py-2 sm:py-1 relative">
-        <span class="text-slate-400 text-lg mr-3">🔍</span>
+      <div class="flex items-center flex-grow w-full px-3 sm:px-4 py-1.5 sm:py-1 relative">
+        <span class="text-slate-400 text-base sm:text-lg mr-2.5 sm:mr-3 shrink-0">🔍</span>
         <input
           id="global-destination-search"
           type="text"
           placeholder={t.search}
-          class="w-full bg-transparent border-none text-white placeholder-slate-400 text-sm font-medium focus:outline-none focus:ring-0 pr-8"
+          class="w-full bg-transparent border-none text-white placeholder-slate-400 text-xs sm:text-sm font-medium focus:outline-none focus:ring-0 pr-8 truncate"
           autocomplete="off"
           aria-label={t.search}
         />
@@ -82,8 +271,8 @@ const t = placeholders[currentLocale] || placeholders.en;
           id="search-clear-btn"
           type="button"
           class="hidden absolute right-3 text-slate-400 hover:text-white text-xs w-5 h-5 rounded-full bg-slate-800 flex items-center justify-center transition-all"
-          title={currentLocale === 'vi' ? 'Xóa từ khóa tìm kiếm' : 'Clear search'}
-          aria-label={currentLocale === 'vi' ? 'Xóa từ khóa tìm kiếm' : 'Clear search'}
+          title="Clear search"
+          aria-label="Clear search"
         >
           ✕
         </button>
@@ -92,28 +281,161 @@ const t = placeholders[currentLocale] || placeholders.en;
       <!-- Divider (Desktop) -->
       <div class="hidden sm:block w-[1px] h-8 bg-slate-700/80 mx-1"></div>
 
-      <!-- Dropdown 2: Date Selector (Visual Luxury Touch) -->
-      <div class="hidden md:flex items-center px-4 py-1 text-slate-300 text-xs font-medium cursor-pointer hover:text-white transition-colors">
-        <span class="mr-2">📅</span>
-        <span>{t.date}</span>
-        <span class="text-slate-500 ml-2 text-[10px]">▼</span>
+      <!-- Dropdown 2: Date Selector (Interactive Luxury Popover) -->
+      <div class="relative hidden md:block" id="date-selector-wrapper">
+        <button
+          type="button"
+          id="search-date-trigger"
+          class="flex items-center px-4 py-2 text-slate-300 text-xs font-medium cursor-pointer hover:text-white transition-colors rounded-full hover:bg-slate-800/60 focus:outline-none"
+          aria-expanded="false"
+          aria-haspopup="true"
+        >
+          <span class="mr-2 text-sm">📅</span>
+          <span id="search-date-display">{t.date}</span>
+          <span class="text-[#c9a54e] ml-2 text-[10px] transition-transform duration-200" id="search-date-arrow">▼</span>
+        </button>
+
+        <!-- Floating Date Popover Modal -->
+        <div
+          id="search-date-dropdown"
+          class="hidden absolute top-full mt-3 left-1/2 -translate-x-1/2 w-80 sm:w-96 bg-[#091424] border border-[#c9a54e]/50 rounded-2xl p-5 shadow-2xl shadow-black/95 z-[99] backdrop-blur-2xl animate-fadeIn"
+        >
+          <div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
+            <h4 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+              <span>📅</span> <span>{popover.dateHeading}</span>
+            </h4>
+            <button type="button" id="close-date-dropdown" class="text-slate-400 hover:text-white text-xs w-6 h-6 flex items-center justify-center rounded-full hover:bg-slate-800">✕</button>
+          </div>
+
+          <!-- Quick Seasons Buttons -->
+          <div class="mb-4">
+            <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-2">{popover.seasons}</span>
+            <div class="grid grid-cols-2 gap-2">
+              <button type="button" class="quick-season-btn text-left p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-[#c9a54e] text-xs text-slate-300 hover:text-white transition" data-season="autumn" data-dates="15 Oct - 25 Oct 2026">
+                <span class="font-bold text-[#c9a54e] block text-xs">🍂 {popover.autumn}</span>
+                <span class="text-[10px] text-slate-400">15 Oct - 25 Oct 2026</span>
+              </button>
+              <button type="button" class="quick-season-btn text-left p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-[#c9a54e] text-xs text-slate-300 hover:text-white transition" data-season="winter" data-dates="20 Dec - 02 Jan 2027">
+                <span class="font-bold text-[#c9a54e] block text-xs">❄️ {popover.winter}</span>
+                <span class="text-[10px] text-slate-400">20 Dec - 02 Jan 2027</span>
+              </button>
+              <button type="button" class="quick-season-btn text-left p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-[#c9a54e] text-xs text-slate-300 hover:text-white transition" data-season="spring" data-dates="25 Mar - 05 Apr 2027">
+                <span class="font-bold text-[#c9a54e] block text-xs">🌸 {popover.spring}</span>
+                <span class="text-[10px] text-slate-400">25 Mar - 05 Apr 2027</span>
+              </button>
+              <button type="button" class="quick-season-btn text-left p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-[#c9a54e] text-xs text-slate-300 hover:text-white transition" data-season="summer" data-dates="15 Jun - 25 Jun 2027">
+                <span class="font-bold text-[#c9a54e] block text-xs">☀️ {popover.summer}</span>
+                <span class="text-[10px] text-slate-400">15 Jun - 25 Jun 2027</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Specific Dates Pickers -->
+          <div class="mb-4">
+            <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-2">{popover.chooseDates}</span>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label for="input-checkin-date" class="block text-[10px] text-slate-400 mb-1">Check-in</label>
+                <input type="date" id="input-checkin-date" class="w-full bg-slate-900 border border-slate-700 focus:border-[#c9a54e] rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none" />
+              </div>
+              <div>
+                <label for="input-checkout-date" class="block text-[10px] text-slate-400 mb-1">Check-out</label>
+                <input type="date" id="input-checkout-date" class="w-full bg-slate-900 border border-slate-700 focus:border-[#c9a54e] rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Footer -->
+          <div class="flex items-center justify-between pt-3 border-t border-slate-800 text-xs">
+            <button type="button" id="reset-date-btn" class="text-slate-400 hover:text-white font-medium">{popover.anyDate}</button>
+            <button type="button" id="apply-date-btn" class="px-5 py-2 rounded-xl bg-gradient-to-r from-[#c9a54e] to-[#a88230] text-slate-950 font-bold hover:brightness-110 transition shadow-lg shadow-[#c9a54e]/20">{popover.apply}</button>
+          </div>
+        </div>
       </div>
 
       <!-- Divider (Desktop) -->
       <div class="hidden md:block w-[1px] h-8 bg-slate-700/80 mx-1"></div>
 
-      <!-- Dropdown 3: Guests (Visual Luxury Touch) -->
-      <div class="hidden lg:flex items-center px-4 py-1 text-slate-300 text-xs font-medium cursor-pointer hover:text-white transition-colors">
-        <span class="mr-2">👥</span>
-        <span>{t.guests}</span>
-        <span class="text-slate-500 ml-2 text-[10px]">▼</span>
+      <!-- Dropdown 3: Guests (Interactive Luxury Popover) -->
+      <div class="relative hidden lg:block" id="guests-selector-wrapper">
+        <button
+          type="button"
+          id="search-guests-trigger"
+          class="flex items-center px-4 py-2 text-slate-300 text-xs font-medium cursor-pointer hover:text-white transition-colors rounded-full hover:bg-slate-800/60 focus:outline-none"
+          aria-expanded="false"
+          aria-haspopup="true"
+        >
+          <span class="mr-2 text-sm">👥</span>
+          <span id="search-guests-display">{t.guests}</span>
+          <span class="text-[#c9a54e] ml-2 text-[10px] transition-transform duration-200" id="search-guests-arrow">▼</span>
+        </button>
+
+        <!-- Floating Guests Popover Modal -->
+        <div
+          id="search-guests-dropdown"
+          class="hidden absolute top-full mt-3 right-0 w-80 bg-[#091424] border border-[#c9a54e]/50 rounded-2xl p-5 shadow-2xl shadow-black/95 z-[99] backdrop-blur-2xl animate-fadeIn"
+        >
+          <div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
+            <h4 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+              <span>👥</span> <span>{popover.guestsHeading}</span>
+            </h4>
+            <button type="button" id="close-guests-dropdown" class="text-slate-400 hover:text-white text-xs w-6 h-6 flex items-center justify-center rounded-full hover:bg-slate-800">✕</button>
+          </div>
+
+          <div class="space-y-4 mb-5 text-xs">
+            <!-- Adults -->
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="font-bold text-white block text-xs">{popover.adults}</span>
+                <span class="text-[10px] text-slate-400">{popover.adultsHint}</span>
+              </div>
+              <div class="flex items-center gap-3 bg-slate-900 border border-slate-800 px-2 py-1 rounded-lg">
+                <button type="button" id="btn-adults-minus" class="w-6 h-6 rounded flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition font-bold">-</button>
+                <span id="val-adults" class="font-bold text-white text-sm w-4 text-center">2</span>
+                <button type="button" id="btn-adults-plus" class="w-6 h-6 rounded flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition font-bold">+</button>
+              </div>
+            </div>
+
+            <!-- Children -->
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="font-bold text-white block text-xs">{popover.children}</span>
+                <span class="text-[10px] text-slate-400">{popover.childrenHint}</span>
+              </div>
+              <div class="flex items-center gap-3 bg-slate-900 border border-slate-800 px-2 py-1 rounded-lg">
+                <button type="button" id="btn-children-minus" class="w-6 h-6 rounded flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition font-bold">-</button>
+                <span id="val-children" class="font-bold text-white text-sm w-4 text-center">0</span>
+                <button type="button" id="btn-children-plus" class="w-6 h-6 rounded flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition font-bold">+</button>
+              </div>
+            </div>
+
+            <!-- Suites / Rooms -->
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="font-bold text-white block text-xs">{popover.rooms}</span>
+                <span class="text-[10px] text-slate-400">Suites, Royal Villas</span>
+              </div>
+              <div class="flex items-center gap-3 bg-slate-900 border border-slate-800 px-2 py-1 rounded-lg">
+                <button type="button" id="btn-rooms-minus" class="w-6 h-6 rounded flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition font-bold">-</button>
+                <span id="val-rooms" class="font-bold text-white text-sm w-4 text-center">1</span>
+                <button type="button" id="btn-rooms-plus" class="w-6 h-6 rounded flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition font-bold">+</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Footer -->
+          <div class="flex items-center justify-between pt-3 border-t border-slate-800 text-xs">
+            <button type="button" id="reset-guests-btn" class="text-slate-400 hover:text-white font-medium">{popover.defaultGuests}</button>
+            <button type="button" id="apply-guests-btn" class="px-5 py-2 rounded-xl bg-gradient-to-r from-[#c9a54e] to-[#a88230] text-slate-950 font-bold hover:brightness-110 transition shadow-lg shadow-[#c9a54e]/20">{popover.apply}</button>
+          </div>
+        </div>
       </div>
 
       <!-- Search Action Button -->
       <button
         id="search-trigger-btn"
         type="button"
-        class="w-full sm:w-auto bg-gradient-to-r from-[#ff7043] to-[#f4511e] hover:from-[#f4511e] hover:to-[#e64a19] text-white font-bold text-xs sm:text-sm uppercase tracking-wider px-7 py-3.5 rounded-xl sm:rounded-full shadow-lg shadow-[#ff7043]/30 transition-all duration-300 transform active:scale-95 flex items-center justify-center space-x-2"
+        class="w-full sm:w-auto bg-gradient-to-r from-[#ff7043] to-[#f4511e] hover:from-[#f4511e] hover:to-[#e64a19] text-white font-bold text-xs sm:text-sm uppercase tracking-wider px-6 sm:px-7 py-2.5 sm:py-3.5 rounded-xl sm:rounded-full shadow-lg shadow-[#ff7043]/30 transition-all duration-300 transform active:scale-95 flex items-center justify-center space-x-2 shrink-0"
       >
         <span>{t.btn}</span>
         <span>→</span>
@@ -123,91 +445,70 @@ const t = placeholders[currentLocale] || placeholders.en;
   </div>
 
   <!-- Quick Category Filter Pills (10 Sovereign Categories & Regions) -->
-  <div class="flex items-center justify-center flex-wrap gap-2 pt-3" id="category-filter-pills" role="tablist" aria-label={currentLocale === 'vi' ? 'Danh mục trải nghiệm' : 'Experience categories'}>
-    <button
-      type="button"
-      data-filter="all"
-      role="tab"
-      aria-selected="true"
-      aria-pressed="true"
-      class="filter-pill active px-3.5 py-1.5 rounded-full text-xs font-semibold bg-[#c9a54e]/20 border border-[#c9a54e] text-[#c9a54e] transition-all hover:border-[#c9a54e]"
-    >
-      <span class="filter-check mr-1" aria-hidden="true">✓</span>{t.all}
-    </button>
-    <button
-      type="button"
-      data-filter="europe"
-      role="tab"
-      aria-selected="false"
-      aria-pressed="false"
-      class="filter-pill px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 transition-all hover:border-slate-500 hover:text-white"
-    >
-      <span class="filter-check hidden mr-1" aria-hidden="true">✓</span>{t.europe}
-    </button>
-    <button
-      type="button"
-      data-filter="asia"
-      role="tab"
-      aria-selected="false"
-      aria-pressed="false"
-      class="filter-pill px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 transition-all hover:border-slate-500 hover:text-white"
-    >
-      <span class="filter-check hidden mr-1" aria-hidden="true">✓</span>{t.asia}
-    </button>
-    <button
-      type="button"
-      data-filter="islands"
-      role="tab"
-      aria-selected="false"
-      aria-pressed="false"
-      class="filter-pill px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 transition-all hover:border-slate-500 hover:text-white"
-    >
-      <span class="filter-check hidden mr-1" aria-hidden="true">✓</span>{t.islands}
-    </button>
-    <button
-      type="button"
-      data-filter="safari"
-      role="tab"
-      aria-selected="false"
-      aria-pressed="false"
-      class="filter-pill px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 transition-all hover:border-slate-500 hover:text-white"
-    >
-      <span class="filter-check hidden mr-1" aria-hidden="true">✓</span>{t.safari}
-    </button>
-    <button
-      type="button"
-      data-filter="me"
-      role="tab"
-      aria-selected="false"
-      aria-pressed="false"
-      class="filter-pill px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 transition-all hover:border-slate-500 hover:text-white"
-    >
-      <span class="filter-check hidden mr-1" aria-hidden="true">✓</span>{t.me}
-    </button>
-    <button
-      type="button"
-      data-filter="wellness"
-      role="tab"
-      aria-selected="false"
-      aria-pressed="false"
-      class="filter-pill px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 transition-all hover:border-slate-500 hover:text-white"
-    >
-      <span class="filter-check hidden mr-1" aria-hidden="true">✓</span>{t.wellness}
-    </button>
-    <button
-      type="button"
-      data-filter="hotels"
-      role="tab"
-      aria-selected="false"
-      aria-pressed="false"
-      class="filter-pill px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 transition-all hover:border-slate-500 hover:text-white"
-    >
-      <span class="filter-check hidden mr-1" aria-hidden="true">✓</span>{t.hotels}
-    </button>
+  <!-- Mobile: Swipeable Horizontal Carousel | Desktop: Centered Wrap -->
+  <div class="w-full overflow-x-auto no-scrollbar scroll-smooth pt-3 sm:pt-5 -mx-2 px-2 sm:mx-0 sm:px-0" id="category-filter-container">
+    <div class="flex items-center sm:justify-center gap-1.5 sm:gap-2 min-w-max sm:min-w-0 pb-1 sm:pb-0" id="category-filter-pills">
+      <button
+        type="button"
+        data-filter="all"
+        class="filter-pill active px-3 sm:px-3.5 py-1.5 rounded-full text-xs font-semibold bg-[#c9a54e]/20 border border-[#c9a54e] text-[#c9a54e] transition-all hover:border-[#c9a54e] shrink-0 whitespace-nowrap"
+      >
+        {t.all}
+      </button>
+      <button
+        type="button"
+        data-filter="europe"
+        class="filter-pill px-3 sm:px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 transition-all hover:border-slate-500 hover:text-white shrink-0 whitespace-nowrap"
+      >
+        {t.europe}
+      </button>
+      <button
+        type="button"
+        data-filter="asia"
+        class="filter-pill px-3 sm:px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 transition-all hover:border-slate-500 hover:text-white shrink-0 whitespace-nowrap"
+      >
+        {t.asia}
+      </button>
+      <button
+        type="button"
+        data-filter="islands"
+        class="filter-pill px-3 sm:px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 transition-all hover:border-slate-500 hover:text-white shrink-0 whitespace-nowrap"
+      >
+        {t.islands}
+      </button>
+      <button
+        type="button"
+        data-filter="safari"
+        class="filter-pill px-3 sm:px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 transition-all hover:border-slate-500 hover:text-white shrink-0 whitespace-nowrap"
+      >
+        {t.safari}
+      </button>
+      <button
+        type="button"
+        data-filter="me"
+        class="filter-pill px-3 sm:px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 transition-all hover:border-slate-500 hover:text-white shrink-0 whitespace-nowrap"
+      >
+        {t.me}
+      </button>
+      <button
+        type="button"
+        data-filter="wellness"
+        class="filter-pill px-3 sm:px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 transition-all hover:border-slate-500 hover:text-white shrink-0 whitespace-nowrap"
+      >
+        {t.wellness}
+      </button>
+      <button
+        type="button"
+        data-filter="hotels"
+        class="filter-pill px-3 sm:px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-900/80 border border-slate-700 text-slate-300 transition-all hover:border-slate-500 hover:text-white shrink-0 whitespace-nowrap"
+      >
+        {t.hotels}
+      </button>
+    </div>
   </div>
 
   <!-- Search Results Counter Status -->
-  <div id="search-status-counter" class="text-center text-xs text-slate-400 mt-2 min-h-4 hidden" role="status" aria-live="polite">
+  <div id="search-status-counter" class="text-center text-xs text-slate-400 mt-4 hidden" role="status" aria-live="polite">
     <span class="text-[#c9a54e] font-bold" id="counter-number">0</span>
     <span id="counter-label"> {t.found}</span>
   </div>
@@ -231,7 +532,6 @@ const t = placeholders[currentLocale] || placeholders.en;
     let currentRenderCount = 24;
     let currentFilteredList = [];
     let debounceTimer = null;
-    let showCuratedInitialSet = true;
 
     // Detect current locale accurately from URL pathname
     function detectLocale() {
@@ -254,9 +554,8 @@ const t = placeholders[currentLocale] || placeholders.en;
       try {
         const res = await fetch('/data/destinations_search_index.json');
         if (res.ok) {
-            const data = await res.json();
-            fullIndex = Array.isArray(data) ? data : [];
-            return fullIndex;
+          fullIndex = await res.json();
+          return fullIndex;
         }
       } catch (e) {
         console.warn('Could not load 1000 search index:', e);
@@ -266,11 +565,15 @@ const t = placeholders[currentLocale] || placeholders.en;
 
     function createCardHtml(item, index = 0) {
       const gygUrl = window.getAttributedGygUrl ? window.getAttributedGygUrl(item.u) : item.u;
-      const detailUrl = item.d 
+      let detailUrl = item.d
         ? (currentLocale === 'en' ? `/experience/${item.k}/` : `/${currentLocale}/experience/${item.k}/`)
         : gygUrl;
-      const ctaText = item.d ? (isVietnamese ? 'Xem Cẩm Nang' : 'Read Guide') : (isVietnamese ? 'Đặt Chỗ VIP' : 'Reserve VIP');
-      
+      const bookingParams = window.t4uGetBookingParams ? window.t4uGetBookingParams() : '';
+      if (bookingParams) {
+        detailUrl += (detailUrl.includes('?') ? '&' : '?') + bookingParams;
+      }
+      const ctaText = item.d ? (isVietnamese ? 'Xem Cẩm Nang' : 'Read Guide') : (isVietnamese ? 'Xem Giá Phòng' : 'Check Rates');
+
       let isSaved = false;
       try {
         const saved = JSON.parse(localStorage.getItem('t4u_bookmarks') || '[]');
@@ -301,7 +604,7 @@ const t = placeholders[currentLocale] || placeholders.en;
               class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
             />
             <div class="absolute inset-0 bg-gradient-to-t from-[#0b1726] via-transparent to-black/40"></div>
-            
+
             <div class="absolute top-3.5 left-3.5 flex items-center space-x-2">
               <span class="bg-[#07111e]/90 backdrop-blur-md text-[#c9a54e] text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full border border-[#c9a54e]/30 shadow-md">
                 ${item.l}
@@ -313,8 +616,8 @@ const t = placeholders[currentLocale] || placeholders.en;
                 type="button"
                 class="bookmark-btn w-8 h-8 rounded-full bg-[#07111e]/90 backdrop-blur-md border border-slate-700 ${isSaved ? 'text-rose-500 border-rose-500/60' : 'text-slate-300'} hover:text-rose-500 hover:border-red-500/50 flex items-center justify-center transition-all shadow-md focus:outline-none"
                 data-slug="${item.k}"
-                title="${isVietnamese ? 'Lưu trải nghiệm này' : 'Bookmark this experience'}"
-                aria-label="${isVietnamese ? 'Lưu trải nghiệm này' : 'Bookmark'}"
+                title="Bookmark this experience"
+                aria-label="Bookmark"
               >
                 <svg class="heart-icon w-4 h-4" fill="${isSaved ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
@@ -326,8 +629,8 @@ const t = placeholders[currentLocale] || placeholders.en;
                 class="card-share-btn w-8 h-8 rounded-full bg-[#07111e]/90 backdrop-blur-md border border-slate-700 text-slate-300 hover:text-[#c9a54e] hover:border-[#c9a54e]/50 flex items-center justify-center transition-all shadow-md focus:outline-none"
                 data-url="${detailUrl}"
                 data-title="${item.t}"
-                title="${isVietnamese ? 'Chia sẻ trải nghiệm này' : 'Share'}"
-                aria-label="${isVietnamese ? 'Chia sẻ trải nghiệm này' : 'Share'}"
+                title="Share"
+                aria-label="Share"
               >
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>
@@ -336,7 +639,7 @@ const t = placeholders[currentLocale] || placeholders.en;
             </div>
 
             <div class="absolute bottom-3 left-3.5">
-              <span class="text-[10px] text-slate-300 block uppercase tracking-wider font-medium">${isVietnamese ? 'Giá từ' : 'Starting from'}</span>
+              <span class="text-[10px] text-slate-300 block uppercase tracking-wider font-medium">${isVietnamese ? 'Khởi điểm' : 'Starting from'}</span>
               <span class="text-base font-bold text-white font-serif">${item.g}</span>
             </div>
 
@@ -362,21 +665,21 @@ const t = placeholders[currentLocale] || placeholders.en;
 
             <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between gap-3">
               ${item.d ? `
-                <a href="${detailUrl}" class="text-xs font-bold text-slate-300 hover:text-white flex items-center space-x-1 transition-colors">
+                <a href="${detailUrl}" class="text-xs font-bold text-slate-300 hover:text-[#c9a54e] flex items-center space-x-1 transition-colors">
                   <span>${ctaText}</span>
                   <span>→</span>
                 </a>
               ` : `
-                <span class="text-[11px] text-slate-400 font-medium">${isVietnamese ? 'Đối tác GetYourGuide' : 'GetYourGuide Verified'}</span>
+                <span class="text-[11px] text-slate-400 font-medium">Expedia Partner Verified</span>
               `}
 
               <a
                 href="${item.u}"
                 target="_blank"
                 rel="nofollow sponsored noopener"
-                class="bg-[#ff7043] hover:bg-[#f4511e] text-white text-xs font-bold px-4 py-2 rounded-xl shadow-md shadow-[#ff7043]/20 hover:shadow-[#ff7043]/40 transition-all text-center flex items-center space-x-1"
+                class="bg-gradient-to-r from-[#c9a54e] to-[#dfba63] hover:from-[#dfba63] hover:to-[#e8c878] text-[#07111e] text-xs font-bold px-4 py-2 rounded-xl shadow-md transition-all text-center flex items-center space-x-1"
               >
-                <span>${isVietnamese ? 'Xem chỗ trống' : 'Reserve VIP'}</span>
+                <span>${isVietnamese ? 'Xem Giá Phòng' : 'Check Rates'}</span>
                 <span>→</span>
               </a>
             </div>
@@ -397,7 +700,7 @@ const t = placeholders[currentLocale] || placeholders.en;
       } else {
         if (noResultsEl) noResultsEl.style.display = 'none';
         container.innerHTML = toRender.map((item, idx) => createCardHtml(item, idx)).join('');
-        
+
         // Render or update Load More Button
         if (currentFilteredList.length > currentRenderCount) {
           renderLoadMoreBtn(currentFilteredList.length);
@@ -405,7 +708,7 @@ const t = placeholders[currentLocale] || placeholders.en;
           removeLoadMoreBtn();
         }
 
-        // Trigger immediate layout/scroll event so browsers calculate lazy images
+        // Trigger layout scroll event
         try {
           window.dispatchEvent(new Event('scroll'));
         } catch (e) {}
@@ -423,9 +726,9 @@ const t = placeholders[currentLocale] || placeholders.en;
         container.parentNode.appendChild(loadMoreContainer);
       }
 
-      const btnText = isVietnamese 
-        ? `Khám Phá Thêm (${currentRenderCount}/${total}) ↓` 
-        : `Load More Experiences (Showing ${currentRenderCount} of ${total}) ↓`;
+      const btnText = isVietnamese
+        ? `Khám Phá Thêm (${currentRenderCount}/${total}) ↓`
+        : `Load More Sanctuaries (Showing ${currentRenderCount} of ${total}) ↓`;
 
       loadMoreContainer.innerHTML = `
         <button
@@ -457,8 +760,8 @@ const t = placeholders[currentLocale] || placeholders.en;
         clearBtn.style.display = searchQuery ? 'flex' : 'none';
       }
 
-      // If no query and filter is 'all', restore initial 10 curated cards
-      if (!searchQuery && activeFilter === 'all' && showCuratedInitialSet) {
+      // If no query and filter is 'all', restore initial curated cards
+      if (!searchQuery && activeFilter === 'all') {
         if (container) container.innerHTML = initialHtml;
         if (noResultsEl) noResultsEl.style.display = 'none';
         if (counterBox) counterBox.classList.add('hidden');
@@ -471,24 +774,29 @@ const t = placeholders[currentLocale] || placeholders.en;
       if (!index) return;
 
       currentFilteredList = index.filter(item => {
-        const text = (item.t + ' ' + item.l + ' ' + item.c).toLowerCase();
+        const text = ((item.t || '') + ' ' + (item.l || '') + ' ' + (item.c || '')).toLowerCase();
         const matchesSearch = !searchQuery || text.includes(searchQuery);
 
         let matchesFilter = true;
+        const regionLower = (item.r || '').toLowerCase();
+        const locLower = (item.l || '').toLowerCase();
+        const catLower = (item.c || '').toLowerCase();
+        const titleLower = (item.t || '').toLowerCase();
+
         if (activeFilter === 'europe') {
-          matchesFilter = item.r.toLowerCase().includes('europe') || item.l.toLowerCase().includes('italy') || item.l.toLowerCase().includes('france') || item.l.toLowerCase().includes('swiss');
+          matchesFilter = regionLower.includes('europe') || regionLower.includes('palace') || locLower.includes('italy') || locLower.includes('france') || locLower.includes('swiss') || locLower.includes('greece') || locLower.includes('portugal') || locLower.includes('spain') || locLower.includes('monaco') || locLower.includes('paris') || locLower.includes('rome') || locLower.includes('como') || locLower.includes('venice') || locLower.includes('london') || locLower.includes('united kingdom') || locLower.includes('ireland') || locLower.includes('amalfi') || locLower.includes('santorini') || locLower.includes('bordeaux');
         } else if (activeFilter === 'asia') {
-          matchesFilter = item.r.toLowerCase().includes('asia') || item.l.toLowerCase().includes('japan') || item.l.toLowerCase().includes('bali') || item.l.toLowerCase().includes('thailand');
+          matchesFilter = regionLower.includes('asia') || regionLower.includes('ryokan') || locLower.includes('japan') || locLower.includes('bali') || locLower.includes('indonesia') || locLower.includes('thailand') || locLower.includes('vietnam') || locLower.includes('kyoto') || locLower.includes('tokyo') || locLower.includes('bangkok') || locLower.includes('hong kong') || locLower.includes('sri lanka') || locLower.includes('cambodia');
         } else if (activeFilter === 'islands') {
-          matchesFilter = item.r.toLowerCase().includes('islands') || item.l.toLowerCase().includes('maldives');
+          matchesFilter = regionLower.includes('overwater') || regionLower.includes('island') || locLower.includes('maldives') || locLower.includes('seychelles') || locLower.includes('polynesia') || locLower.includes('tetiaroa') || locLower.includes('bora') || locLower.includes('fiji') || locLower.includes('hawaii') || locLower.includes('barth') || locLower.includes('atoll') || catLower.includes('island') || catLower.includes('overwater');
         } else if (activeFilter === 'safari') {
-          matchesFilter = item.r.toLowerCase().includes('safari') || item.l.toLowerCase().includes('serengeti') || item.l.toLowerCase().includes('africa');
+          matchesFilter = regionLower.includes('safari') || locLower.includes('serengeti') || locLower.includes('africa') || locLower.includes('tanzania') || locLower.includes('kenya') || locLower.includes('kruger') || locLower.includes('south africa') || catLower.includes('safari');
         } else if (activeFilter === 'me') {
-          matchesFilter = item.r.toLowerCase().includes('middle east') || item.l.toLowerCase().includes('dubai');
+          matchesFilter = regionLower.includes('middle east') || locLower.includes('dubai') || locLower.includes('emirates') || locLower.includes('oman') || locLower.includes('qatar') || locLower.includes('morocco') || locLower.includes('marrakech') || locLower.includes('abu dhabi');
         } else if (activeFilter === 'wellness') {
-          matchesFilter = item.c.toLowerCase().includes('wellness') || item.c.toLowerCase().includes('spa');
+          matchesFilter = catLower.includes('wellness') || catLower.includes('spa') || catLower.includes('retreat') || titleLower.includes('spa') || titleLower.includes('onsen') || titleLower.includes('wellness') || catLower.includes('onsen') || locLower.includes('montreux') || locLower.includes('geneva') || locLower.includes('hakone');
         } else if (activeFilter === 'hotels') {
-          matchesFilter = item.c.toLowerCase().includes('hotel') || item.c.toLowerCase().includes('sanctuaries');
+          matchesFilter = catLower.includes('palace') || catLower.includes('hotel') || catLower.includes('sanctuaries') || titleLower.includes('hotel') || titleLower.includes('palace') || titleLower.includes('resort') || titleLower.includes('château') || regionLower.includes('palace');
         }
 
         return matchesSearch && matchesFilter;
@@ -503,16 +811,27 @@ const t = placeholders[currentLocale] || placeholders.en;
       renderCardsWithPagination();
     }
 
-    // Debounced input handler (150ms for ultra-smooth typing on mobile)
+    // Debounced input handler
     if (searchInput) {
       searchInput.addEventListener('focus', loadIndex);
       searchInput.addEventListener('input', (e) => {
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(() => {
-          showCuratedInitialSet = false;
           searchQuery = e.target.value.toLowerCase().trim();
           applyFilters();
         }, 120);
+      });
+
+      searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          searchQuery = searchInput.value.toLowerCase().trim();
+          applyFilters();
+          const target = document.getElementById('experiences') || document.getElementById('destinations-grid-container');
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth' });
+          }
+        }
       });
     }
 
@@ -531,32 +850,289 @@ const t = placeholders[currentLocale] || placeholders.en;
         pills.forEach(p => {
           p.classList.remove('active', 'bg-[#c9a54e]/20', 'border-[#c9a54e]', 'text-[#c9a54e]');
           p.classList.add('bg-slate-900/80', 'border-slate-700', 'text-slate-300');
-          p.setAttribute('aria-selected', 'false');
-          p.setAttribute('aria-pressed', 'false');
-          const check = p.querySelector('.filter-check');
-          if (check) check.classList.add('hidden');
         });
         pill.classList.remove('bg-slate-900/80', 'border-slate-700', 'text-slate-300');
         pill.classList.add('active', 'bg-[#c9a54e]/20', 'border-[#c9a54e]', 'text-[#c9a54e]');
-        pill.setAttribute('aria-selected', 'true');
-        pill.setAttribute('aria-pressed', 'true');
-        const check = pill.querySelector('.filter-check');
-        if (check) check.classList.remove('hidden');
-        
+
         activeFilter = pill.getAttribute('data-filter') || 'all';
-        showCuratedInitialSet = false;
         applyFilters();
+
+        if (activeFilter !== 'all') {
+          const target = document.getElementById('experiences') || document.getElementById('destinations-grid-container');
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth' });
+          }
+        }
       });
     });
 
+    // -------------------------------------------------------------
+    // INTERACTIVE DATE PICKER & GUESTS SELECTOR LOGIC
+    // -------------------------------------------------------------
+    let selectedDates = { checkin: '', checkout: '', display: '' };
+    let selectedGuests = { adults: 2, children: 0, rooms: 1, display: '' };
+
+    // DOM Elements - Date
+    const dateTrigger = document.getElementById('search-date-trigger');
+    const dateDropdown = document.getElementById('search-date-dropdown');
+    const dateDisplay = document.getElementById('search-date-display');
+    const dateArrow = document.getElementById('search-date-arrow');
+    const closeDateBtn = document.getElementById('close-date-dropdown');
+    const quickSeasonBtns = document.querySelectorAll('.quick-season-btn');
+    const inputCheckin = document.getElementById('input-checkin-date');
+    const inputCheckout = document.getElementById('input-checkout-date');
+    const applyDateBtn = document.getElementById('apply-date-btn');
+    const resetDateBtn = document.getElementById('reset-date-btn');
+
+    // DOM Elements - Guests
+    const guestsTrigger = document.getElementById('search-guests-trigger');
+    const guestsDropdown = document.getElementById('search-guests-dropdown');
+    const guestsDisplay = document.getElementById('search-guests-display');
+    const guestsArrow = document.getElementById('search-guests-arrow');
+    const closeGuestsBtn = document.getElementById('close-guests-dropdown');
+    const applyGuestsBtn = document.getElementById('apply-guests-btn');
+    const resetGuestsBtn = document.getElementById('reset-guests-btn');
+
+    const valAdults = document.getElementById('val-adults');
+    const btnAdultsMinus = document.getElementById('btn-adults-minus');
+    const btnAdultsPlus = document.getElementById('btn-adults-plus');
+
+    const valChildren = document.getElementById('val-children');
+    const btnChildrenMinus = document.getElementById('btn-children-minus');
+    const btnChildrenPlus = document.getElementById('btn-children-plus');
+
+    const valRooms = document.getElementById('val-rooms');
+    const btnRoomsMinus = document.getElementById('btn-rooms-minus');
+    const btnRoomsPlus = document.getElementById('btn-rooms-plus');
+
+    let curAdults = 2;
+    let curChildren = 0;
+    let curRooms = 1;
+
+    // Toast helper
+    function showFilterToast(msg) {
+      let toast = document.getElementById('search-filter-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'search-filter-toast';
+        toast.className = 'fixed bottom-6 right-6 z-50 bg-[#07111e]/95 border border-[#c9a54e] text-white text-xs font-semibold px-5 py-3.5 rounded-2xl shadow-2xl shadow-black/80 flex items-center gap-3 transform transition-all duration-300 opacity-0 translate-y-4';
+        document.body.appendChild(toast);
+      }
+      toast.innerHTML = `<span class="text-[#c9a54e] text-lg">✨</span> <span class="leading-tight">${msg}</span>`;
+      toast.classList.remove('opacity-0', 'translate-y-4');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-4');
+      }, 3500);
+    }
+
+    function toggleDateDropdown(open) {
+      if (!dateDropdown) return;
+      const isOpen = open !== undefined ? open : dateDropdown.classList.contains('hidden');
+      if (isOpen) {
+        dateDropdown.classList.remove('hidden');
+        if (dateTrigger) dateTrigger.setAttribute('aria-expanded', 'true');
+        if (dateArrow) dateArrow.style.transform = 'rotate(180deg)';
+        toggleGuestsDropdown(false);
+      } else {
+        dateDropdown.classList.add('hidden');
+        if (dateTrigger) dateTrigger.setAttribute('aria-expanded', 'false');
+        if (dateArrow) dateArrow.style.transform = 'rotate(0deg)';
+      }
+    }
+
+    function toggleGuestsDropdown(open) {
+      if (!guestsDropdown) return;
+      const isOpen = open !== undefined ? open : guestsDropdown.classList.contains('hidden');
+      if (isOpen) {
+        guestsDropdown.classList.remove('hidden');
+        if (guestsTrigger) guestsTrigger.setAttribute('aria-expanded', 'true');
+        if (guestsArrow) guestsArrow.style.transform = 'rotate(180deg)';
+        toggleDateDropdown(false);
+      } else {
+        guestsDropdown.classList.add('hidden');
+        if (guestsTrigger) guestsTrigger.setAttribute('aria-expanded', 'false');
+        if (guestsArrow) guestsArrow.style.transform = 'rotate(0deg)';
+      }
+    }
+
+    if (dateTrigger) {
+      dateTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleDateDropdown();
+      });
+    }
+
+    if (guestsTrigger) {
+      guestsTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleGuestsDropdown();
+      });
+    }
+
+    if (closeDateBtn) closeDateBtn.addEventListener('click', () => toggleDateDropdown(false));
+    if (closeGuestsBtn) closeGuestsBtn.addEventListener('click', () => toggleGuestsDropdown(false));
+
+    // Stop propagation so clicking inside forms does not close them
+    if (dateDropdown) dateDropdown.addEventListener('click', (e) => e.stopPropagation());
+    if (guestsDropdown) guestsDropdown.addEventListener('click', (e) => e.stopPropagation());
+
+    // Click outside to close both
+    document.addEventListener('click', () => {
+      toggleDateDropdown(false);
+      toggleGuestsDropdown(false);
+    });
+
+    // Quick season picks
+    quickSeasonBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const dates = btn.getAttribute('data-dates') || '';
+        const seasonName = btn.querySelector('.font-bold')?.textContent || dates;
+        selectedDates.display = seasonName;
+        selectedDates.checkin = dates.split(' - ')[0] || '';
+        selectedDates.checkout = dates.split(' - ')[1] || '';
+        if (dateDisplay) {
+          dateDisplay.textContent = seasonName;
+          dateDisplay.classList.add('text-[#c9a54e]', 'font-bold');
+        }
+        toggleDateDropdown(false);
+        showFilterToast(isVietnamese ? `Đã chọn lịch trình: ${seasonName} (${dates})` : `Selected Season: ${seasonName} (${dates})`);
+      });
+    });
+
+    // Custom dates apply
+    if (applyDateBtn) {
+      applyDateBtn.addEventListener('click', () => {
+        const inVal = inputCheckin?.value;
+        const outVal = inputCheckout?.value;
+        if (inVal && outVal) {
+          const display = `${inVal.slice(5)} → ${outVal.slice(5)}`;
+          selectedDates.checkin = inVal;
+          selectedDates.checkout = outVal;
+          selectedDates.display = display;
+          if (dateDisplay) {
+            dateDisplay.textContent = display;
+            dateDisplay.classList.add('text-[#c9a54e]', 'font-bold');
+          }
+          showFilterToast(isVietnamese ? `Đã chọn ngày: ${inVal} đến ${outVal}` : `Selected Dates: ${inVal} to ${outVal}`);
+        }
+        toggleDateDropdown(false);
+      });
+    }
+
+    // Date reset
+    if (resetDateBtn) {
+      resetDateBtn.addEventListener('click', () => {
+        selectedDates = { checkin: '', checkout: '', display: '' };
+        if (dateDisplay) {
+          dateDisplay.textContent = isVietnamese ? 'Thời gian: Bất kỳ' : 'Anytime';
+          dateDisplay.classList.remove('text-[#c9a54e]', 'font-bold');
+        }
+        if (inputCheckin) inputCheckin.value = '';
+        if (inputCheckout) inputCheckout.value = '';
+        toggleDateDropdown(false);
+        showFilterToast(isVietnamese ? 'Đã đặt lại: Bất kỳ ngày nào' : 'Reset to: Anytime');
+      });
+    }
+
+    // Guests +/- controls
+    function updateGuestsUI() {
+      if (valAdults) valAdults.textContent = curAdults;
+      if (valChildren) valChildren.textContent = curChildren;
+      if (valRooms) valRooms.textContent = curRooms;
+    }
+
+    if (btnAdultsMinus) btnAdultsMinus.addEventListener('click', () => {
+      if (curAdults > 1) { curAdults--; updateGuestsUI(); }
+    });
+    if (btnAdultsPlus) btnAdultsPlus.addEventListener('click', () => {
+      if (curAdults < 10) { curAdults++; updateGuestsUI(); }
+    });
+
+    if (btnChildrenMinus) btnChildrenMinus.addEventListener('click', () => {
+      if (curChildren > 0) { curChildren--; updateGuestsUI(); }
+    });
+    if (btnChildrenPlus) btnChildrenPlus.addEventListener('click', () => {
+      if (curChildren < 8) { curChildren++; updateGuestsUI(); }
+    });
+
+    if (btnRoomsMinus) btnRoomsMinus.addEventListener('click', () => {
+      if (curRooms > 1) { curRooms--; updateGuestsUI(); }
+    });
+    if (btnRoomsPlus) btnRoomsPlus.addEventListener('click', () => {
+      if (curRooms < 6) { curRooms++; updateGuestsUI(); }
+    });
+
+    // Apply Guests
+    if (applyGuestsBtn) {
+      applyGuestsBtn.addEventListener('click', () => {
+        selectedGuests.adults = curAdults;
+        selectedGuests.children = curChildren;
+        selectedGuests.rooms = curRooms;
+        const totalGuests = curAdults + curChildren;
+        const label = isVietnamese
+          ? `${totalGuests} Khách, ${curRooms} Phòng`
+          : `${totalGuests} Guests, ${curRooms} Suite${curRooms > 1 ? 's' : ''}`;
+        selectedGuests.display = label;
+        if (guestsDisplay) {
+          guestsDisplay.textContent = label;
+          guestsDisplay.classList.add('text-[#c9a54e]', 'font-bold');
+        }
+        toggleGuestsDropdown(false);
+        showFilterToast(isVietnamese ? `Đã chọn: ${label}` : `Selected: ${label}`);
+      });
+    }
+
+    // Reset Guests
+    if (resetGuestsBtn) {
+      resetGuestsBtn.addEventListener('click', () => {
+        curAdults = 2;
+        curChildren = 0;
+        curRooms = 1;
+        updateGuestsUI();
+        selectedGuests = { adults: 2, children: 0, rooms: 1, display: '' };
+        if (guestsDisplay) {
+          guestsDisplay.textContent = isVietnamese ? '1 - 2 Khách' : '1 - 2 Guests';
+          guestsDisplay.classList.remove('text-[#c9a54e]', 'font-bold');
+        }
+        toggleGuestsDropdown(false);
+        showFilterToast(isVietnamese ? 'Đã đặt lại: 1 - 2 Khách' : 'Reset to: 1 - 2 Guests');
+      });
+    }
+
+    // Expose booking query generator for cards
+    window.t4uGetBookingParams = function() {
+      const p = new URLSearchParams();
+      if (selectedDates.checkin) p.set('checkin', selectedDates.checkin);
+      if (selectedDates.checkout) p.set('checkout', selectedDates.checkout);
+      if (selectedGuests.adults) p.set('adults', selectedGuests.adults);
+      if (selectedGuests.children) p.set('children', selectedGuests.children);
+      if (selectedGuests.rooms) p.set('rooms', selectedGuests.rooms);
+      return p.toString();
+    };
+
     if (searchBtn) {
       searchBtn.addEventListener('click', () => {
-        const target = document.getElementById('experiences');
+        searchQuery = searchInput ? searchInput.value.toLowerCase().trim() : '';
+        applyFilters();
+
+        let toastMsg = [];
+        if (searchQuery) toastMsg.push(`"${searchQuery}"`);
+        if (selectedDates.display) toastMsg.push(selectedDates.display);
+        if (selectedGuests.display) toastMsg.push(selectedGuests.display);
+
+        if (toastMsg.length > 0) {
+          showFilterToast(isVietnamese ? `Đang tìm kiếm: ${toastMsg.join(' • ')}` : `Searching for: ${toastMsg.join(' • ')}`);
+        }
+
+        const target = document.getElementById('experiences') || document.getElementById('destinations-grid-container');
         if (target) {
           target.scrollIntoView({ behavior: 'smooth' });
         }
       });
     }
+
+    // Preload index in background
+    setTimeout(loadIndex, 800);
   }
 
   if (document.readyState === 'loading') {

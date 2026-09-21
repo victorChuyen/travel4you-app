@@ -1,5 +1,6 @@
 ---
 import i18n from '../data/i18n.json';
+import { getUiTranslation } from '../data/uiTranslations';
 
 interface Props {
   currentLocale?: string;
@@ -7,6 +8,7 @@ interface Props {
 
 const { currentLocale = 'en' } = Astro.props;
 const dict = (i18n as any)[currentLocale] || (i18n as any).en;
+const ui = getUiTranslation(currentLocale);
 const isAppRoute = Astro.url.pathname.startsWith('/app');
 ---
 
@@ -16,37 +18,23 @@ const isAppRoute = Astro.url.pathname.startsWith('/app');
       <section class="mb-12 rounded-2xl border border-[#c9a54e]/35 bg-gradient-to-br from-[#0d1b2c] to-[#07111e] p-5 sm:p-7" aria-labelledby="footer-cta-title">
         <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(320px,480px)] lg:items-center">
           <div class="max-w-2xl">
-            <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#c9a54e]">VIP Concierge</p>
+            <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#c9a54e]">Travel4You Journal</p>
             <h2 id="footer-cta-title" class="mt-2 font-serif text-2xl font-bold text-white sm:text-3xl">
-              {currentLocale === 'vi' ? 'Để chúng tôi thiết kế chuyến đi VIP của bạn.' : 'Let us design your private VIP journey.'}
+              {ui.footerCta}
             </h2>
             <p class="mt-2 text-sm leading-relaxed text-slate-300">
-              {currentLocale === 'vi'
-                ? 'Chia sẻ mong muốn, điểm đến và ngân sách. Đội ngũ concierge sẽ liên hệ với đề xuất phù hợp.'
-                : 'Share your wishes, destination and budget. Our concierge team will follow up with a tailored proposal.'}
+              {ui.footerCtaBody}
             </p>
           </div>
-          <form id="vip-lead-form" class="grid gap-3 sm:grid-cols-2" action="/api/leads" method="post">
-            <label class="sr-only" for="vip-name">{currentLocale === 'vi' ? 'Họ tên' : 'Name'}</label>
-            <input id="vip-name" name="name" required maxlength="120" autocomplete="name" placeholder={currentLocale === 'vi' ? 'Họ tên *' : 'Your name *'} class="min-h-11 rounded-lg border border-slate-700 bg-slate-950/60 px-3 text-sm text-white placeholder:text-slate-500 focus:border-[#c9a54e] focus:outline-none" />
-            <label class="sr-only" for="vip-email">Email</label>
-            <input id="vip-email" name="email" required type="email" maxlength="254" autocomplete="email" placeholder="Email *" class="min-h-11 rounded-lg border border-slate-700 bg-slate-950/60 px-3 text-sm text-white placeholder:text-slate-500 focus:border-[#c9a54e] focus:outline-none" />
-            <label class="sr-only" for="vip-phone">{currentLocale === 'vi' ? 'Số điện thoại' : 'Phone'}</label>
-            <input id="vip-phone" name="phone" type="tel" maxlength="32" autocomplete="tel" placeholder={currentLocale === 'vi' ? 'Số điện thoại' : 'Phone'} class="min-h-11 rounded-lg border border-slate-700 bg-slate-950/60 px-3 text-sm text-white placeholder:text-slate-500 focus:border-[#c9a54e] focus:outline-none" />
-            <label class="sr-only" for="vip-destination">{currentLocale === 'vi' ? 'Điểm đến' : 'Destination'}</label>
-            <input id="vip-destination" name="destination" maxlength="160" placeholder={currentLocale === 'vi' ? 'Điểm đến mong muốn' : 'Preferred destination'} class="min-h-11 rounded-lg border border-slate-700 bg-slate-950/60 px-3 text-sm text-white placeholder:text-slate-500 focus:border-[#c9a54e] focus:outline-none" />
-            <select name="request_type" required class="min-h-11 rounded-lg border border-slate-700 bg-slate-950/60 px-3 text-sm text-white focus:border-[#c9a54e] focus:outline-none">
-              <option value="">{currentLocale === 'vi' ? 'Bạn cần hỗ trợ gì? *' : 'What can we arrange? *'}</option>
-              <option value="private_itinerary">{currentLocale === 'vi' ? 'Lịch trình riêng' : 'Private itinerary'}</option>
-              <option value="vip_experience">{currentLocale === 'vi' ? 'Trải nghiệm VIP' : 'VIP experience'}</option>
-              <option value="hotel_villa">{currentLocale === 'vi' ? 'Khách sạn / villa' : 'Hotel / villa'}</option>
-              <option value="other">{currentLocale === 'vi' ? 'Yêu cầu khác' : 'Other request'}</option>
-            </select>
-            <input name="budget" maxlength="80" placeholder={currentLocale === 'vi' ? 'Ngân sách dự kiến' : 'Estimated budget'} class="min-h-11 rounded-lg border border-slate-700 bg-slate-950/60 px-3 text-sm text-white placeholder:text-slate-500 focus:border-[#c9a54e] focus:outline-none" />
-            <textarea name="message" maxlength="2000" rows="2" placeholder={currentLocale === 'vi' ? 'Mô tả ngắn yêu cầu của bạn' : 'Tell us briefly what you need'} class="sm:col-span-2 rounded-lg border border-slate-700 bg-slate-950/60 px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:border-[#c9a54e] focus:outline-none"></textarea>
+          <form id="vip-lead-form" class="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]" action="/api/leads" method="post">
+            <label class="sr-only" for="vip-email">{ui.newsletterEmail}</label>
+            <input id="vip-email" name="email" required type="email" maxlength="254" autocomplete="email" placeholder={ui.newsletterEmail} class="min-h-11 rounded-lg border border-slate-700 bg-slate-950/60 px-3 text-sm text-white placeholder:text-slate-500 focus:border-[#c9a54e] focus:outline-none" />
+            <input type="hidden" name="name" value="Travel4You Reader" />
+            <input type="hidden" name="request_type" value="newsletter" />
+            <input type="hidden" name="message" value="Subscribed to new Travel4You guides and selected experiences." />
             <div aria-hidden="true" class="hidden"><input name="website" tabindex="-1" autocomplete="off" /></div>
-            <button type="submit" class="sm:col-span-2 inline-flex min-h-11 items-center justify-center rounded-lg bg-[#c9a54e] px-5 py-3 text-sm font-bold text-[#07111e] transition hover:bg-[#e1bd63] focus:outline-none focus:ring-2 focus:ring-[#c9a54e] disabled:cursor-not-allowed disabled:opacity-60">
-              {currentLocale === 'vi' ? 'Nhận tư vấn VIP' : 'Request VIP consultation'}
+            <button type="submit" class="inline-flex min-h-11 items-center justify-center rounded-lg bg-[#c9a54e] px-5 py-3 text-sm font-bold text-[#07111e] transition hover:bg-[#e1bd63] focus:outline-none focus:ring-2 focus:ring-[#c9a54e] disabled:cursor-not-allowed disabled:opacity-60">
+              {ui.newsletterSubmit}
             </button>
             <p id="vip-lead-status" class="sm:col-span-2 min-h-5 text-xs" role="status" aria-live="polite"></p>
           </form>
@@ -73,7 +61,7 @@ const isAppRoute = Astro.url.pathname.startsWith('/app');
         </p>
         <div class="inline-flex items-center space-x-2 bg-slate-900 border border-slate-700/80 rounded-lg px-3 py-1.5 text-[11px] text-[#c9a54e]">
           <span>👑</span>
-          <span class="font-bold">{currentLocale === 'vi' ? 'Đối tác trải nghiệm chính thức của GetYourGuide' : 'Official GetYourGuide Verified Partner'}</span>
+          <span class="font-bold">{ui.vipPartner}</span>
         </div>
       </div>
 
@@ -173,7 +161,7 @@ const isAppRoute = Astro.url.pathname.startsWith('/app');
           form.reset();
           if (status) {
             status.className = 'sm:col-span-2 min-h-5 text-xs text-emerald-300';
-            status.textContent = document.documentElement.lang === 'vi' ? 'Đã nhận yêu cầu. Chúng tôi sẽ sớm liên hệ.' : 'Request received. Our concierge will be in touch soon.';
+            status.textContent = document.documentElement.lang === 'vi' ? 'Đã đăng ký. Cẩm nang mới sẽ được gửi đến email của bạn.' : 'You are subscribed. New guides will be sent to your inbox.';
           }
         } catch (error) {
           if (status) {

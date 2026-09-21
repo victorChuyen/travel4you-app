@@ -66,10 +66,12 @@ unique `(seller_workspace_id, qualifying_sale_reference)` key. Only service
 role/server-side settlement code should insert, approve, void, or pay ledger
 rows; workspace members have read-only access to their own workspace rows.
 
-## VIP leads
+## Public guide-update subscriptions
 
-`20260920113000_vip_leads.sql` creates `public.leads` for the public concierge
-CTA. `POST /api/leads` validates and inserts with the Supabase service role.
-RLS intentionally has no anonymous `SELECT` or `INSERT` policy. If a lead is
-assigned a `workspace_id`, active members of that workspace can read it; the
-service role remains the only public-form writer.
+`20260920113000_vip_leads.sql` creates `public.leads` for public lead capture.
+The follow-up migration `20260921090000_newsletter_leads.sql` permits
+`request_type=newsletter` for the public guide-update CTA. `POST /api/leads`
+validates and inserts with the server-side Supabase secret. RLS intentionally
+has no anonymous `SELECT` or `INSERT` policy. If a record is assigned a
+`workspace_id`, active members of that workspace can read it; the server role
+remains the only public-form writer.
