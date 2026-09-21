@@ -2492,12 +2492,10 @@ production checks pass:
   database connection or Supabase CLI access token.
 - Docker is not installed locally, so local Supabase health/status checks
   cannot run.
-- The production deployment must not be updated to use the newsletter form
-  until the migration is applied and the Resend/Supabase test passes.
-- The migration is now applied and the newsletter release is deployed, but
-  the controlled production subscription test still returns `emailSent:false`.
-  Cloudflare has `RESEND_API_KEY` as an encrypted secret; Resend sender-domain
-  verification/DNS is the remaining closure gate.
+- The migration is applied and the newsletter release is deployed.
+- Resend domain `travel4you.app` is verified, `RESEND_API_KEY` is encrypted in
+  Cloudflare Pages, and the final custom-domain subscription test returned
+  HTTP `201` with `emailSent:true`.
 
 ### Important non-claim
 

@@ -5,13 +5,11 @@
 **Repository:** <https://github.com/victorChuyen/travel4you-app>  
 **Handover status:** Customer-ready documentation; owner credentials and billing inputs remain customer-controlled.
 
-**Closure status (2026-09-21 10:09 ICT):** Code, build, production homepage,
+**Closure status (2026-09-21 10:55 ICT):** Code, build, production homepage,
 affiliate catalog, AI routing, Supabase newsletter migration, deployment, and
-handover documentation are ready for customer review. The production
-subscription endpoint has passed HTTP 201 persistence QA. Final email closure
-is blocked because the Resend sender/API configuration still returns
-`emailSent:false`; the production Pages secret now exists, but sender-domain
-verification/delivery must be completed in Resend.
+handover documentation are complete. The production subscription endpoint
+passes HTTP 201 persistence QA, and the custom-domain email test returns
+`emailSent:true` after Resend payload and Pages deployment fixes.
 
 ## 1. What the customer receives
 
@@ -265,12 +263,10 @@ refund handling, and idempotent webhook processing.
 
 ### Final closure actions requiring customer-controlled access
 
-1. Verify `travel4you.app` in Resend and publish the exact SPF, DKIM, and
-   return-path records supplied by Resend. The current public SPF record only
-   contains Cloudflare Email Routing.
-2. Submit one controlled newsletter test using an approved owner email.
+1. Retain the Resend domain verification and encrypted Pages secret.
+2. Repeat a controlled newsletter test during customer acceptance if desired.
 3. Verify one Supabase row, owner notification, subscriber confirmation, and
-   duplicate protection; require `emailSent:true`.
+   duplicate protection; the final production test returned `emailSent:true`.
 4. Rotate any development credentials that were used during implementation.
 
 ## 9. Handover workbook
